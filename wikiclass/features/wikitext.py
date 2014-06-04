@@ -4,7 +4,7 @@ from __future__ import division
 
 REF_RE = re.compile(ur'<ref', re.I)
 
-def byte_length(text): return 
+def byte_length(text): return
 
 def filter_markup(text):
 	parsed_text = mwp.parse(text)
@@ -54,4 +54,3 @@ def analyze(text):
 	                            stats['citetemplates']
 	
 	return stats
-

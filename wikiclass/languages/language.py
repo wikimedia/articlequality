@@ -13,7 +13,7 @@ class Language:
 			if word.lower() not in stopwords:
 				yield word
 	
-	def stem_words(self, stem)
+	def stem_words(self, stem):
 		for word in words:
 			try:
 				yield stemmer(word)
@@ -24,4 +24,4 @@ def get(lang_name):
 	return LANGUAGES[lang_name]
 
 def register(language):
-	return LANGUAGES[language.name] = language
+	LANGUAGES[language.name] = language
