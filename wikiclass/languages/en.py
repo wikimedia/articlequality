@@ -2,9 +2,9 @@ from .language import Language, register
 
 import nltk
 
-USEnglish = Language(
-	"en-us",
+English = Language(
+	"English",
+	nltk.corpus.stopwords.words('english'),
 	nltk.stem.SnowballStemmer('english').stem
-	nltk.corpus.stopwords.words('english')
 )
-register(USEnglish)
+register(English)
