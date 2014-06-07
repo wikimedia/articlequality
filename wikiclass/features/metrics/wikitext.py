@@ -1,8 +1,10 @@
+import re
+
 import mwparserfromhell as mwp
 
-from __future__ import division
+from ...util import autovivifying
 
-REF_RE = re.compile(ur'<ref', re.I)
+REF_RE = re.compile(r'<ref', re.I)
 
 def byte_length(text): return
 
@@ -32,9 +34,9 @@ def analyze(text):
 	# Count number of links (this also extracts link inside
 	# templates, e.g. as template parameters)
 	for link in parsed_text.filter_wikilinks():
-		if re.match(ur"(file|image):", unicode(link.title), re.U|re.I):
+		if re.match(r"(file|image):", str(link.title), re.U|re.I):
 			stats['imagelinks'] += 1
-		elif re.match(ur"category:", unicode(link.title), re.U|re.I):
+		elif re.match(r"category:", str(link.title), re.U|re.I):
 			stats['categorylinks'] += 1
 		else:
 			stats['pagelinks'] += 1
@@ -44,10 +46,10 @@ def analyze(text):
 	for template in parsed_text.filter_templates():
 		stats['templates'] += 1
 		# Citation template?
-		if re.match(ur"cite", unicode(template.name), re.I):
+		if re.match(r"cite", str(template.name), re.I):
 			stats['citetemplates'] += 1
 		# is it an infobox?
-		if re.match(ur"infobox", unicode(template.name), re.I):
+		if re.match(r"infobox", str(template.name), re.I):
 			stats['infoboxes'] = 1
 	
 	stats['noncitetemplates'] = stats['templates'] - \

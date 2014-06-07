@@ -10,13 +10,13 @@ class Language:
 	
 	def filter_stopwords(self, words):
 		for word in words:
-			if word.lower() not in stopwords:
+			if word.lower() not in self.stopwords:
 				yield word
 	
-	def stem_words(self, stem):
+	def stem_words(self, words):
 		for word in words:
 			try:
-				yield stemmer(word)
+				yield stemmer.stem(word)
 			except:
 				continue
 

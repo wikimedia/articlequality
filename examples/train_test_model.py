@@ -1,22 +1,35 @@
-from mwqual import RFTextClassifier
-from mwqual import languages
+import pickle
+import sys
 
-# Construct a new classifier
-classifier = RFTextClassifier(language=languages.get('English'))
-
-# Train and test set
+try:
+    sys.path.append(".")
+    
+    from wikiclass import assessments, languages, RFTextModel
+    from wikiclass.features import WikiTextAndInfonoise
+    
+except:
+    raise
+    
+# Train and test set ("<assessment class>", "text content")
 train_set = [
-    ("C", "An '''anachronism''' (from the [[Ancient Greek|Greek]] ..."),
-    ("B", "{{Infobox|Anachronism}} An '''anachronism''' (from the  ..."),
-    ("GA", "{{Infobox|Anachronism}} An '''anachronism'''<ref>Greater ...")
+    ("An '''anachronism''' (from the [[Ancient Greek|Greek]] ...", "C"),
+    ("{{Infobox|Anachronism}} An '''anachronism''' (from the  ...", "B"),
+    ("{{Infobox|Anachronism}} An '''anachronism'''<ref>Greater ...", "GA")
 ]
 test_set = [
-    ("FA", "{{Infobox|Anachronism}}{{Cleanup|Foo}} Anachronism is ... "),
-    ("Stub", "Anachronism is people getting dressed up in old-timey ... ")
+    ("{{Infobox|Anachronism}}{{Cleanup|Foo}} Anachronism is ... ", "FA"),
+    ("Anachronism the practice of getting dressed up in old-timey ... ", "Start"),
+    ("Anachronism is people getting dressed up in old-timey ... ", "Stub")
 ]
 
-classifier.train(train_set)
+model = RFTextModel.train(
+    train_set,
+    assessments=assessments.WP10,
+    feature_extractor=WikiTextAndInfonoise(languages.get('English'))
+)
 
-results = classifier.test(test_set)
+results = model.test(test_set)
 
 print(results)
+
+pickle.dump(model, open("enwiki.rf_text_model.pkl", "w"))
