@@ -1,15 +1,9 @@
 import pickle
 import sys
 
-try:
-    sys.path.append(".")
-    
-    from wikiclass import assessments, languages, RFTextModel
-    from wikiclass.features import WikiTextAndInfonoise
-    
-except:
-    raise
-    
+from wikiclass import assessments, languages, RFTextModel
+from wikiclass.features import WikiTextAndInfonoise
+
 # Train and test set ("<assessment class>", "text content")
 train_set = [
     ("An '''anachronism''' (from the [[Ancient Greek|Greek]] ...", "C"),
