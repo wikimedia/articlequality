@@ -3,24 +3,26 @@
 
 class Model:
     
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         pass
     
     def train(self):
-        pass
+        raise NotImplementedError()
     
     def test(self):
+        raise NotImplementedError()
     
     def classify(self):
-        pass
+        raise NotImplementedError()
     
 
 class TextModel(Model):
     
-    def train(self, text_classes): pass
+    def train(self, text_classes):
+        raise NotImplementedError()
     
-    def test(self, text_classes): pass
+    def test(self, text_classes):
+        raise NotImplementedError()
     
-    def classify(self, text): pass
-    
-    
+    def classify(self, text):
+        raise NotImplementedError()

@@ -1,15 +1,10 @@
-from mwqual import RFTextClassifier
-from mwqual import languages
+from mwqual import languages, RFTextModel
 
-# Loads an RFTextClassifier from pickled model
-rf_model = pickle.load(open("enwiki.model.pkl"))
-classifier = RFTextClassifier(rf_model=rf_model,
-                              language=languages.get("English"))
+model = pickle.load(open("enwiki.rf_text_classifier.pkl"))
 
-
-# Classifies a revision based on wikitext
+# Classifies a revision of an article based on wikitext alone
 text = "An '''anachronism''' (from the [[Ancient Greek|Greek]] ἀνά ''ana'' ..."
-assessment, probs = classifier.classify(text)
+assessment, probs = model.classify(text)
 
 # Print predicted assessment class and probabilities for all classes.
 print("assessment={0}".format(assessment))
