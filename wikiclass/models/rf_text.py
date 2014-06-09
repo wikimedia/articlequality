@@ -1,11 +1,11 @@
 import logging
 
-from pandas import Categorical, DataFrame
+from pandas import Categorical, DataFrame, crosstab
 
 from sklearn.ensemble import RandomForestClassifier
 
 from .. import assessments, languages
-from ..features import FeatureExtractor, WikiTextAndInfonoise
+from ..features import FeatureExtractor, WikitextAndInfonoise
 from .model import TextModel
 
 logger = logging.getLogger("models.rf_text")
@@ -16,17 +16,17 @@ class RFTextModel(TextModel):
         
         if not hasattr(rf_model, "predict"):
             raise TypeError("rf_model is wrong type " + \
-                            "expected {0}".format(RandomForestClassifier) + \
+                            "expected {0} ".format(RandomForestClassifier) + \
                             "got {0}".format(type(rf_model)))
         else:
             self.rf_model = rf_model
         
         if not isinstance(feature_extractor, FeatureExtractor):
             raise TypeError("feature_extractor is wrong type " + \
-                            "expected {0}".format(FeatureExtractor) + \
+                            "expected {0} ".format(FeatureExtractor) + \
                             "got {0}".format(type(feature_extractor)))
         else:
-            self.feature_extractor = WikiTextAndInfonoise(language)
+            self.feature_extractor = feature_extractor
         
         # Assessments need to be sorted
         self.assessments = assessments
@@ -37,8 +37,8 @@ class RFTextModel(TextModel):
         features = self.feature_extractor.extract(text)
         features_pd = DataFrame({fn:[v] for fn, v in features.items()})
         
-        pred_class = self.rf_model.predict(features)[0]
-        prob_list = self.rf_model.predict_proba(features)[0]
+        pred_class = self.rf_model.predict(features_pd)[0]
+        prob_list = self.rf_model.predict_proba(features_pd)[0]
         
         # Classes are in alphabetical sorted order, so we use the
         # sorted list of assessment classes to build up a dictionary.
@@ -56,9 +56,9 @@ class RFTextModel(TextModel):
 
         preds = self.rf_model.predict(features)
 
-        return pd.crosstab(classes, preds,
-                           rownames=['real assessment'],
-                           colnames=['pred assessment'])
+        return crosstab(classes, preds,
+                        rownames=['real assessment'],
+                        colnames=['pred assessment'])
         
     
     @classmethod
@@ -82,16 +82,16 @@ class RFTextModel(TextModel):
         
         # Convert classes to a categorical
         ass_map = {c:i for i, c in enumerate(assessments)} # Int map
-        cl_int = [ass_map[c] for c in classes] # Convert to int
+        ass_int = [ass_map[c] for c in classes] # Convert to int
         classes_pd = DataFrame(
-                {'class': Categorical(cl_int, levels=assessments)},
-                index = list(range(0, len(cl_int)))) #
+                {'class': Categorical(ass_int, levels=assessments)},
+                index = list(range(1, len(ass_int)+1))) #
         
-        return classes_pd, features_pd
+        return features_pd, classes_pd
     
     @classmethod
     def train(cls, train_set, *,
-                   feature_extractor=WikiTextAndInfonoise(languages.get('English')),
+                   feature_extractor=WikitextAndInfonoise(languages.get('English')),
                    assessments=assessments.WP10,
                    random_state=42, criterion='gini', **kwargs):
             '''
@@ -128,7 +128,7 @@ class RFTextModel(TextModel):
             
             
             logger.info("Training the model...")
-            rf_model.fit(features, classes)
+            rf_model.fit(features, classes['class'])
             logger.info("Model training complete.")
             
             return cls(rf_model, feature_extractor, assessments)

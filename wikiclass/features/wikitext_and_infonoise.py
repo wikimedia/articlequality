@@ -4,7 +4,7 @@ from .extractor import FeatureExtractor
 from .metrics import infonoise, wikitext
 
 
-class WikiTextAndInfonoise(FeatureExtractor):
+class WikitextAndInfonoise(FeatureExtractor):
     
     FEATURES = ['loglength', 'logreferences', 'logpagelinks',
                 'numimageslength', 'num_citetemplates',
