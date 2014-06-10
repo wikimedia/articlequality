@@ -1,5 +1,7 @@
 
+from collections import namedtuple
 
+ModelFile = namedtuple("ModelFile", ['class_name', 'args', 'kwargs'])
 
 class Model:
     

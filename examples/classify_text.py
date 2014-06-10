@@ -3,7 +3,7 @@ import sys;sys.path.insert(0, ".")
 
 from wikiclass import RFTextModel
 
-model = pickle.load(open("enwiki.rf_text_model.pkl", "rb"))
+model = RFTextModel.from_file(open("enwiki.rf_text.model", "rb"))
 
 # Classifies a revision of an article based on wikitext alone
 text = "An '''anachronism''' (from the [[Ancient Greek|Greek]] ..."
