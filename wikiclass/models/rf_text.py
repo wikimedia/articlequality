@@ -1,4 +1,4 @@
-import logging
+import logging, pickle
 
 from pandas import Categorical, DataFrame, crosstab
 
@@ -6,7 +6,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 from .. import assessments, languages
 from ..features import FeatureExtractor, WikitextAndInfonoise
-from .model import TextModel
+from .model import TextModel, ModelFile
 
 logger = logging.getLogger("models.rf_text")
 
@@ -93,7 +93,7 @@ class RFTextModel(TextModel):
     def train(cls, train_set, *,
                    feature_extractor=WikitextAndInfonoise(languages.get('English')),
                    assessments=assessments.WP10,
-                   random_state=42, criterion='gini', **kwargs):
+                   random_state=None, criterion='entropy', **kwargs):
             '''
             Trains a Random Forrest classifier based on a set of texts and
             manually applied assessment classes.
@@ -111,7 +111,8 @@ class RFTextModel(TextModel):
                 samples_leaf : ???
                     ???
                 random_state : `int`
-                    ???
+                    A random seed.  Setting this seed should result in
+                    the construction of the same model from the same dataset.
                 cirterion : `str`
                     ???
             '''
@@ -132,3 +133,21 @@ class RFTextModel(TextModel):
             logger.info("Model training complete.")
             
             return cls(rf_model, feature_extractor, assessments)
+        
+    def to_file(self, f):
+        args = (self.rf_model, self.feature_extractor, self.assessments)
+        kwargs = {}
+        model_file = ModelFile(self.__class__.__name__, args, kwargs)
+        
+        pickle.dump(model_file, f)
+    
+    @classmethod
+    def from_file(cls, f):
+        model_file = pickle.load(f)
+        class_name, args, kwargs = model_file
+        
+        if class_name != cls.__name__:
+            raise TypeError("Loading {0}. ".format(class_name) + \
+                            "Expected {0}.".format(cls.__name__))
+        else:
+            return cls(*args, **kwargs)

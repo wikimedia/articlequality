@@ -29,4 +29,4 @@ results = model.test(test_set)
 
 print(results)
 
-pickle.dump(model, open("enwiki.rf_text_model.pkl", "wb"))
+model.to_file(open("enwiki.rf_text.model", "wb"))
