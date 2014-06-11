@@ -1,5 +1,11 @@
+# Data files
+*.tsv
+*.bz2
+
 # Model files!
 *.model
+*.model.*
+*.pkl
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
