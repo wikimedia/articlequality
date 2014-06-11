@@ -5,7 +5,7 @@ from pandas import Categorical, DataFrame, crosstab
 from sklearn.ensemble import RandomForestClassifier
 
 from .. import assessments, languages
-from ..features import FeatureExtractor, WikitextAndInfonoise
+from ..features import TextFeatureExtractor, WikitextAndInfonoise
 from .model import TextModel, ModelFile
 
 logger = logging.getLogger("models.rf_text")
@@ -13,6 +13,19 @@ logger = logging.getLogger("models.rf_text")
 class RFTextModel(TextModel):
     
     def __init__(self, rf_model, feature_extractor, assessments):
+        """
+        Constructs a trained RFTextModel.  It's uncommon to need to make use of
+        this methid.  You probably want to call :func:`train` or
+        :func:`from_file` instade.
+        
+        :Parameters:
+            rf_model : `sklearn.ensemble.RandomForestClassifier`
+                A trained RFClassifier built on features from feature_extractor
+            feature_extractor : `wikiclass.features.TextFeatureExtractor`
+                A feature extractor for extracting features from text
+            assessments : `list` of `str`
+                A sorted (lowest to highest) list of distinct quality classes
+        """
         
         if not hasattr(rf_model, "predict"):
             raise TypeError("rf_model is wrong type " + \
@@ -21,9 +34,9 @@ class RFTextModel(TextModel):
         else:
             self.rf_model = rf_model
         
-        if not isinstance(feature_extractor, FeatureExtractor):
-            raise TypeError("feature_extractor is wrong type " + \
-                            "expected {0} ".format(FeatureExtractor) + \
+        if not isinstance(feature_extractor, TextFeatureExtractor):
+            raise TypeError("feature_extractor is wrong type.  " + \
+                            "Expected {0} ".format(TextFeatureExtractor) + \
                             "got {0}".format(type(feature_extractor)))
         else:
             self.feature_extractor = feature_extractor
@@ -56,7 +69,7 @@ class RFTextModel(TextModel):
 
         preds = self.rf_model.predict(features)
 
-        return crosstab(classes, preds,
+        return crosstab(classes['class'], preds,
                         rownames=['real assessment'],
                         colnames=['pred assessment'])
         
@@ -93,8 +106,8 @@ class RFTextModel(TextModel):
     def train(cls, train_set, *,
                    feature_extractor=WikitextAndInfonoise(languages.get('English')),
                    assessments=assessments.WP10,
-                   random_state=None, criterion='entropy', **kwargs):
-            '''
+                   criterion='entropy', **kwargs):
+            """
             Trains a Random Forrest classifier based on a set of texts and
             manually applied assessment classes.
             
@@ -103,19 +116,13 @@ class RFTextModel(TextModel):
                     A set of texts and assessment classes to train a model over.
                 feature_extractor : :class:`~wikiclass.models.TextFeatureExtractor`
                     A text feature extractor
-                assessments : `list` of `str
+                assessments : `list` of `str`
                     A list of assessment classes ordered from highest to lowest
                     quality.
-                estimators : `int`
-                    ???
-                samples_leaf : ???
-                    ???
-                random_state : `int`
-                    A random seed.  Setting this seed should result in
-                    the construction of the same model from the same dataset.
-                cirterion : `str`
-                    ???
-            '''
+                **kwargs : dict
+                    Additional arguments to
+                    `sklearn.ensemble.RandomForestClassifier`
+            """
             
             logger.info('Extracting features...')
             features, classes =  cls._prepare_observations(feature_extractor,
@@ -123,8 +130,7 @@ class RFTextModel(TextModel):
                                                            assessments)
             
             logger.info('Constructing an RF model.')
-            rf_model = RandomForestClassifier(random_state=random_state,
-                                              criterion=criterion,
+            rf_model = RandomForestClassifier(criterion=criterion,
                                               **kwargs)
             
             
