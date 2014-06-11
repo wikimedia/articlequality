@@ -1,10 +1,10 @@
 from math import log2
 
-from .extractor import FeatureExtractor
+from .extractor import TextFeatureExtractor
 from .metrics import infonoise, wikitext
 
 
-class WikitextAndInfonoise(FeatureExtractor):
+class WikitextAndInfonoise(TextFeatureExtractor):
     
     FEATURES = ['loglength', 'logreferences', 'logpagelinks',
                 'numimageslength', 'num_citetemplates',
