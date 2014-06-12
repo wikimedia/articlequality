@@ -11,7 +11,8 @@ articles.  For more information, see `the documentation
 * **Models:** `<https://github.com/halfak/Wiki-Class/tree/master/models>`_
 * **Documentation:** `<http://pythonhosted.org/wikiclass>`_
 
-:Authors:
+Authors
+-------
     Aaron Halfaker
         * ahalfaker@wikimedia.org
         * `<http://halfaker.info>`_
