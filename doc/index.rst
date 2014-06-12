@@ -41,6 +41,7 @@ Model building
 .. code-block:: python
     
     from wikiclass.models import RFTextModel
+    from wikiclass import assessments
     
     # Gather a training and test set
     train_set = [
