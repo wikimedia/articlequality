@@ -11,21 +11,21 @@ from .model import TextModel, ModelFile
 logger = logging.getLogger("models.rf_text")
 
 class RFTextModel(TextModel):
+    """
+    Constructs a trained RFTextModel.  It's uncommon to need to make use of
+    this methid.  You probably want to call :func:`train` or
+    :func:`from_file` instade.
+    
+    :Parameters:
+        rf_model : `sklearn.ensemble.RandomForestClassifier`
+            A trained RFClassifier built on features from feature_extractor
+        feature_extractor : `wikiclass.features.TextFeatureExtractor`
+            A feature extractor for extracting features from text
+        assessments : `list` of `str`
+            A sorted (lowest to highest) list of distinct quality classes
+    """
     
     def __init__(self, rf_model, feature_extractor, assessments):
-        """
-        Constructs a trained RFTextModel.  It's uncommon to need to make use of
-        this methid.  You probably want to call :func:`train` or
-        :func:`from_file` instade.
-        
-        :Parameters:
-            rf_model : `sklearn.ensemble.RandomForestClassifier`
-                A trained RFClassifier built on features from feature_extractor
-            feature_extractor : `wikiclass.features.TextFeatureExtractor`
-                A feature extractor for extracting features from text
-            assessments : `list` of `str`
-                A sorted (lowest to highest) list of distinct quality classes
-        """
         
         if not hasattr(rf_model, "predict"):
             raise TypeError("rf_model is wrong type " + \
@@ -46,7 +46,17 @@ class RFTextModel(TextModel):
     
     
     def classify(self, text):
+        """
+        Classifies revision text.
         
+        :Parameters:
+            text : str
+                Revision text (wikitext)
+            
+        :Returns:
+            A tuple of two values: (<predicted_class> : `str`,
+            <class_probabilities> : `dict`)
+        """
         features = self.feature_extractor.extract(text)
         features_pd = DataFrame({fn:[v] for fn, v in features.items()})
         
@@ -62,7 +72,11 @@ class RFTextModel(TextModel):
         
     
     def test(self, test_set):
-        
+        """
+        Runs a test set of (<class> : str, <text> : str) pairs through the model
+        and returns a cross-tabulation of the resulting predicted assessment
+        classes.
+        """
         features, classes = \
             self._prepare_observations(self.feature_extractor, test_set,
                                        self.assessments)
@@ -108,8 +122,8 @@ class RFTextModel(TextModel):
                    assessments=assessments.WP10,
                    criterion='entropy', **kwargs):
             """
-            Trains a Random Forrest classifier based on a set of texts and
-            manually applied assessment classes.
+            Constructs a trained a Random Forrest classifier based on a set of
+            texts and manually applied assessment classes.
             
             :Parameters:
                 train_set : `iterable` of (text:`str`, class:`str`)
@@ -119,6 +133,10 @@ class RFTextModel(TextModel):
                 assessments : `list` of `str`
                     A list of assessment classes ordered from highest to lowest
                     quality.
+                citerion : `str`
+                    The function to measure the quality of a split. Supported
+                    criteria are "gini" for the Gini impurity and "entropy" for
+                    the information gain.
                 **kwargs : dict
                     Additional arguments to
                     `sklearn.ensemble.RandomForestClassifier`
@@ -141,6 +159,14 @@ class RFTextModel(TextModel):
             return cls(rf_model, feature_extractor, assessments)
         
     def to_file(self, f):
+        """
+        Writes the state of the model out to a file.
+        
+        :Parameters:
+            f : `file-like-object`
+                The file to write the model to
+            
+        """
         args = (self.rf_model, self.feature_extractor, self.assessments)
         kwargs = {}
         model_file = ModelFile(self.__class__.__name__, args, kwargs)
@@ -149,6 +175,15 @@ class RFTextModel(TextModel):
     
     @classmethod
     def from_file(cls, f):
+        """
+        Constructs the model in from a previously written model file.
+        
+        :Parameters:
+            f : `file-like-object`
+                The file to read the model's state from
+        
+        
+        """
         model_file = pickle.load(f)
         class_name, args, kwargs = model_file
         
