@@ -2,9 +2,16 @@ from math import log2
 
 from .extractor import TextFeatureExtractor
 from .metrics import infonoise, wikitext
+from ..languages import Language
 
 
 class WikitextAndInfonoise(TextFeatureExtractor):
+    """
+    Constructs a wikitext and information noise feature extractor.
+    
+    :Parameters:
+        language : :class:`~wikiclass.languages.Language`
+    """
     
     FEATURES = ['loglength', 'logreferences', 'logpagelinks',
                 'numimageslength', 'num_citetemplates',
@@ -12,17 +19,20 @@ class WikitextAndInfonoise(TextFeatureExtractor):
                 'infonoisescore', 'hasinfobox',
                 'lvl2headings', 'lvl3headings']
     """
-    Order of the columns used when _training_ the Random Forest
-    classifier. Must be used when predicting otherwise they
-    get mapped wrong and everything looks like a stub.
+    Order of the columns
     """
     
     def __init__(self, language):
+        if not isinstance(language, Language):
+            raise TypeError("Expected {0}".format(Language) + \
+                            "got {0}.".format(type(language)))
+        
         self.language = language
     
-    
     def extract(self, text):
-        
+        """
+        Extracts a set of features from ``text``.
+        """
         infonoisescore = infonoise.score(text, self.language)
         
         stats = wikitext.analyze(text)

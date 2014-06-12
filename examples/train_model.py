@@ -2,7 +2,8 @@ import pickle
 import sys; sys.path.insert(0, ".")
 import csv; csv.field_size_limit(sys.maxsize)
 
-from wikiclass import assessments, languages, RFTextModel
+from wikiclass import assessments, languages
+from wikiclass.models import RFTextModel
 from wikiclass.features import WikitextAndInfonoise
 
 # Train and test set ("<assessment class>", "text content")

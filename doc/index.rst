@@ -25,7 +25,7 @@ Model from file
 ---------------
 .. code-block:: python
     
-    from wikiclass import RFTextModel
+    from wikiclass.models import RFTextModel
     
     model = RFTextModel.from_file(open("enwiki.rf_text.model", "rb"))
     
@@ -39,7 +39,7 @@ Model building
 --------------
 .. code-block:: python
     
-    from wikiclass import RFTextModel
+    from wikiclass.models import RFTextModel
     
     # Gather a training and test set
     train_set = [
@@ -68,22 +68,26 @@ Model building
 
 Modules
 =======
-:ref:`<wikiclass.models>`
+:ref:`wikiclass.models <wikiclass.models>`
     A set of classification models that can be trained and used to classify
     articles.
     
-    * :class:`~wikiclass.models.RFTextModel` -- A random forrest classifier that
-    extracts features from article text.
+    * :class:`~wikiclass.models.RFTextModel` -- A random forrest classifier that extracts features from article text.
 
-:ref:`<wikiclass.features>`
+:ref:`wikiclass.features <wikiclass.features>`
     A set of feature extractors used to organize a set of features for use in
     model training and classification.
     
-    * :class:`~wikiclass.features.WikitextAndInfonoise` -- A text feature
-    extractor that gathers wiki markup features and an information-based
-    measure.
+    * :class:`~wikiclass.features.WikitextAndInfonoise` -- A text feature extractor that gathers wiki markup features and an information-based measure.
 
-
+:ref:`wikiclass.languages <wikiclass.languages>`
+    Some :class:`~wikiclass.features.FeatureExtractor` s require information
+    about the language being processed.  This module contains basic language
+    info for common languages.
+    
+    * :func:`~wikiclass.languages.get`, gets a :class:`~wikiclass.languages.Language` based on a name.  Currently supported languages include:
+        * ``"English"``
+    * :func:`~wikiclass.languages.register`, registers a new :class:`~wikiclass.languages.Language` for access from :func:`~wikiclass.languages.get`.
 
 
 Authors

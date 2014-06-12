@@ -2,7 +2,10 @@
 LANGUAGES = {}
 
 class Language:
-    
+    """
+    An abstract language class.  Provides utilities for operating on text
+    of a specific language.  
+    """
     def __init__(self, name, stopwords, stemmer):
         self.name = str(name)
         self.stopwords = set(stopwords)
@@ -21,7 +24,21 @@ class Language:
                 continue
 
 def get(lang_name):
+    """
+    Gets a registered :class:`Language` by it's name.
+    
+    :Parameters:
+        lang_name : str
+            Language name
+    """
     return LANGUAGES[lang_name]
 
 def register(language):
+    """
+    Registers a new language.
+    
+    :Parameters:
+        language : :class:`Language`
+            A language to register.
+    """
     LANGUAGES[language.name] = language

@@ -2,7 +2,7 @@ import pickle
 import sys;sys.path.insert(0, ".")
 from pprint import pprint
 
-from wikiclass import RFTextModel
+from wikiclass.models import RFTextModel
 
 model = RFTextModel.from_file(open("enwiki.rf_text.model", "rb"))
 
