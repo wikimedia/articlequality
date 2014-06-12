@@ -13,6 +13,7 @@ articles.
 
 * **Install:** ``pip install wikiclass``
 * **Models:** `<https://github.com/halfak/Wiki-Class/tree/master/models>`_
+* **Repo:** `<https://github.com/halfak/Wiki-Class>`_
 
 Basic usage
 ===========
