@@ -21,7 +21,7 @@ setup(
     install_requires = requirements('requirements.txt'),
     classifiers=[
         "Development Status :: 4 - Beta",
-        "Topic :: Software Development :: Libraries :: Python Modules"
+        "Topic :: Software Development :: Libraries :: Python Modules",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
         "Intended Audience :: Developers",
