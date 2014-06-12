@@ -97,7 +97,7 @@ Authors
     Aaron Halfaker
         * ahalfaker@wikimedia.org
         * `<http://halfaker.info>`_
-    Morten Warcke-Wang
+    Morten Warncke-Wang
         * `<http://www-users.cs.umn.edu/~morten>`_
 
 
