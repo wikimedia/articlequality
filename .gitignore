@@ -2,8 +2,7 @@
 *.tsv
 *.bz2
 
-# Model files!
-*.model
+# Old model files!
 *.model.*
 *.pkl
 
@@ -59,4 +58,7 @@ coverage.xml
 *.pot
 
 # Sphinx documentation
-docs/_build/
+_build
+_static
+_templates
+_build/*
