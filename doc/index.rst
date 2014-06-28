@@ -44,14 +44,15 @@ Model building
     from wikiclass import assessments
     
     # Gather a training and test set
+    #Both train_set and test_set are a list of tuples who are ("article text", "classification")
     train_set = [
-        ("Stub", "Some article text"),
-        ("Start", "Some more article text<ref>news</ref>.")
+        ("Some article text", "Stub"),
+        ("Some more article text<ref>news</ref>.", "Start")
         # ...
     ]
     test_set = [
-        ("C", "The Lorem Ipsum dolored the sit amet."),
-        ("FA", "'''Lorem Ipsum''', sit amet the dolor amer. {{InfoBox|...}}")
+        ("The Lorem Ipsum dolored the sit amet.", "C"),
+        ("'''Lorem Ipsum''', sit amet the dolor amer. {{InfoBox|...}}", "FA")
         # ...
     ]
     
