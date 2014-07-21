@@ -28,7 +28,7 @@ def score(text, language=languages.get('English')):
 	
 	# Tokenize words
 	words = nltk.tokenize.wordpunct_tokenize(clean_text)
-	
+
 	# Filter stopwords
 	nonstops = list(language.filter_stopwords(words))
 	
@@ -36,10 +36,14 @@ def score(text, language=languages.get('English')):
 	stemmed_nonstops = list(language.stem_words(words))
 	
 	logging.info("length={l}, ".format(l=len(text)) + \
-	             "words={w}, ".format(w=len(words)) + \
-	             "non-stopwords={nsw}".format(nsw=len(nonstops)) + \
-	             "stemmed words={sw}, ".format(sw=len(stemmed_nonstops)))
+                     "words={w}, ".format(w=len(words)) + \
+                     "non-stopwords={nsw}".format(nsw=len(nonstops)) + \
+                     "stemmed words={sw}, ".format(sw=len(stemmed_nonstops)))
 	
 	# Calculate info noise
 	# 1.0 - len of filtered words/total words
-	return 1 - (len(stemmed_nonstops)/len(words))
+        # but some pages can have zero words (all mark-up)
+	if len(words) == 0:
+	    return 1
+	else:
+	    return 1 - (len(stemmed_nonstops)/len(words))
