@@ -1,5 +1,5 @@
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
@@ -16,7 +16,7 @@ setup(
     description = ("A library for performing automatic detection of assessment classes of Wikipedia articles."),
     license = "MIT",
     url = "https://github.com/halfak/Wiki-Class",
-    py_modules = ['wikiclass'],
+    packages = find_packages(),
     long_description = read('README.rst'),
     install_requires = requirements('requirements.txt'),
     classifiers=[
