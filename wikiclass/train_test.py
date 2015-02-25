@@ -3,7 +3,9 @@ Trains and tests a classifier.
 
 Usage:
     train_test -h | --help
-    train_test <model> <features> [--language=<module>][--values-labels=<path>]
+    train_test <model> <features> [--language=<module>]
+                                  [--values-labels=<path>]
+                                  [--boolean-labels]
 
 Options:
     -h --help                Prints this documentation
@@ -13,6 +15,7 @@ Options:
     --language=<module>      Classpath to a Language
     --values-labels=<path>   Path to a file containing feature values and labels
                              [default: <stdin>]
+    --boolean-labels         Interprets the labels as boolean values.
 """
 import pprint
 import random
@@ -22,23 +25,6 @@ import docopt
 
 from .util import import_from_path
 
-
-def read_feature_scores(f, features):
-    for line in f:
-        parts = line.strip().split("\t")
-        values = parts[:-1]
-        score = parts[-1]
-        
-        feature_values = []
-        for feature, value in zip(features, values):
-            
-            if feature.returns == bool:
-                feature_values.append(value == "True")
-            else:
-                feature_values.append(feature.returns(value))
-            
-        
-        yield feature_values, score == "True"
 
 def main():
     args = docopt.docopt(__doc__)
@@ -58,18 +44,40 @@ def main():
     else:
         values_labels_file = open(args['--values-labels'], 'r')
     
-    feature_scores = read_feature_scores(values_labels_file, features)
+    boolean_labels = args['--boolean-labels']
     
-    run(feature_scores, model)
-
-def run(feature_scores, model):
+    feature_labels = read_value_labels(values_labels_file, features,
+                                       boolean_labels)
     
-    feature_scores = list(feature_scores)
-    random.shuffle(feature_scores)
+    run(feature_labels, model)
 
-    test_set_size = int(0.6*len(feature_scores))
-    test_set = feature_scores[:test_set_size]
-    train_set = feature_scores[test_set_size:]
+def read_value_labels(f, features, boolean_labels):
+    for line in f:
+        parts = line.strip().split("\t")
+        values = parts[:-1]
+        label = parts[-1]
+        
+        if boolean_labels:
+            label = label == "True"
+        
+        feature_values = []
+        for feature, value in zip(features, values):
+            
+            if feature.returns == bool:
+                feature_values.append(value == "True")
+            else:
+                feature_values.append(feature.returns(value))
+            
+        yield feature_values, label
+
+def run(feature_labels, model):
+    
+    feature_labels = list(feature_labels)
+    random.shuffle(feature_labels)
+
+    test_set_size = int(0.6*len(feature_labels))
+    test_set = feature_labels[:test_set_size]
+    train_set = feature_labels[test_set_size:]
     
     model.train(train_set)
     
