@@ -1,0 +1,4 @@
+#!/usr/bin/env python3
+from wikiclass import extract_features
+
+extract_features.main()

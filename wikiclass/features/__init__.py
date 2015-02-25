@@ -1,2 +1,6 @@
-from .extractor import FeatureExtractor, TextFeatureExtractor
-from .wikitext_and_infonoise import WikitextAndInfonoise
+from .char_length import *
+from .headings import *
+from .infonoise import *
+from .links import *
+from .references import *
+from .templates import *
