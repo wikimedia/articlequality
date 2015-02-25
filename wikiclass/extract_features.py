@@ -27,6 +27,7 @@ Options:
 """
 import logging
 import sys
+import traceback
 
 import docopt
 from mw import api
@@ -53,25 +54,29 @@ def main():
     
     extractor = APIExtractor(api.Session(args['--api']), language=language)
     
-    verbose = bool(args['--verbose'])
+    if args['--verbose']: logging.basicConfig(level=logging.DEBUG)
     
-    run(rev_labels, features, extractor, verbose)
+    run(rev_labels, features, extractor)
 
 def read_rev_labels(f):
     for line in f:
         rev_id, label = line.strip().split('\t')
         yield int(rev_id), label
 
-def run(rev_labels, features, extractor, verbose):
-    
-    if verbose:
-        logging.basicConfig(level=logging.DEBUG)
+def run(rev_labels, features, extractor):
     
     for rev_id, label in rev_labels:
         
-        feature_values = extractor.extract(rev_id, features)
-        
-        print("\t".join(encode(v) for v in list(feature_values) + [label]))
+        try:
+            feature_values = extractor.extract(rev_id, features)
+            
+            print("\t".join(encode(v) for v in list(feature_values) + [label]))
+        except KeyboardInterrupt as e:
+            sys.stderr.write("^C detected.  Shutting down.\n")
+            break
+        except Exception as e:
+            sys.stderr.write(traceback.format_exc() + "\n")
+            
 
 def encode(val, none_val="NULL"):
     if val == None:
