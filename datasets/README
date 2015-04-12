@@ -1,0 +1,6 @@
+English Wikipedia Training and Test Dataset
+===========================================
+
+The dataset we used to train our English Wikipedia Random Forest classifier
+(RFContentModel) is released as a separate dataset on Figshare, and can
+be downloaded from http://dx.doi.org/10.6084/m9.figshare.1375406

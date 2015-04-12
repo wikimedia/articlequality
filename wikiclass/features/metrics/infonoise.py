@@ -31,19 +31,21 @@ def score(text, language=languages.get('English')):
 
 	# Filter stopwords
 	nonstops = list(language.filter_stopwords(words))
-	
+
 	# Stem words
-	stemmed_nonstops = list(language.stem_words(words))
+	stemmed_nonstops = list(language.stem_words(nonstops))
 	
 	logging.info("length={l}, ".format(l=len(text)) + \
                      "words={w}, ".format(w=len(words)) + \
-                     "non-stopwords={nsw}".format(nsw=len(nonstops)) + \
+                     "non-stopwords={nsw}, ".format(nsw=len(nonstops)) + \
                      "stemmed words={sw}, ".format(sw=len(stemmed_nonstops)))
 	
 	# Calculate info noise
-	# 1.0 - len of filtered words/total words
+	# 1.0 - 
         # but some pages can have zero words (all mark-up)
-	if len(words) == 0:
-	    return 1
+	if len(text) == 0:
+		return 1
 	else:
-	    return 1 - (len(stemmed_nonstops)/len(words))
+		infonoise = 1.0 - (1.0*len(' '.join(stemmed_nonstops))/len(text.encode('utf-8')))
+		logging.info("infonoise={0}".format(infonoise))
+		return infonoise
