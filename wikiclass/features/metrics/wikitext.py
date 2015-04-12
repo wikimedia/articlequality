@@ -12,7 +12,6 @@ def filter_markup(text):
 	parsed_text = mwp.parse(text)
 	return parsed_text.strip_code(normalize=True)
 
-
 def analyze(text):
 	
 	stats = autovivifying.Dict(vivifier=lambda k:0)
@@ -23,13 +22,16 @@ def analyze(text):
 	stats['references'] = len(REF_RE.findall(text))
 	
 	parsed_text = mwp.parse(text)
+
+	# Approximate length of readable content
+	stats['content_length'] = len(parsed_text.strip_code(normalize=True))
 	
 	# Count number of headings
 	for heading in parsed_text.filter_headings():
-		if u'===' in heading:
-			stats['headings_lvl2'] += 1
-		else:
+		if '===' in heading:
 			stats['headings_lvl3'] += 1
+		else:
+			stats['headings_lvl2'] += 1
 
 	# Count number of links (this also extracts link inside
 	# templates, e.g. as template parameters)

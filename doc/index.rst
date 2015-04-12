@@ -26,9 +26,9 @@ Model from file
 ---------------
 .. code-block:: python
     
-    from wikiclass.models import RFTextModel
+    from wikiclass.models import RFContentModel
     
-    model = RFTextModel.from_file(open("enwiki.rf_text.model", "rb"))
+    model = RFContentModel.from_file(open("enwiki.rf_content.model", "rb"))
     
     assessment, probabilities = model.classify("Some article text")
     
@@ -40,7 +40,7 @@ Model building
 --------------
 .. code-block:: python
     
-    from wikiclass.models import RFTextModel
+    from wikiclass.models import RFContentModel
     from wikiclass import assessments
     
     # Gather a training and test set
@@ -57,7 +57,7 @@ Model building
     ]
     
     # Train a model
-    model = RFTextModel.train(
+    model = RFContentModel.train(
         train_set,
         assessments=assessments.WP10
     )
@@ -67,7 +67,7 @@ Model building
     print(results)
     
     # Write the model to disk for reuse.
-    model.to_file(open("enwiki.rf_text.model", "wb"))
+    model.to_file(open("enwiki.rf_content.model", "wb"))
 
 Modules
 =======
@@ -75,11 +75,15 @@ Modules
     A set of classification models that can be trained and used to classify
     articles.
     
+    * :class:`~wikiclass.models.RFContentModel` -- A random forrest classifier that extracts features from article text with an approximation of readable content.
+
     * :class:`~wikiclass.models.RFTextModel` -- A random forrest classifier that extracts features from article text.
 
 :ref:`wikiclass.features <wikiclass.features>`
     A set of feature extractors used to organize a set of features for use in
     model training and classification.
+
+    * :class:`~wikiclass.features.ContentAndInfonoise` -- A text feature extractor that gathers wiki markup features and an information-based measure.
     
     * :class:`~wikiclass.features.WikitextAndInfonoise` -- A text feature extractor that gathers wiki markup features and an information-based measure.
 
@@ -101,6 +105,14 @@ Authors
     Morten Warncke-Wang
         * `<http://www-users.cs.umn.edu/~morten>`_
 
+Research papers
+===============
+
+    This library is based upon the research published in the following papers:
+
+    * Warncke-Wang, M., Cosley, D., and Riedl, J. "Tell Me More: An Actionable Quality Model for Wikipedia", WikiSym 2013 `<http://www-users.cs.umn.edu/~morten/publications/wikisym2013-tellmemore.pdf>`_
+
+    * Warncke-Wang, M., Ayukaev, V. R., Hecht, B., and Terveen, L. "The Success and Failure of Quality Improvement Projects in Peer Production Communities", CSCW 2015 `<http://www-users.cs.umn.edu/~morten/publications/cscw2015-improvementprojects.pdf>`_
 
 
 Indices and tables

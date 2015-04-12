@@ -5,14 +5,14 @@ from pandas import Categorical, DataFrame, crosstab
 from sklearn.ensemble import RandomForestClassifier
 
 from .. import assessments, languages
-from ..features import TextFeatureExtractor, WikitextAndInfonoise
+from ..features import TextFeatureExtractor, ContentAndInfonoise
 from .model import TextModel, ModelFile
 
-logger = logging.getLogger("models.rf_text")
+logger = logging.getLogger("models.rf_content")
 
-class RFTextModel(TextModel):
+class RFContentModel(TextModel):
     """
-    Constructs a trained RFTextModel.  It's uncommon to need to make use of
+    Constructs a trained RFContentModel.  It's uncommon to need to make use of
     this method.  You probably want to call :func:`train` or
     :func:`from_file` instead.
     
@@ -60,7 +60,7 @@ class RFTextModel(TextModel):
         features = self.feature_extractor.extract(text)
         features_pd = DataFrame({fn:[v] for fn, v in features.items()})
         
-        pred_class = self.rf_model.predict(features_pd)[0]
+        pred_class = self.assessments[self.rf_model.predict(features_pd)[0]]
         prob_list = self.rf_model.predict_proba(features_pd)[0]
         
         # Classes are in alphabetical sorted order, so we use the
@@ -111,14 +111,15 @@ class RFTextModel(TextModel):
         ass_map = {c:i for i, c in enumerate(assessments)} # Int map
         ass_int = [ass_map[c] for c in classes] # Convert to int
         classes_pd = DataFrame(
-                {'class': Categorical(ass_int, levels=assessments)},
+                {'class': Categorical(ass_int,
+                                      categories=ass_map.values())},
                 index = list(range(1, len(ass_int)+1))) #
         
         return features_pd, classes_pd
     
     @classmethod
     def train(cls, train_set, *,
-                   feature_extractor=WikitextAndInfonoise(languages.get('English')),
+                   feature_extractor=ContentAndInfonoise(languages.get('English')),
                    assessments=assessments.WP10,
                    criterion='entropy', **kwargs):
             """

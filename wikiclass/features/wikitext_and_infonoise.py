@@ -1,4 +1,4 @@
-from math import log2
+from math import log
 
 from .extractor import TextFeatureExtractor
 from .metrics import infonoise, wikitext
@@ -39,12 +39,12 @@ class WikitextAndInfonoise(TextFeatureExtractor):
         
         features = {
             "infonoisescore": infonoisescore,
-            "loglength": log2(stats['byte_length']),
-            "logreferences": log2(stats['log_references']+1),
-            "logpagelinks": log2(stats['log_pagelinks']+1),
+            "loglength": log(stats['byte_length'], 2),
+            "logreferences": log(stats['log_references']+1, 2),
+            "logpagelinks": log(stats['log_pagelinks']+1, 2),
             "numimageslength": float(stats['imagelinks'])/float(stats['byte_length']),
             "num_citetemplates": stats['citetemplates'],
-            "lognoncitetemplates": log2(stats['noncitetemplates']+1),
+            "lognoncitetemplates": log(stats['noncitetemplates']+1, 2),
             "num_categories": stats['num_categorylinks'],
             "hasinfobox": stats['infoboxes'] >= 1,
             "lvl2headings": stats['num_headings_lvl2'],

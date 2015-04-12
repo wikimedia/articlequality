@@ -19,7 +19,7 @@ class Language:
     def stem_words(self, words):
         for word in words:
             try:
-                yield stemmer.stem(word)
+                yield self.stemmer.stem(word)
             except:
                 continue
 
