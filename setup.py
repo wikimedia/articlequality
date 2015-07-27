@@ -1,5 +1,7 @@
 import os
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
+
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
@@ -17,6 +19,11 @@ setup(
     license = "MIT",
     url = "https://github.com/halfak/Wiki-Class",
     packages = find_packages(),
+    entry_points = {
+        'console_scripts': [
+            'wikiclass=wikiclass.wikiclass:main'
+        ],
+    },
     long_description = read('README.rst'),
     install_requires = requirements('requirements.txt'),
     classifiers=[

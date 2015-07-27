@@ -26,14 +26,24 @@ Model from file
 ---------------
 .. code-block:: python
     
-    from wikiclass.models import RFTextModel
-    
-    model = RFTextModel.from_file(open("enwiki.rf_text.model", "rb"))
-    
-    assessment, probabilities = model.classify("Some article text")
-    
-    print("I'm about {0}% ".format(probabilities[assessment]*100) + \
-          "sure that this should be classified {0}".format(assessment))
+from mw import api
+from revscoring.scorers import Scorer
+from revscoring.extractors import APIExtractor
+from revscoring.languages import english
+from wikiclass.scorers import RFModel
+
+model = RFModel.load(open("enwiki.rf_text.model", "rb"))
+extractor = APIExtractor(api.Session("https://en.wikipedia.org/w/api.php"),
+                         language=english)
+
+scorer = Scorer({"wikiclass": model}, extractor)
+score_doc = scorer.score(639744702)
+
+prediction = score_doc['wikiclass']['prediction']
+probability = score_doc['wikiclass']['probability'][prediction]
+
+print("I'm about {0}% ".format(probability*100) + \
+      "sure that this should be classified {0}".format(prediction))
     
 
 Model building
