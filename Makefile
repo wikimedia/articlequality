@@ -1,23 +1,22 @@
 datasets/enwiki.observations.first_labelings.20150602.tsv:
 	wikilabels extract_labelings \
-		/mnt/xmldumps/public/enwiki/20150602/enwiki-20150602-pages-meta-history*.xml*.bz2 \
-		--extractor=enwiki > \
+		/mnt/xmldumps/public/enwiki/20150602/enwiki-20150602-pages-meta-history*.xml*.bz2 > \
 	datasets/enwiki.observations.first_labelings.20150602.tsv
 
 datasets/enwiki.observations.first_labelings.30k.tsv: \
 		datasets/enwiki.first_labelings.20150602.tsv
 	( \
-		grep -P '"label": "Stub"' datasets/enwiki.first_labelings.20150602.tsv | \
+		grep -P '"label": "stub"' datasets/enwiki.first_labelings.20150602.tsv | \
 		shuf -n 5000; \
-		grep -P '"label": "Start"' datasets/enwiki.first_labelings.20150602.tsv | \
+		grep -P '"label": "start"' datasets/enwiki.first_labelings.20150602.tsv | \
 		shuf -n 5000; \
-		grep -P '"label": "C"' datasets/enwiki.first_labelings.20150602.tsv | \
+		grep -P '"label": "c"' datasets/enwiki.first_labelings.20150602.tsv | \
 		shuf -n 5000; \
-		grep -P '"label": "B"' datasets/enwiki.first_labelings.20150602.tsv | \
+		grep -P '"label": "b"' datasets/enwiki.first_labelings.20150602.tsv | \
 		shuf -n 5000; \
-		grep -P '"label": "GA"' datasets/enwiki.first_labelings.20150602.tsv | \
+		grep -P '"label": "ga"' datasets/enwiki.first_labelings.20150602.tsv | \
 		shuf -n 5000; \
-		grep -P '"label": "FA"' datasets/enwiki.first_labelings.20150602.tsv | \
+		grep -P '"label": "fa"' datasets/enwiki.first_labelings.20150602.tsv | \
 		shuf -n 5000 \
 	) | \
 	shuf >
