@@ -1,10 +1,13 @@
+import sys
+
 import mwparserfromhell as mwp
 from mw.lib import reverts
 
 
 class Extractor:
 
-    def __init__(self, namespaces):
+    def __init__(self, name, namespaces):
+        self.name = str(name)
         self.namespaces = set(namespaces)
 
 
@@ -45,7 +48,8 @@ class Extractor:
                         for lab in labelings[revert.reverted_to]:
                             lab['reverted'] = False
 
-                    sys.stderr.write("r")
+                    if verbose:
+                        sys.stderr.write("r")
                 else:
                     # This revision is not a revert.  Get the new labels
                     new_labels = project_labels - last_labels
@@ -57,9 +61,10 @@ class Extractor:
                         sys.stderr.write(".")
 
                     # Update lookup of rev_ids that affect labelings
-                    len(new_labels) > 0:
+                    if len(new_labels) > 0:
                         labelings[revision.id] = [
-                            {'project': project, 'label': label,
+                            {'rev_id': revision.id,
+                             'project': project, 'label': label,
                              'timestamp': revision.timestamp,
                              'reverted': False}
                              for project, label in new_labels
@@ -70,8 +75,8 @@ class Extractor:
 
             # Find first labelings and filter out reverted labelings
             first_observations = {}
-            for rev in labelings.values():
-                for ob in rev:
+            for observations in labelings.values():
+                for ob in observations:
                     if ob['reverted']: continue
                     pair = (ob['project'], ob['label'])
                     if pair in first_observations:
@@ -90,10 +95,10 @@ class Extractor:
 
 class TemplateExtractor(Extractor):
 
-    def __init__(self, from_template, namespaces):
+    def __init__(self, name, namespaces, from_template):
         self.from_template = from_template
 
-        super().__init__(namespaces)
+        super().__init__(name, namespaces)
 
     def extract_labels(self, text):
 
