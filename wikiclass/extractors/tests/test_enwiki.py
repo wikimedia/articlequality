@@ -49,7 +49,7 @@ def test_extractor():
         Revision(
             7, Timestamp(5), "ddd",
             "{{talk page}}{{WikiProject Medicine|class=B}}\n" +
-            "{{WikiProject_Hats|class=B}}..."
+            "{{WP_Hats|class=B}}..."
         )
     ]
     page = Page("Foobar", 1, revisions)
@@ -62,6 +62,7 @@ def test_extractor():
                 ("medicine", "b", Timestamp(5)),
                 ("hats", "b", Timestamp(5))]
 
+    print(project_labels)
     for proj, lab, timestamp in expected:
         ob = project_labels[(proj, lab)]
         eq_(ob['timestamp'], timestamp)
