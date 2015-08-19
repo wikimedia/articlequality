@@ -4,7 +4,7 @@ each change in assessment class.  Will match extraction method to the dump.
 
 Usage:
     extract_labelings <dump-file>... [--extractor=<name>] [--threads=<num>]
-                                     [--output=<path>]
+                                     [--output=<path>] [--verbose]
     extract_labelings -h | --help
 
 Options:
@@ -20,6 +20,7 @@ Options:
     --verbose           Prints dots to <stderr>
 """
 import json
+import logging
 import os.path
 import sys
 from importlib import import_module
@@ -61,6 +62,12 @@ def load_extractor(extractor_name):
                            .format(extractor_name))
 
 def run(dump_paths, threads, output, verbose=False, extractor=None):
+    logging.basicConfig(
+        level=logging.DEBUG if verbose else logging.WARNING,
+        format='%(asctime)s %(levelname)s:%(name)s -- %(message)s'
+    )
+
+
     if len(dump_paths) == 0:
         label_events = dump2labels(xml_dump.Iterator.from_file(sys.stdin),
                                    extractor, verbose=verbose)
