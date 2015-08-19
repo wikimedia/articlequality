@@ -102,6 +102,6 @@ def dump2labels(dump, extractor=None, verbose=False):
 
 def normalize_title(title, namespace):
     if namespace > 0:
-        return title.split(":", 1)[1]
-    else:
-        return title
+        title = title.split(":", 1)[1]
+
+    return title.split("/", 1)[0]
