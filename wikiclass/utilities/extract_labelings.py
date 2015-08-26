@@ -27,7 +27,7 @@ from importlib import import_module
 from multiprocessing import cpu_count
 
 import docopt
-from mw import xml_dump
+import mwxml
 
 
 def main(argv=None):
@@ -69,14 +69,13 @@ def run(dump_paths, threads, output, verbose=False, extractor=None):
 
 
     if len(dump_paths) == 0:
-        label_events = dump2labels(xml_dump.Iterator.from_file(sys.stdin),
+        label_events = dump2labels(mwxml.Dump.from_file(sys.stdin),
                                    extractor, verbose=verbose)
 
     else:
-        label_events = xml_dump.map(dump_paths,
-                                    lambda d, p: \
-                                        dump2labels(d, extractor, verbose),
-                                    threads=threads)
+        label_events = mwxml.map(lambda d, p: \
+                                    dump2labels(d, extractor, verbose),
+                                 dump_paths,threads=threads)
 
     for page_title, project, label, timestamp in label_events:
         ob = {'page_title': page_title, 'project': project,
@@ -88,7 +87,7 @@ def run(dump_paths, threads, output, verbose=False, extractor=None):
 def dump2labels(dump, extractor=None, verbose=False):
 
     if extractor is None:
-        extractor = load_extractor(dump.dbname)
+        extractor = load_extractor(dump.site_info.dbname)
 
     for page in dump:
 
@@ -102,6 +101,8 @@ def dump2labels(dump, extractor=None, verbose=False):
 
 def normalize_title(title, namespace):
     if namespace > 0:
-        title = title.split(":", 1)[1]
+        title_parts = title.split(":", 1)
+        if len(title_parts) == 2:
+            title = title_parts[1]
 
     return title.split("/", 1)[0]
