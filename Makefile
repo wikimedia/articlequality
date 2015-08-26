@@ -1,7 +1,14 @@
 datasets/enwiki.observations.first_labelings.20150602.tsv:
-	wikilabels extract_labelings \
-		/mnt/xmldumps/public/enwiki/20150602/enwiki-20150602-pages-meta-history*.xml*.bz2 > \
+	./utility extract_labelings \
+		/mnt/data/xmldatadumps/public/enwiki/20150602/enwiki-20150602-pages-meta-history*.xml*.bz2 \
+		--verbose > \
 	datasets/enwiki.observations.first_labelings.20150602.tsv
+
+datasets/frwiki.observations.first_labelings.20150602.tsv:
+	./utility extract_labelings \
+		/mnt/data/xmldatadumps/public/frwiki/20150602/frwiki-20150602-pages-meta-history*.xml*.bz2 > \
+	datasets/frwiki.observations.first_labelings.20150602.tsv
+
 
 datasets/enwiki.observations.first_labelings.30k.tsv: \
 		datasets/enwiki.first_labelings.20150602.tsv
