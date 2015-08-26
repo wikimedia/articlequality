@@ -1,8 +1,11 @@
+import logging
 import sys
+import traceback
 
 import mwparserfromhell as mwp
 from mw.lib import reverts
 
+logger = logging.getLogger(__name__)
 
 class Extractor:
 
@@ -34,8 +37,14 @@ class Extractor:
 
                 revert = detector.process(revision.sha1, revision.id)
 
-                project_labels = set(pl for pl in
-                                     self.extract_labels(revision.text))
+                try:
+                    revision_text = revision.text or ""
+                    project_labels = set(pl for pl in
+                                         self.extract_labels(revision.text))
+                except:
+                    logger.warning("Could not extract labels from text:")
+                    logger.warning(traceback.format_exc())
+                    continue
 
                 if revert is not None:
                     # This revision is a revert.
@@ -101,7 +110,7 @@ class TemplateExtractor(Extractor):
         super().__init__(name, namespaces)
 
     def extract_labels(self, text):
-
+	
         parsed_text = mwp.parse(text)
         templates = parsed_text.filter_templates()
         assessments = []
