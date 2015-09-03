@@ -50,7 +50,7 @@ def main(argv=None):
     else:
         output = open(os.path.expanduser(args['--output']), "w")
 
-    verbose = args['--output']
+    verbose = args['--verbose']
 
     run(dump_paths, threads, output, verbose=verbose, extractor=extractor)
 
