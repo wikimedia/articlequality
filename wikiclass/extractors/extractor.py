@@ -28,6 +28,10 @@ class Extractor:
         if page.namespace not in self.namespaces:
             pass
         else:
+            if verbose:
+                sys.stderr.write("\n{0}: ".format(page.title))
+                sys.stderr.flush()
+
             labelings = {}
             last_labels = set()
             detector = reverts.Detector()
@@ -59,6 +63,7 @@ class Extractor:
 
                     if verbose:
                         sys.stderr.write("r")
+                        sys.stderr.flush()
                 else:
                     # This revision is not a revert.  Get the new labels
                     new_labels = project_labels - last_labels
@@ -66,8 +71,10 @@ class Extractor:
                     # Log some verbose stuff
                     if verbose and len(new_labels) > 0:
                         sys.stderr.write("l")
+                        sys.stderr.flush()
                     else:
                         sys.stderr.write(".")
+                        sys.stderr.flush()
 
                     # Update lookup of rev_ids that affect labelings
                     if len(new_labels) > 0:
@@ -110,7 +117,7 @@ class TemplateExtractor(Extractor):
         super().__init__(name, namespaces)
 
     def extract_labels(self, text):
-	
+
         parsed_text = mwp.parse(text)
         templates = parsed_text.filter_templates()
         assessments = []

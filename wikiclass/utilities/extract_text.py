@@ -87,11 +87,11 @@ def extract_text(dump, page_labelings, verbose=False):
 
     for page in dump:
 
-        if verbose:
-            sys.stderr.write("\n{0}: ".format(page.title))
-            sys.stderr.flush()
-
         if page.namespace == 0 and page.title in page_labelings:
+            if verbose:
+                sys.stderr.write("\n{0}: ".format(page.title))
+                sys.stderr.flush()
+
             labelings = page_labelings[page.title]
 
             last_revision = None
@@ -103,7 +103,11 @@ def extract_text(dump, page_labelings, verbose=False):
                     labeling['text'] = last_revision.text
 
                     yield labeling
+                    
+                    if verbose:
+                        sys.stderr.write("t")
+                        sys.stderr.flush()
 
-                # Don't update last_text if the text was deleted
+                # Don't update last_revision if the text was deleted
                 if revision.text is not None:
                     last_revision = revision
