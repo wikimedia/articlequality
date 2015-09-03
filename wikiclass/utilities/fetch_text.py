@@ -3,7 +3,7 @@ Reads a list of observations with 'page_title', 'timestamp' and 'label' fields
 and adds a 'text' field.
 
 Usage:
-    fetch_text --api=<url>
+    fetch_text --api=<url> [--observations=<path>] [--output=<path>] [--verbose]
     fetch_text -h | --help
 
 Options:
@@ -11,9 +11,9 @@ Options:
     --api=<url>              The url of a MediaWiki API e.g.
                              "https://en.wikipedia.org/w/api.php"
     --observations=<path>    Path to a containting observations with extracted
-                             labels.
+                             labels. [default: <stdin>]
     --output=<path>          Path to a file to write new observations
-                             (with text) out to.
+                             (with text) out to. [default: <stdout>]
     --verbose                Prints dots to <stderr>
 """
 import json
@@ -28,15 +28,25 @@ from mw.api.errors import APIError
 def main(argv=None):
     args = docopt(__doc__, argv=argv)
 
-    obs = (json.loads(line) for line in sys.stdin)
+    if args['--observations'] == '<stdin>':
+        observations = (json.loads(line) for line in sys.stdin)
+    else:
+        observations = (json.loads(line) for line in open(args['--observations']))
+
+    if args['--output'] == '<stdout>':
+        output = sys.stdout
+    else:
+        output = open(args['--output'])
 
     session = api.Session(args['--api'])
 
-    run(obs, session)
+    verbose = args['--verbose']
 
-def run(obs, session):
+    run(observations, output, session, verbose)
 
-    for ob in obs:
+def run(observations, output, session, verbose):
+
+    for ob in observations:
 
         doc = None
         try:
@@ -46,18 +56,18 @@ def run(obs, session):
             sys.stderr.write(traceback.format_exc() + "\n")
 
         if doc is None:
-            if verbose: sys.stderr.write("?")
+            if verbose: sys.stderr.write("?");sys.stderr.flush()
         else:
             ob['text'] = doc.get("*", "")
-            json.dump(ob, sys.stdout)
-            sys.stdout.write("\n")
-            if verbose: sys.stderr.write(".")
+            json.dump(ob, output)
+            output.write("\n")
+            if verbose: sys.stderr.write(".");sys.stderr.flush()
 
-    if verbose: sys.stderr.write("\n")
+    if verbose: sys.stderr.write("\n");sys.stderr.flush()
 
-def get_last_text_before(session, page_title, namespace=0, timestamp):
-    docs = session.revisions.query(titles=[page_title], before=timestamp,
-                                   limit=1, directions="older")
+def get_last_text_before(session, page_title, timestamp):
+    docs = session.revisions.query(titles=[page_title], start=timestamp,
+                                   limit=1, direction="older", properties=["content"])
     docs = list(docs)
     if len(docs) == 0:
         return None

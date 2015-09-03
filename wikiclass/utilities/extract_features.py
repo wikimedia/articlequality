@@ -24,6 +24,7 @@ Options:
                              [default: <stdout>]
     --verbose                Print logging information
 """
+import json
 import sys
 
 import docopt
@@ -35,12 +36,14 @@ from revscoring.utilities.util import encode, import_from_path
 def main(argv=None):
     args = docopt.docopt(__doc__, argv=argv)
 
-    if args['--observations'] is not None:
+    features = import_from_path(args['<features>'])
+
+    if args['--observations'] != '<stdin>':
         obs = (json.loads(line) for line in open(args['--observations']))
     else:
         obs = (json.loads(line) for line in sys.stdin)
 
-    if args['--value-labels'] is not None:
+    if args['--value-labels'] != '<stdout>':
         value_labels = open(args['--value-labels'], 'w')
     else:
         value_labels = sys.stdout
@@ -49,16 +52,18 @@ def main(argv=None):
         language = import_from_path(args['--language'])
         solve = language.solve
     else:
-        language = none
+        language = None
+        solve = None
 
-    run(obs, features, solve, value_lables)
+    run(obs, features, solve, value_labels)
 
 def run(obs, features, solve, value_labels):
 
     for ob in obs:
-        cache = {revision.text: obs['text']}
+        cache = {revision.text: ob['text']}
 
         feature_values = solve(features, cache=cache)
 
         value_labels.write("\t".join([encode(v) for v in feature_values] +
-                                     [obs['label']]))
+                                     [ob['label']]))
+        value_labels.write("\n")

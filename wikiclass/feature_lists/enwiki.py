@@ -1,4 +1,5 @@
 from revscoring.features import revision
+from revscoring.features.modifiers import log
 
 wp10 = [
     revision.category_links,
