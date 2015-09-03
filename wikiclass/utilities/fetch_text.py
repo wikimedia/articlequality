@@ -58,6 +58,8 @@ def run(observations, output, session, verbose):
         if doc is None:
             if verbose: sys.stderr.write("?");sys.stderr.flush()
         else:
+            ob['page_id'] = doc['page'].get("pageid")
+            ob['rev_id'] = doc.get("revid")
             ob['text'] = doc.get("*", "")
             json.dump(ob, output)
             output.write("\n")
@@ -67,7 +69,8 @@ def run(observations, output, session, verbose):
 
 def get_last_text_before(session, page_title, timestamp):
     docs = session.revisions.query(titles=[page_title], start=timestamp,
-                                   limit=1, direction="older", properties=["content"])
+                                   limit=1, direction="older",
+                                   properties=["ids", "content"])
     docs = list(docs)
     if len(docs) == 0:
         return None

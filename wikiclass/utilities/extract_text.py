@@ -94,13 +94,16 @@ def extract_text(dump, page_labelings, verbose=False):
         if page.namespace == 0 and page.title in page_labelings:
             labelings = page_labelings[page.title]
 
-            last_text = None
+            last_revision = None
             for revision in page:
                 while revision.timestamp > labelings[0]:
                     labeling = labelings.pop()
-                    labeling['text'] = last_text
+                    labeling['page_id'] = page.id
+                    labeling['rev_id'] = last_revision.id
+                    labeling['text'] = last_revision.text
 
                     yield labeling
 
                 # Don't update last_text if the text was deleted
-                last_text = revision.text or last_text
+                if revision.text is not None:
+                    last_revision = revision
