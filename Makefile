@@ -11,36 +11,36 @@ datasets/frwiki.observations.first_labelings.20150602.tsv:
 
 
 datasets/enwiki.observations.first_labelings.30k.tsv: \
-		datasets/enwiki.first_labelings.20150602.tsv
+		datasets/enwiki.observations.first_labelings.20150602.tsv
 	( \
-		grep -P '"label": "stub"' datasets/enwiki.first_labelings.20150602.tsv | \
+		grep -P '"label": "stub"' datasets/enwiki.observations.first_labelings.20150602.tsv | \
 		shuf -n 5000; \
-		grep -P '"label": "start"' datasets/enwiki.first_labelings.20150602.tsv | \
+		grep -P '"label": "start"' datasets/enwiki.observations.first_labelings.20150602.tsv | \
 		shuf -n 5000; \
-		grep -P '"label": "c"' datasets/enwiki.first_labelings.20150602.tsv | \
+		grep -P '"label": "c"' datasets/enwiki.observations.first_labelings.20150602.tsv | \
 		shuf -n 5000; \
-		grep -P '"label": "b"' datasets/enwiki.first_labelings.20150602.tsv | \
+		grep -P '"label": "b"' datasets/enwiki.observations.first_labelings.20150602.tsv | \
 		shuf -n 5000; \
-		grep -P '"label": "ga"' datasets/enwiki.first_labelings.20150602.tsv | \
+		grep -P '"label": "ga"' datasets/enwiki.observations.first_labelings.20150602.tsv | \
 		shuf -n 5000; \
-		grep -P '"label": "fa"' datasets/enwiki.first_labelings.20150602.tsv | \
+		grep -P '"label": "fa"' datasets/enwiki.observations.first_labelings.20150602.tsv | \
 		shuf -n 5000 \
 	) | \
-	shuf >
+	shuf > \
 	datasets/enwiki.observations.first_labelings.30k.tsv
 
 datasets/enwiki.observations.text_wp10.30k.tsv: \
 		datasets/enwiki.observations.first_labelings.30k.tsv
-	cat datasets/enwiki.first_labelings.30k.tsv | \
-	wikilabels fetch_text \
-		--api=https://en.wikipedia.org/w/api.php > \
+	cat datasets/enwiki.observations.first_labelings.30k.tsv | \
+	./utility fetch_text \
+		--api=https://en.wikipedia.org/w/api.php --verbose > \
 	datasets/enwiki.observations.text_wp10.30k.tsv
 
 datasets/enwiki.features_wp10.30k.tsv: \
 		datasets/enwiki.observations.text_wp10.30k.tsv
 	cat datasets/enwiki.observations.text_wp10.30k.tsv | \
-	wikilabels extract_features \
-		feature_lists.enwiki.wp10 \
+	./utility extract_features \
+		wikiclass.feature_lists.enwiki.wp10 \
 		--language=revscoring.languages.english > \
 	datasets/enwiki.features_wp10.30k.tsv
 
@@ -48,7 +48,7 @@ models/enwiki.wp10.rf.model: datasets/enwiki.features_wp10.30k.tsv
 	cat datasets/enwiki.features_wp10.30k.tsv | \
 	revscoring train_test \
 		revscoring.scorer_models.RFModel \
-		feature_lists.enwiki.wp10 \
+		wikiclass.feature_lists.enwiki.wp10 \
 		revscoring.languages.english \
 		-p 'n_estimators=501' \
 		-p 'min_samples_leaf=8' \
