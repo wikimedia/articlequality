@@ -3,8 +3,9 @@ This script provides access to a set of utilities for extracting features and
 building article quality classifiers.
 
 * extract_labelings -- Gathers quality labeling events from XML dumps
-* fetch_text -- Gathers text for each labeling observation
+* extract_text -- Gathers text for each labeling observation from XML dumps
 * extract_features -- Extracts feature_lists for observations
+* fetch_text -- Gathers text for each labeling observation from a MediaWiki API
 
 Usage:
     wikiclass (-h | --help)
