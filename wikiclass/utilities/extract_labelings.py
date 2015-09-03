@@ -1,23 +1,26 @@
 """
-Extracts labels from an XML dump and writes out labeled observations for
-each change in assessment class.  Will match extraction method to the dump.
+``$ wikclass extract_labelings -h``
+::
 
-Usage:
-    extract_labelings <dump-file>... [--extractor=<name>] [--threads=<num>]
-                                     [--output=<path>] [--verbose]
-    extract_labelings -h | --help
+    Extracts labels from an XML dump and writes out labeled observations for
+    each change in assessment class.  Will match extraction method to the dump.
 
-Options:
-    -h --help           Show this screen.
-    <dump-file>         An XML dump file to process
-    --extractor=<name>  The dbname of the wiki extractor to use (e.g. 'enwiki')
-                        [default: <match>]
-    --threads=<num>     If a collection of files are provided, how many
-                        processor threads should be prepare?
-                        [default: <cpu_count>]
-    --output=<path>     The path to a file to dump observations to
-                        [default: <stdout>]
-    --verbose           Prints dots to <stderr>
+    Usage:
+        extract_labelings <dump-file>... [--extractor=<name>] [--threads=<num>]
+                                         [--output=<path>] [--verbose]
+        extract_labelings -h | --help
+
+    Options:
+        -h --help           Show this screen.
+        <dump-file>         An XML dump file to process
+        --extractor=<name>  The dbname of the wiki extractor to use (e.g. 'enwiki')
+                            [default: <match>]
+        --threads=<num>     If a collection of files are provided, how many
+                            processor threads should be prepare?
+                            [default: <cpu_count>]
+        --output=<path>     The path to a file to dump observations to
+                            [default: <stdout>]
+        --verbose           Prints dots to <stderr>
 """
 import json
 import logging
@@ -77,14 +80,33 @@ def run(dump_paths, threads, output, verbose=False, extractor=None):
                                     dump2labels(d, extractor, verbose),
                                  dump_paths,threads=threads)
 
-    for page_title, project, label, timestamp in label_events:
-        ob = {'page_title': page_title, 'project': project,
-              'timestamp': timestamp.short_format(), 'label': label}
+    for labeling in label_events:
 
-        json.dump(ob, output)
+        json.dump(labeling, output)
         output.write("\n")
 
-def dump2labels(dump, extractor=None, verbose=False):
+def extract_labelings(dump, extractor=None, verbose=False):
+    """
+    Extracts labeling events from :class:`mwxml.Dump`.
+
+    :Parameters:
+        dump : :class:`mwxml.Dump`
+            The XML dump file to extract labelings from
+        extractor : :class:`wikiclass.Extractor`
+            An extractor to apply to the XML dump.  If no extractor is
+            provided, an extract will be looked up based on <dbname> in the XML
+            dump's <siteinfo> block.
+        verbose : `bool`
+            Print dots and stuff to stderr
+
+    :Returns:
+        An iterator of dicts containing:
+
+        * page_title -- The normalized title of the article
+        * project -- A project (often a WikiProject) associated with the label
+        * timestamp -- The timestamp the labeling was observed
+        * label -- The quality label that was extracted
+    """
 
     if extractor is None:
         extractor = load_extractor(dump.site_info.dbname)
@@ -96,8 +118,10 @@ def dump2labels(dump, extractor=None, verbose=False):
             sys.stderr.flush()
 
         for obs in extractor.extract(page, verbose=verbose):
-            yield normalize_title(page.title, page.namespace), obs['project'], \
-                  obs['label'], obs['timestamp']
+            yield {'page_title': normalize_title(page.title, page.namespace),
+                   'project': obs['project'],
+                   'timestamp': obs['timestamp'].short_format(),
+                   'label': obs['label']}
 
 def normalize_title(title, namespace):
     if namespace > 0:

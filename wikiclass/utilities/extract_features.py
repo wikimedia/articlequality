@@ -1,28 +1,31 @@
 """
-Extracts features from an observation containing text and a label and writes a
-TSV of <feature>[TAB]<feature>[TAB]...<label>
+``$ wikclass extract_features -h``
+::
 
-Input: { ... "label": ..., "text": ..., ... }
+    Extracts features from a labeling doc containing text and a label and writes a
+    TSV of <feature>[TAB]<feature>[TAB]...<label> that is compatible with
+    `revscoring`'s train_test utility.
 
-Output: <feature>[TAB]<feature>[TAB]...<label>
+    Input: { ... "label": ..., "text": ..., ... }
+
+    Output: <feature>[TAB]<feature>[TAB]...<label>
 
 
-Usage:
-    extract_features -h | --help
-    extract_features <features> [--language=<classpath>]
-                                [--observations=<path>]
-                                [--value-labels=<path>]
-                                [--verbose]
+    Usage:
+        extract_features -h | --help
+        extract_features <features> [--labelings=<path>]
+                                    [--value-labels=<path>]
+                                    [--verbose]
 
-Options:
-    -h --help                Print this documentation
-    <features>               Classpath to a list/tuple of features
-    --language=<classpath>   Classpath to a Language
-    --observations=<path>    Path to a file containing rev_id-label pairs
-                             [default: <stdin>]
-    --value-labels=<path>    Path to a file to write feature value-labels to
-                             [default: <stdout>]
-    --verbose                Print logging information
+    Options:
+        -h --help                Print this documentation
+        <features>               Classpath to a list/tuple of features
+        --language=<classpath>   Classpath to a Language
+        --labelings=<path>       Path to a file containing labeling docs pairs
+                                 [default: <stdin>]
+        --value-labels=<path>    Path to a file to write feature value-labels to
+                                 [default: <stdout>]
+        --verbose                Print logging information
 """
 import json
 import sys
@@ -38,32 +41,41 @@ def main(argv=None):
 
     features = import_from_path(args['<features>'])
 
-    if args['--observations'] != '<stdin>':
-        obs = (json.loads(line) for line in open(args['--observations']))
+    if args['--labelings'] != '<stdin>':
+        labelings = (json.loads(line) for line in open(args['--labelings']))
     else:
-        obs = (json.loads(line) for line in sys.stdin)
+        labelings = (json.loads(line) for line in sys.stdin)
 
     if args['--value-labels'] != '<stdout>':
         value_labels = open(args['--value-labels'], 'w')
     else:
         value_labels = sys.stdout
 
-    if args['--language'] is not None:
-        language = import_from_path(args['--language'])
-        solve = language.solve
-    else:
-        language = None
-        solve = None
+    run(labelings, features, solve, value_labels)
 
-    run(obs, features, solve, value_labels)
+def run(labelings, features, solve, value_labels):
 
-def run(obs, features, solve, value_labels):
-
-    for ob in obs:
-        cache = {revision.text: ob['text']}
-
-        feature_values = solve(features, cache=cache)
+    for labeling in labelings:
+        feature_values = extract_features(features, labeling['text'])
 
         value_labels.write("\t".join([encode(v) for v in feature_values] +
-                                     [ob['label']]))
+                                     [labeling['label']]))
         value_labels.write("\n")
+
+def extract_features(features, text, cache=None, context=None):
+    """
+    Extracts a set of feature values from a text.
+
+    :Parameters:
+        features : `list`( :class:`revscoring.features.Feature` )
+            A list of features to extract values for
+        text : `str`
+            A text from which to extract features
+
+    :Returns:
+        A list of extracted feature values
+    """
+    local_cache = {revision.text: text}
+    local_cache.update(cache or {})
+
+    return list(solve(features, cache=local_cache, context=context))

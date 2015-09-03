@@ -1,120 +1,78 @@
-.. Wiki-Class documentation master file, created by
-   sphinx-quickstart on Wed Jun 11 22:44:18 2014.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Wiki-Class: Wikipedia article quality classification
+Wikipedia article quality classification
 ====================================================
 
 A library for performing automatic detection of assessment classes of Wikipedia
 articles.
 
-**Compatible with Python 3.x only.**  Sorry.
-
 * **Install:** ``pip install wikiclass``
 * **Models:** `<https://github.com/halfak/Wiki-Class/tree/master/models>`_
 * **Repo:** `<https://github.com/halfak/Wiki-Class>`_
+* **License:** MIT License
+
+Contents
+--------
+.. toctree::
+    :maxdepth: 2
+
+    functions
+    utilities
+    extractors
 
 Basic usage
-===========
-If you want to detect some assessment classes, you're going to need a model.
-You can `download a prebuilt model
-<https://github.com/halfak/Wiki-Class/tree/master/models>`_ or build one
-yourself.
+-----------
 
-Model from file
----------------
-.. code-block:: python
-    
-from mw import api
-from revscoring.scorers import Scorer
-from revscoring.extractors import APIExtractor
-from revscoring.languages import english
-from wikiclass.scorers import RFModel
+    >>> import wikiclass
+    >>> from revscoring.scorer_models import MLScorerModel
+    >>>
+    >>> scorer_model = MLScorerModel.load(open("models/enwiki.wp10.rf.model", "rb"))
+    >>>
+    >>> text = "I am the text of a page.  I have a <ref>word</ref>"
+    >>> wikiclass.score(scorer_model, text)
+    {'prediction': 'stub',
+     'probability': {'stub': 0.27156163795807853,
+                     'b': 0.14707452309674252,
+                     'fa': 0.16844898943510833,
+                     'c': 0.057668704007171959,
+                     'ga': 0.21617801281707663,
+                     'start': 0.13906813268582238}}
 
-model = RFModel.load(open("enwiki.rf_text.model", "rb"))
-extractor = APIExtractor(api.Session("https://en.wikipedia.org/w/api.php"),
-                         language=english)
-
-scorer = Scorer({"wikiclass": model}, extractor)
-score_doc = scorer.score(639744702)
-
-prediction = score_doc['wikiclass']['prediction']
-probability = score_doc['wikiclass']['probability'][prediction]
-
-print("I'm about {0}% ".format(probability*100) + \
-      "sure that this should be classified {0}".format(prediction))
-    
-
-Model building
---------------
-.. code-block:: python
-    
-    from wikiclass.models import RFTextModel
-    from wikiclass import assessments
-    
-    # Gather a training and test set
-    #Both train_set and test_set are a list of tuples who are ("article text", "classification")
-    train_set = [
-        ("Some article text", "Stub"),
-        ("Some more article text<ref>news</ref>.", "Start")
-        # ...
-    ]
-    test_set = [
-        ("The Lorem Ipsum dolored the sit amet.", "C"),
-        ("'''Lorem Ipsum''', sit amet the dolor amer. {{InfoBox|...}}", "FA")
-        # ...
-    ]
-    
-    # Train a model
-    model = RFTextModel.train(
-        train_set,
-        assessments=assessments.WP10
-    )
-    
-    # Run the test set & print the results
-    results = model.test(test_set)
-    print(results)
-    
-    # Write the model to disk for reuse.
-    model.to_file(open("enwiki.rf_text.model", "wb"))
-
-Modules
-=======
-:ref:`wikiclass.models <wikiclass.models>`
-    A set of classification models that can be trained and used to classify
-    articles.
-    
-    * :class:`~wikiclass.models.RFTextModel` -- A random forrest classifier that extracts features from article text.
-
-:ref:`wikiclass.features <wikiclass.features>`
-    A set of feature extractors used to organize a set of features for use in
-    model training and classification.
-    
-    * :class:`~wikiclass.features.WikitextAndInfonoise` -- A text feature extractor that gathers wiki markup features and an information-based measure.
-
-:ref:`wikiclass.languages <wikiclass.languages>`
-    Some :class:`~wikiclass.features.FeatureExtractor` s require information
-    about the language being processed.  This module contains basic language
-    info for common languages.
-    
-    * :func:`~wikiclass.languages.get`, gets a :class:`~wikiclass.languages.Language` based on a name.  Currently supported languages include:
-        * ``"English"``
-    * :func:`~wikiclass.languages.register`, registers a new :class:`~wikiclass.languages.Language` for access from :func:`~wikiclass.languages.get`.
 
 
 Authors
-=======
-    Aaron Halfaker
-        * ahalfaker@wikimedia.org
-        * `<http://halfaker.info>`_
-    Morten Warncke-Wang
-        * `<http://www-users.cs.umn.edu/~morten>`_
+-------
+* Aaron Halfaker -- https://github.com/halfak
+* Morten Warncke-Wang -- http://www-users.cs.umn.edu/~morten
 
+.. code::
 
+  MIT LICENSE
+
+  Copyright (c) 2015 Aaron Halfaker <ahalfaker@wikimedia.org>
+
+  Permission is hereby granted, free of charge, to any person
+  obtaining a copy of this software and associated documentation
+  files (the "Software"), to deal in the Software without
+  restriction, including without limitation the rights to use,
+  copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom
+  the Software is furnished to do so, subject to the following
+  conditions:
+
+  The above copyright notice and this permission notice shall
+  be included in all copies or substantial portions of the
+  Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+  KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+  WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+  PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+  OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+  OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+  OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`

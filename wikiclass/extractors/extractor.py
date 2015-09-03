@@ -1,3 +1,12 @@
+"""
+.. autoclass:: wikiclass.Extractor
+    :members:
+
+.. autoclass:: wikiclass.TemplateExtractor
+    :members:
+    :inherited-members:
+"""
+
 import logging
 import sys
 import traceback
@@ -8,9 +17,21 @@ from mw.lib import reverts
 logger = logging.getLogger(__name__)
 
 class Extractor:
+    """
+    Implements an labeling event extraction strategy.
 
-    def __init__(self, name, namespaces):
-        self.name = str(name)
+    :Parameters:
+        name : `str`
+            A name for the extraction strategy
+        doc : `str`
+            Documentation describing the extraction strategy
+        namespace : `iterable`(`int`)
+            A set of namespaces that will be considered when performin an
+            extraction
+    """
+    def __init__(self, name, doc, namespaces):
+        self.__name__ = str(name)
+        self.__doc__ = str(doc)
         self.namespaces = set(namespaces)
 
 
@@ -22,7 +43,8 @@ class Extractor:
         :Parameters:
             page : :class:`mw.xml_dump.Page`
                 Page to process
-            verbose : print dots to stderr
+            verbose : `bool`
+                print dots to stderr
 
         """
         if page.namespace not in self.namespaces:
@@ -110,14 +132,31 @@ class Extractor:
 
 
 class TemplateExtractor(Extractor):
+    """
+    Implements a template-based extraction strategy based on a `from_template`
+    function that takes a template and returns a (project, label) pair.
 
-    def __init__(self, name, namespaces, from_template):
+    :Parameters:
+        from_template : `func`
+            A function that takes a template and returns a (project, label)
+            pair
+    """
+    def __init__(self, *args, from_template, **kwargs):
         self.from_template = from_template
 
-        super().__init__(name, namespaces)
+        super().__init__(*args, **kwargs)
 
     def extract_labels(self, text):
+        """
+        Extracts a set of labels for a version of text by parsing templates.
 
+        :Parameters:
+            text : `str`
+                Wikitext markup to extract labels from
+
+        :Returns:
+            An iterator over (project, label) pairs
+        """
         parsed_text = mwp.parse(text)
         templates = parsed_text.filter_templates()
         assessments = []
