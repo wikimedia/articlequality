@@ -1,78 +1,116 @@
 """
-Reads a list of observations with 'page_title', 'timestamp' and 'label' fields
-and adds a 'text' field.
+``$ wikclass fetch_text -h``
+::
 
-Usage:
-    fetch_text --api=<url> [--observations=<path>] [--output=<path>] [--verbose]
-    fetch_text -h | --help
+    Fetches text & metadata for labelings using a MediaWiki API.
 
-Options:
-    -h --help                Show this documentation.
-    --api=<url>              The url of a MediaWiki API e.g.
-                             "https://en.wikipedia.org/w/api.php"
-    --observations=<path>    Path to a containting observations with extracted
-                             labels. [default: <stdin>]
-    --output=<path>          Path to a file to write new observations
-                             (with text) out to. [default: <stdout>]
-    --verbose                Prints dots to <stderr>
+    Usage:
+        fetch_text --api=<url> [--labelings=<path>] [--output=<path>] [--verbose]
+        fetch_text -h | --help
+
+    Options:
+        -h --help           Show this documentation.
+        --api-host=<url>    The url of a MediaWiki API e.g.
+                            "https://en.wikipedia.org/w/api.php"
+        --labelings=<path>  Path to a containting observations with extracted
+                            labels. [default: <stdin>]
+        --output=<path>     Path to a file to write new observations
+                            (with text) out to. [default: <stdout>]
+        --verbose           Prints dots and stuff to stderr
 """
 import json
 import sys
 import traceback
 
 from docopt import docopt
-from mw import api
-from mw.api.errors import APIError
+
+import mwapi
 
 
 def main(argv=None):
     args = docopt(__doc__, argv=argv)
 
-    if args['--observations'] == '<stdin>':
-        observations = (json.loads(line) for line in sys.stdin)
+    if args['--labelings'] == '<stdin>':
+        labelings = (json.loads(line) for line in sys.stdin)
     else:
-        observations = (json.loads(line) for line in open(args['--observations']))
+        labelings = (json.loads(line) for line in open(args['--labelings']))
 
     if args['--output'] == '<stdout>':
         output = sys.stdout
     else:
         output = open(args['--output'])
 
-    session = api.Session(args['--api'])
+    session = mwapi.Session(args['--api-host'],
+                            user_agent="WikiClass fetch_text utility.")
 
     verbose = args['--verbose']
 
-    run(observations, output, session, verbose)
+    run(labelings, output, session, verbose)
 
-def run(observations, output, session, verbose):
+def run(labelings, output, session, verbose):
 
-    for ob in observations:
+    for labeling in fetch_text(session, labelings, verbose=verbose):
+        json.dump(labeling, output)
 
-        doc = None
-        try:
-            doc = get_last_text_before(session, ob['page_title'],
-                                       ob['timestamp'])
-        except Exception:
-            sys.stderr.write(traceback.format_exc() + "\n")
 
-        if doc is None:
-            if verbose: sys.stderr.write("?");sys.stderr.flush()
+def fetch_text(session, labelings, verbose=False):
+    """
+    Fetches article text and metadata for labelings from a MediaWiki API.
+
+    :Parameters:
+        session : :class:`mwapi.Session`
+            An API session to use for querying
+        labelings : `iterable`(`dict`)
+            A collection of labeling events to add text to
+        verbose : `bool`
+            Print dots and stuff
+
+    :Returns:
+        An `iterator` of labelings augmented with 'page_id', 'rev_id' and
+        'text'.  Note that labelings of articles that aren't found will not be
+        included.
+    """
+
+    for labeling in labelings:
+        rev_doc = get_last_rev_before(session, labeling['page_title'],
+                                      labeling['timestamp'])
+
+        if rev_doc is None:
+            if verbose:
+                sys.stderr.write("?")
+                sys.stderr.flush()
         else:
-            ob['page_id'] = doc['page'].get("pageid")
-            ob['rev_id'] = doc.get("revid")
-            ob['text'] = doc.get("*", "")
-            json.dump(ob, output)
-            output.write("\n")
-            if verbose: sys.stderr.write(".");sys.stderr.flush()
+            if verbose:
+                sys.stderr.write(".")
+                sys.stderr.flush()
 
-    if verbose: sys.stderr.write("\n");sys.stderr.flush()
+            labeling['page_id'] = rev_doc['page'].get("pageid")
+            labeling['rev_id'] = rev_doc.get("revid")
+            labeling['text'] = rev_doc.get("*", "")
 
-def get_last_text_before(session, page_title, timestamp):
-    docs = session.revisions.query(titles=[page_title], start=timestamp,
-                                   limit=1, direction="older",
-                                   properties=["ids", "content"])
-    docs = list(docs)
-    if len(docs) == 0:
+            yield labeling
+
+    if verbose:
+        sys.stderr.write("\n")
+        sys.stderr.flush()
+
+def get_last_rev_before(session, page_title, timestamp):
+    doc = session.get(action="query", prop="revisions", titles=page_title,
+                      rvstart=timestamp, rvlimit=1, rvdir="older",
+                      rvprop=["ids", "content"])
+
+    try:
+        page_doc = next(doc['query']['pages'].values())
+    except KeyError:
+        # No pages found
         return None
-    else:
-        return docs[0]
+
+    try:
+        rev_doc = page_doc['revisions'][0]
+        rev_doc['page'] = {k: v for k, v in page_doc.items()
+                           if k != "revisions"}
+    except (KeyError, IndexError):
+        # No revisions matched
+        return None
+
+    return rev_doc

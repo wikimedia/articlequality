@@ -1,5 +1,11 @@
+"""
+English Wikipedia
++++++++++++++++++
+"""
+
 from revscoring.features import revision
 from revscoring.features.modifiers import log
+from revscoring.languages import english
 
 wp10 = [
     revision.category_links,
@@ -9,7 +15,7 @@ wp10 = [
     log((revision.templates - revision.cite_templates) + 1),
     revision.image_links / max(revision.content_chars, 1),
     revision.infobox_templates,
-    revision.infonoise,
+    english.revision.infonoise,
     log(revision.internal_links + 1),
     revision.level_2_headings,
     revision.level_3_headings,
@@ -18,7 +24,8 @@ wp10 = [
     revision.proportion_of_templated_references
 ]
 """
-Based on work by Nettrom[1] and with a few improvements and extensions.
+Based largely on work by Morten Warncke-Wang et al.[1] and with a few
+improvements and extensions that Morten identified after publication.
 
 1. Warncke-Wang, M., Cosley, D., & Riedl, J. (2013, August). Tell me more: An
    actionable quality model for wikipedia. In Proceedings of the 9th
