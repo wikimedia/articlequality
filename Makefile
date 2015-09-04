@@ -49,10 +49,9 @@ models/enwiki.wp10.rf.model: datasets/enwiki.features_wp10.30k.tsv
 	revscoring train_test \
 		revscoring.scorer_models.RFModel \
 		wikiclass.feature_lists.enwiki.wp10 \
-		revscoring.languages.english \
 		-p 'n_estimators=501' \
 		-p 'min_samples_leaf=8' \
-		--version=0.1.0 > \
+		--version=0.2.0 > \
 	models/enwiki.wp10.rf.model
 #Based on work by Nettrom[1] and with a few improvements and extensions.
 #

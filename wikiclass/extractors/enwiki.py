@@ -39,5 +39,16 @@ WP_PREFIX = re.compile("^(wp|wikiproject) ?", re.I)
 def normalize_project_name(template_name):
     return WP_PREFIX.sub('', template_name.lower().replace("_", " ")).strip()
 
-sys.modules[__name__] = TemplateExtractor(__name__, namespaces={1},
-                                          from_template=from_template)
+sys.modules[__name__] = TemplateExtractor(
+    __name__,
+    doc="""
+wikiclass.extractors.enwiki
++++++++++++++++++++++++++++
+
+This extractor looks for instances of templates that contain
+"class=<some class>" on article talk pages (namespace = 1) and parses the
+template name to obtain a `project`.
+""",
+    namespaces={1},
+    from_template=from_template
+)
