@@ -32,8 +32,8 @@ datasets/enwiki.observations.first_labelings.30k.tsv: \
 datasets/enwiki.observations.text_wp10.30k.tsv: \
 		datasets/enwiki.observations.first_labelings.30k.tsv
 	cat datasets/enwiki.observations.first_labelings.30k.tsv | \
-	./utility fetch_text \
-		--api=https://en.wikipedia.org/w/api.php --verbose > \
+	./utility extract_text \
+		/mnt/data/xmldatadumps/public/enwiki/20150602/enwiki-20150602-pages-meta-history*.xml*.bz2 > \
 	datasets/enwiki.observations.text_wp10.30k.tsv
 
 datasets/enwiki.features_wp10.30k.tsv: \
