@@ -12,19 +12,19 @@ def requirements(fname):
 
 setup(
     name = "wikiclass",
-    version = read('VERSION').strip(),
+    version = "0.1.0",  # see wikiclass/__init__.py
     author = "Aaron Halfaker / Morten Warncke-Wang",
     author_email = "ahalfaker@wikimedia.org",
     description = ("A library for performing automatic detection of assessment classes of Wikipedia articles."),
     license = "MIT",
-    url = "https://github.com/halfak/Wiki-Class",
+    url = "https://github.com/halfak/wikiclass",
     packages = find_packages(),
     entry_points = {
         'console_scripts': [
             'wikiclass=wikiclass.wikiclass:main'
         ],
     },
-    long_description = read('README.rst'),
+    long_description = read('README.md'),
     install_requires = requirements('requirements.txt'),
     classifiers=[
         "Development Status :: 4 - Beta",

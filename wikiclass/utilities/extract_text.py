@@ -1,23 +1,25 @@
 """
-Extracts labels from an XML dump and writes out labeled observations for
-each change in assessment class.  Will match extraction method to the dump.
+``$ wikclass extract_text -h``
+::
 
-Usage:
-    extract_text <dump-file>... [--labelings=<path>] [--output=<path>]
-                                [--threads=<num>] [--verbose]
-    extract_text -h | --help
+    Extracts text & metadata for labelings using XML dumps.
 
-Options:
-    -h --help           Show this screen.
-    <dump-file>         An XML dump file to process
-    --labelings=<name>  The path to a file containing labeling events.
-                        [default: <stdin>]
-    --output=<path>     The path to a file to dump observations to
-                        [default: <stdout>]
-    --threads=<num>     If a collection of files are provided, how many
-                        processor threads should be prepare?
-                        [default: <cpu_count>]
-    --verbose           Prints dots to <stderr>
+    Usage:
+        extract_text <dump-file>... [--labelings=<path>] [--output=<path>]
+                                    [--threads=<num>] [--verbose]
+        extract_text -h | --help
+
+    Options:
+        -h --help           Show this screen.
+        <dump-file>         An XML dump file to process
+        --labelings=<name>  The path to a file containing labeling events.
+                            [default: <stdin>]
+        --output=<path>     The path to a file to dump observations to
+                            [default: <stdout>]
+        --threads=<num>     If a collection of files are provided, how many
+                            processor threads should be prepare?
+                            [default: <cpu_count>]
+        --verbose           Prints dots to <stderr>
 """
 import json
 import logging
@@ -40,11 +42,6 @@ def main(argv=None):
     else:
         path = os.path.expanduser(args['--labelings'])
         labelings = (json.loads(line) for line in open(path))
-
-    grouped_labelings = groupby(labelings, key=lambda l: l['page_title'])
-    page_labelings = {title: sorted(list(labs), key=lambda l: l['timestamp'])
-                      for title, labs in grouped_labelings}
-    # The sorting used above is very important.
 
     if args['--threads'] == "<cpu_count>":
         threads = cpu_count()
@@ -80,7 +77,27 @@ def run(dump_paths, page_labelings, output, threads, verbose=False):
         json.dump(labeling, output)
         output.write("\n")
 
-def extract_text(dump, page_labelings, verbose=False):
+def extract_text(dump, labelings, verbose=False):
+    """
+    Extracts article text and metadata for labelings from an XML dump.
+
+    :Parameters:
+        dump : :class:`mwxml.Dump`
+            The XML dump file to extract text & metadata from
+        labelings : `iterable`(`dict`)
+            A collection of labeling events to add text to
+        verbose : `bool`
+            Print dots and stuff
+
+    :Returns:
+        An `iterator` of labelings augmented with 'page_id', 'rev_id' and
+        'text'.  Note that labelings of articles that can't be looked up will
+        not be included.
+    """
+    grouped_labelings = groupby(labelings, key=lambda l: l['page_title'])
+    page_labelings = {title: sorted(list(labs), key=lambda l: l['timestamp'])
+                      for title, labs in grouped_labelings}
+    # The sorting used above is very important.
 
     for page in dump:
 
@@ -102,7 +119,7 @@ def extract_text(dump, page_labelings, verbose=False):
                     labeling['text'] = last_revision.text
 
                     yield labeling
-                    
+
                     if verbose:
                         sys.stderr.write("t")
                         sys.stderr.flush()
