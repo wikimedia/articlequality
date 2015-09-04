@@ -30,7 +30,7 @@ from multiprocessing import cpu_count
 
 import docopt
 import mwxml
-
+import mwtypes
 
 def main(argv=None):
     args = docopt.docopt(__doc__, argv=argv)
@@ -73,11 +73,8 @@ def run(dump_paths, page_labelings, output, threads, verbose=False):
                                     extract_text(d, page_labelings, verbose),
                               dump_paths, threads=threads)
 
-    for page_title, project, label, timestamp in label_events:
-        ob = {'page_title': page_title, 'project': project,
-              'timestamp': timestamp.short_format(), 'label': label}
-
-        json.dump(ob, output)
+    for labeling in labelings:
+        json.dump(labeling, output)
         output.write("\n")
 
 def extract_text(dump, labelings, verbose=False):
@@ -113,7 +110,9 @@ def extract_text(dump, labelings, verbose=False):
 
             last_revision = None
             for revision in page:
-                while revision.timestamp > labelings[0]:
+                while last_revision is not None and \
+                      len(labelings) > 0 and \
+                      revision.timestamp > mwtypes.Timestamp(labelings[0]['timestamp']):
                     labeling = labelings.pop()
                     labeling['page_id'] = page.id
                     labeling['rev_id'] = last_revision.id
