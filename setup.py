@@ -11,21 +11,21 @@ def requirements(fname):
         yield line.strip()
 
 setup(
-    name = "wikiclass",
-    version = "0.1.1",  # see wikiclass/__init__.py
-    author = "Aaron Halfaker / Morten Warncke-Wang",
-    author_email = "ahalfaker@wikimedia.org",
-    description = ("A library for performing automatic detection of assessment classes of Wikipedia articles."),
-    license = "MIT",
-    url = "https://github.com/halfak/wikiclass",
-    packages = find_packages(),
-    entry_points = {
+    name="wikiclass",
+    version="0.1.1",  # see wikiclass/__init__.py
+    author="Aaron Halfaker / Morten Warncke-Wang",
+    author_email="ahalfaker@wikimedia.org",
+    description=("A library for performing automatic detection of assessment classes of Wikipedia articles."),
+    license="MIT",
+    url="https://github.com/halfak/wikiclass",
+    packages=find_packages(),
+    entry_points={
         'console_scripts': [
             'wikiclass=wikiclass.wikiclass:main'
         ],
     },
-    long_description = read('README.md'),
-    install_requires = requirements('requirements.txt'),
+    long_description=read('README.md'),
+    install_requires=list(requirements('requirements.txt')),
     classifiers=[
         "Development Status :: 4 - Beta",
         "Topic :: Software Development :: Libraries :: Python Modules",
