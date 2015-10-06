@@ -20,7 +20,6 @@
     Options:
         -h --help                Print this documentation
         <features>               Classpath to a list/tuple of features
-        --language=<classpath>   Classpath to a Language
         --labelings=<path>       Path to a file containing labeling docs pairs
                                  [default: <stdin>]
         --value-labels=<path>    Path to a file to write feature value-labels to
@@ -53,6 +52,7 @@ def main(argv=None):
 
     run(labelings, features, solve, value_labels)
 
+
 def run(labelings, features, solve, value_labels):
 
     for labeling in labelings:
@@ -61,6 +61,7 @@ def run(labelings, features, solve, value_labels):
         value_labels.write("\t".join([encode(v) for v in feature_values] +
                                      [labeling['label']]))
         value_labels.write("\n")
+
 
 def extract_features(features, text, cache=None, context=None):
     """
