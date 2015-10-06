@@ -56,11 +56,11 @@ datasets/enwiki.observations.text_wp10.30k.tsv: \
 	datasets/enwiki.observations.text_wp10.30k.tsv
 
 datasets/frwiki.observations.text_wp10.30k.tsv: \
-                datasets/frwiki.observations.first_labelings.30k.tsv
-        cat datasets/frwiki.observations.first_labelings.30k.tsv | \
-        ./utility extract_text \
-                /mnt/data/xmldatadumps/public/frwiki/20150602/frwiki-20150602-pages-meta-history*.xml*.bz2 > \
-        datasets/frwiki.observations.text_wp10.30k.tsv
+		datasets/frwiki.observations.first_labelings.30k.tsv
+	cat datasets/frwiki.observations.first_labelings.30k.tsv | \
+	./utility extract_text \
+		/mnt/data/xmldatadumps/public/frwiki/20150602/frwiki-20150602-pages-meta-history*.xml*.bz2 > \
+	datasets/frwiki.observations.text_wp10.30k.tsv
 
 datasets/enwiki.features_wp10.30k.tsv: \
 		datasets/enwiki.observations.text_wp10.30k.tsv
@@ -70,11 +70,11 @@ datasets/enwiki.features_wp10.30k.tsv: \
 	datasets/enwiki.features_wp10.30k.tsv
 
 datasets/frwiki.features_wp10.30k.tsv: \
-                datasets/frwiki.observations.text_wp10.30k.tsv
-        cat datasets/frwiki.observations.text_wp10.30k.tsv | \
-        ./utility extract_features \
-                wikiclass.feature_lists.frwiki.wp10 > \
-        datasets/frwiki.features_wp10.30k.tsv
+		datasets/frwiki.observations.text_wp10.30k.tsv
+	cat datasets/frwiki.observations.text_wp10.30k.tsv | \
+	./utility extract_features \
+		wikiclass.feature_lists.frwiki.wp10 > \
+	datasets/frwiki.features_wp10.30k.tsv
 
 models/enwiki.wp10.rf.model: datasets/enwiki.features_wp10.30k.tsv
 	cat datasets/enwiki.features_wp10.30k.tsv | \
@@ -93,11 +93,11 @@ models/enwiki.wp10.rf.model: datasets/enwiki.features_wp10.30k.tsv
 #   http://opensym.org/wsos2013/proceedings/p0202-warncke.pdf
 
 models/frwiki.wp10.rf.model: datasets/frwiki.features_wp10.30k.tsv
-        cat datasets/frwiki.features_wp10.30k.tsv | \
-        revscoring train_test \
-                revscoring.scorer_models.RFModel \
-                wikiclass.feature_lists.frwiki.wp10 \
-                -p 'n_estimators=501' \
-                -p 'min_samples_leaf=8' \
-                --version=0.0.1 > \
-        models/frwiki.wp10.rf.model
+	cat datasets/frwiki.features_wp10.30k.tsv | \
+	revscoring train_test \
+	revscoring.scorer_models.RFModel \
+		wikiclass.feature_lists.frwiki.wp10 \
+		-p 'n_estimators=501' \
+		-p 'min_samples_leaf=8' \
+		--version=0.0.1 > \
+	models/frwiki.wp10.rf.model
