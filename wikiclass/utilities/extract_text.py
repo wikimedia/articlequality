@@ -42,6 +42,9 @@ def main(argv=None):
     else:
         path = os.path.expanduser(args['--labelings'])
         labelings = (json.loads(line) for line in open(path))
+    grouped_labelings = groupby(labelings, key=lambda l: l['page_title'])
+    page_labelings = {title: sorted(list(labs), key=lambda l: l['timestamp'])
+                      for title, labs in grouped_labelings}
 
     if args['--threads'] == "<cpu_count>":
         threads = cpu_count()
@@ -77,7 +80,7 @@ def run(dump_paths, page_labelings, output, threads, verbose=False):
         json.dump(labeling, output)
         output.write("\n")
 
-def extract_text(dump, labelings, verbose=False):
+def extract_text(dump, page_labelings, verbose=False):
     """
     Extracts article text and metadata for labelings from an XML dump.
 
@@ -94,11 +97,6 @@ def extract_text(dump, labelings, verbose=False):
         'text'.  Note that labelings of articles that can't be looked up will
         not be included.
     """
-    grouped_labelings = groupby(labelings, key=lambda l: l['page_title'])
-    page_labelings = {title: sorted(list(labs), key=lambda l: l['timestamp'])
-                      for title, labs in grouped_labelings}
-    # The sorting used above is very important.
-
     for page in dump:
 
         if page.namespace == 0 and page.title in page_labelings:
