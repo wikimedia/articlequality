@@ -51,15 +51,17 @@ datasets/frwiki.observations.first_labelings.30k.tsv: \
 datasets/enwiki.observations.text_wp10.30k.tsv: \
 		datasets/enwiki.observations.first_labelings.30k.tsv
 	cat datasets/enwiki.observations.first_labelings.30k.tsv | \
-	./utility extract_text \
-		/mnt/data/xmldatadumps/public/enwiki/20150602/enwiki-20150602-pages-meta-history*.xml*.bz2 > \
+	./utility fetch_text \
+		--api-host=https://en.wikipedia.org \
+		--verbose > \
 	datasets/enwiki.observations.text_wp10.30k.tsv
 
 datasets/frwiki.observations.text_wp10.30k.tsv: \
 		datasets/frwiki.observations.first_labelings.30k.tsv
 	cat datasets/frwiki.observations.first_labelings.30k.tsv | \
-	./utility extract_text \
-		/mnt/data/xmldatadumps/public/frwiki/20150602/frwiki-20150602-pages-meta-history*.xml*.bz2 > \
+	./utility fetch_text \
+                --api-host=https://fr.wikipedia.org \
+                --verbose > \
 	datasets/frwiki.observations.text_wp10.30k.tsv
 
 datasets/enwiki.features_wp10.30k.tsv: \
