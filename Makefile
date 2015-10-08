@@ -68,14 +68,16 @@ datasets/enwiki.features_wp10.30k.tsv: \
 		datasets/enwiki.observations.text_wp10.30k.tsv
 	cat datasets/enwiki.observations.text_wp10.30k.tsv | \
 	./utility extract_features \
-		wikiclass.feature_lists.enwiki.wp10 > \
+		wikiclass.feature_lists.enwiki.wp10 \
+		--verbose > \
 	datasets/enwiki.features_wp10.30k.tsv
 
 datasets/frwiki.features_wp10.9k.tsv: \
 		datasets/frwiki.observations.text_wp10.9k.tsv
 	cat datasets/frwiki.observations.text_wp10.9k.tsv | \
 	./utility extract_features \
-		wikiclass.feature_lists.frwiki.wp10 > \
+		wikiclass.feature_lists.frwiki.wp10 \
+		--verbose > \
 	datasets/frwiki.features_wp10.9k.tsv
 
 models/enwiki.wp10.rf.model: datasets/enwiki.features_wp10.30k.tsv
