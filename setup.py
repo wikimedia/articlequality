@@ -12,7 +12,7 @@ def requirements(fname):
 
 setup(
     name="wikiclass",
-    version="0.1.2",  # see wikiclass/__init__.py
+    version="0.1.3",  # see wikiclass/__init__.py
     author="Aaron Halfaker / Morten Warncke-Wang",
     author_email="ahalfaker@wikimedia.org",
     description=("A library for performing automatic detection of assessment classes of Wikipedia articles."),

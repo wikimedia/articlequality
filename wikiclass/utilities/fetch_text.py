@@ -5,13 +5,13 @@
     Fetches text & metadata for labelings using a MediaWiki API.
 
     Usage:
-        fetch_text --api=<url> [--labelings=<path>] [--output=<path>] [--verbose]
+        fetch_text --api-host=<url> [--labelings=<path>] [--output=<path>] [--verbose]
         fetch_text -h | --help
 
     Options:
         -h --help           Show this documentation.
-        --api-host=<url>    The url of a MediaWiki API e.g.
-                            "https://en.wikipedia.org/w/api.php"
+        --api-host=<url>    The hostname of a MediaWiki e.g. 
+                            "https://en.wikipedia.org"
         --labelings=<path>  Path to a containting observations with extracted
                             labels. [default: <stdin>]
         --output=<path>     Path to a file to write new observations
@@ -51,6 +51,7 @@ def run(labelings, output, session, verbose):
 
     for labeling in fetch_text(session, labelings, verbose=verbose):
         json.dump(labeling, output)
+        output.write("\n")
 
 
 def fetch_text(session, labelings, verbose=False):
@@ -78,6 +79,7 @@ def fetch_text(session, labelings, verbose=False):
         if rev_doc is None:
             if verbose:
                 sys.stderr.write("?")
+                sys.stderr.write(labeling['page_title'] + " " + labeling['timestamp'])
                 sys.stderr.flush()
         else:
             if verbose:
@@ -97,11 +99,11 @@ def fetch_text(session, labelings, verbose=False):
 def get_last_rev_before(session, page_title, timestamp):
     doc = session.get(action="query", prop="revisions", titles=page_title,
                       rvstart=timestamp, rvlimit=1, rvdir="older",
-                      rvprop=["ids", "content"])
+                      rvprop=["ids", "content"], redirects=True)
 
     try:
-        page_doc = next(doc['query']['pages'].values())
-    except KeyError:
+        page_doc = list(doc['query']['pages'].values())[0]
+    except (KeyError, IndexError):
         # No pages found
         return None
 
