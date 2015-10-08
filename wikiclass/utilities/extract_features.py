@@ -60,18 +60,23 @@ def main(argv=None):
 
     verbose = args['--verbose']
 
-    run(labelings, features, solve, value_labels, verbose, debug)
+    run(labelings, features, solve, value_labels, verbose)
 
 
-def run(labelings, features, solve, value_labels, verbose=):
+def run(labelings, features, solve, value_labels, verbose=False):
 
     for labeling in labelings:
         feature_values = extract_features(features, labeling['text'])
+        if verbose:
+            sys.stderr.write(".")
+            sys.stderr.flush()
 
         value_labels.write("\t".join([encode(v) for v in feature_values] +
                                      [labeling['label']]))
         value_labels.write("\n")
 
+    if verbose:
+        sys.stderr.write("\n")
 
 def extract_features(features, text, cache=None, context=None):
     """
