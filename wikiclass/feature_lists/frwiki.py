@@ -13,13 +13,11 @@ from ..features.revision import templates_that_match
 # https://fr.wikipedia.org/wiki/Cat%C3%A9gorie:Mod%C3%A8le_pour_bibliographie
 CITE_TEMPLATES = [
     "Article",
-    "Article/Bac[ _]à[ _]sable",
     "Chapitre",
     "Jugement",
-    "Lein[ _]web",
+    "Lien[ _]web",
     "Loi",
-    "Ouvrage",
-    "Palette[ _]Modèles[ _]bibliographiques"
+    "Ouvrage"
 ]
 
 cite_templates = templates_that_match("|".join(CITE_TEMPLATES),
