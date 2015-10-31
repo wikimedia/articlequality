@@ -10,7 +10,7 @@
 
     Options:
         -h --help           Show this documentation.
-        --api-host=<url>    The hostname of a MediaWiki e.g. 
+        --api-host=<url>    The hostname of a MediaWiki e.g.
                             "https://en.wikipedia.org"
         --labelings=<path>  Path to a containting observations with extracted
                             labels. [default: <stdin>]
@@ -22,9 +22,8 @@ import json
 import sys
 import traceback
 
-from docopt import docopt
-
 import mwapi
+from docopt import docopt
 
 
 def main(argv=None):
@@ -88,7 +87,7 @@ def fetch_text(session, labelings, verbose=False):
 
             labeling['page_id'] = rev_doc['page'].get("pageid")
             labeling['rev_id'] = rev_doc.get("revid")
-            labeling['text'] = rev_doc.get("*", "")
+            labeling['text'] = rev_doc.get("*")
 
             yield labeling
 
