@@ -24,13 +24,15 @@
 import json
 import logging
 import os.path
+import re
 import sys
 from itertools import groupby
 from multiprocessing import cpu_count
 
 import docopt
-import mwxml
 import mwtypes
+import mwxml
+
 
 def main(argv=None):
     args = docopt.docopt(__doc__, argv=argv)
@@ -60,6 +62,7 @@ def main(argv=None):
 
     run(dump_paths, page_labelings, output, threads, verbose=verbose)
 
+
 def run(dump_paths, page_labelings, output, threads, verbose=False):
     logging.basicConfig(
         level=logging.DEBUG if verbose else logging.WARNING,
@@ -79,6 +82,7 @@ def run(dump_paths, page_labelings, output, threads, verbose=False):
     for labeling in labelings:
         json.dump(labeling, output)
         output.write("\n")
+
 
 def extract_text(dump, page_labelings, verbose=False):
     """
@@ -114,7 +118,10 @@ def extract_text(dump, page_labelings, verbose=False):
                     labeling = labelings.pop()
                     labeling['page_id'] = page.id
                     labeling['rev_id'] = last_revision.id
-                    labeling['text'] = last_revision.text
+                    if not_an_article(last_revision.text):
+                        labeling['text'] = None
+                    else:
+                        labeling['text'] = last_revision.text
 
                     yield labeling
 
@@ -125,3 +132,12 @@ def extract_text(dump, page_labelings, verbose=False):
                 # Don't update last_revision if the text was deleted
                 if revision.text is not None:
                     last_revision = revision
+
+
+REDIRECT_RE = re.compile("#redirect", re.I)
+
+
+def not_an_article(text):
+    return (text is None or
+            len(text) < 50 or
+            REDIRECT_RE.match(text))

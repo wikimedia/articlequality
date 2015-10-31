@@ -25,6 +25,8 @@ import traceback
 import mwapi
 from docopt import docopt
 
+from .extract_text import not_an_article
+
 
 def main(argv=None):
     args = docopt(__doc__, argv=argv)
@@ -87,13 +89,19 @@ def fetch_text(session, labelings, verbose=False):
 
             labeling['page_id'] = rev_doc['page'].get("pageid")
             labeling['rev_id'] = rev_doc.get("revid")
-            labeling['text'] = rev_doc.get("*")
+            text = rev_doc.get("*")
+            if not_an_article(text):
+                labeling['text'] = None
+            else:
+                labeling['text'] = text
+
 
             yield labeling
 
     if verbose:
         sys.stderr.write("\n")
         sys.stderr.flush()
+
 
 def get_last_rev_before(session, page_title, timestamp):
     doc = session.get(action="query", prop="revisions", titles=page_title,
