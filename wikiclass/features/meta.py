@@ -3,11 +3,11 @@ import re
 from revscoring import Feature
 
 
-class templates_that_match(Feature):
+class TemplatesThatMatch(Feature):
 
-    def __init__(self, templates_ds, regex, name=None):
+    def __init__(self, regex, templates_ds, name=None):
         if not hasattr(regex, "pattern"):
-            regex = re.compile(regex)
+            regex = re.compile(regex, re.I)
 
         self.regex = regex
 
@@ -18,7 +18,5 @@ class templates_that_match(Feature):
                          returns=int)
 
     def _process(self, templates):
-        for template in templates:
-            print(template.name)
-        return sum(bool(self.regex.match(str(template.name)))
+        return sum(bool(self.regex.match(str(template.name).replace("_", " ")))
                    for template in templates)
