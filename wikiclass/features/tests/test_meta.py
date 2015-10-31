@@ -10,9 +10,10 @@ def test_templates_that_match():
     text = """
     {{Foo|bar=1}}
     {{Bar}}
-    {{Bar foo}}
+    {{Bar_foo}}
     {{Derp bar foo}}
     """
 
-    barfoos = meta.templates_that_match(templates_ds, "bar foo")
+    barfoos = meta.TemplatesThatMatch("bar foo", templates_ds)
+
     eq_(solve(barfoos, cache={revscoring.datasources.revision.text: text}), 1)
