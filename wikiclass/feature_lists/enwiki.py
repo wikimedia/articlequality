@@ -14,7 +14,7 @@ cite_templates = templates_that_match(
 infobox_templates = templates_that_match(
     r"infobox", name="enwiki.revision.infobox_templates")
 
-proportion_of_templated_references = cite_templates / revision.ref_tags
+proportion_of_templated_references = cite_templates / max(revision.ref_tags, 1)
 
 CN_TEMPLATES = [
     r"Citation needed",
@@ -49,7 +49,7 @@ wp10 = [
     log(revision.ref_tags + 1),
     revision.ref_tags / max(revision.content_chars, 1),
     log(max((revision.ref_tags - cite_templates) + 1, 1)),
-    cite_templates / revision.ref_tags,
+    proportion_of_templated_references,
     log(cn_templates + 1),
     cn_templates / max(revision.content_chars, 1),
     log(who_templates + 1),
