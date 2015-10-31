@@ -4,6 +4,6 @@ from . import meta
 
 
 def templates_that_match(regex, name=None):
-    return meta.templates_that_match(regex,
-                                     revscoring.datasources.revision.templates,
-                                     name=name)
+    return meta.TemplatesThatMatch(regex,
+                                   revscoring.datasources.revision.templates,
+                                   name=name)
