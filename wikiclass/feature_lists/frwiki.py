@@ -27,7 +27,7 @@ infobox_templates = templates_that_match(
     r"^infobox",
     name="frwiki.revision.infobox_templates")
 
-proportion_of_templated_references = cite_templates / revision.ref_tags
+proportion_of_templated_references = cite_templates / max(revision.ref_tags, 1)
 
 # Copied (2015-10-29) from:
 # https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Citez_vos_sources#R.C3.A9clamation_et_contestation_de_sources
