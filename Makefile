@@ -87,7 +87,7 @@ models/enwiki.wp10.rf.model: datasets/enwiki.features_wp10.30k.tsv
 		wikiclass.feature_lists.enwiki.wp10 \
 		-p 'n_estimators=501' \
 		-p 'min_samples_leaf=8' \
-		--version=0.2.0 > \
+		--version=0.2.1 > \
 	models/enwiki.wp10.rf.model
 #Based on work by Nettrom[1] and with a few improvements and extensions.
 #
@@ -99,10 +99,9 @@ models/enwiki.wp10.rf.model: datasets/enwiki.features_wp10.30k.tsv
 models/frwiki.wp10.rf.model: datasets/frwiki.features_wp10.9k.tsv
 	cat datasets/frwiki.features_wp10.9k.tsv | \
 	revscoring train_test \
-	revscoring.scorer_models.RFModel \
+		revscoring.scorer_models.RFModel \
 		wikiclass.feature_lists.frwiki.wp10 \
 		-p 'n_estimators=501' \
 		-p 'min_samples_leaf=8' \
-		--version=0.0.2 \
-                --debug > \
+		--version=0.1.0 > \
 	models/frwiki.wp10.rf.model
