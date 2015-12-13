@@ -37,9 +37,11 @@ import sys
 from multiprocessing import Pool, cpu_count
 
 import docopt
+import yamlconf
+
 from revscoring.datasources import revision
 from revscoring.dependencies import solve
-from revscoring.utilities.util import encode, import_from_path
+from revscoring.utilities.util import encode
 
 
 def main(argv=None):
@@ -50,7 +52,7 @@ def main(argv=None):
         format='%(asctime)s %(levelname)s:%(name)s -- %(message)s'
     )
 
-    features = import_from_path(args['<features>'])
+    features = yamlconf.import_module(args['<features>'])
 
     if args['--labelings'] != '<stdin>':
         labelings = (json.loads(line) for line in open(args['--labelings']))

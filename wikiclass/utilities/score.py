@@ -14,6 +14,10 @@
         <text>        The path to a file containing text to score
                       [default: <stdin>]
 """
+import sys
+
+import docopt
+
 from revscoring.scorer_models import MLScorerModel
 
 from .extract_features import extract_features
@@ -29,6 +33,7 @@ def main(argv=None):
         text = open(args['<text>']).read()
 
     print(score(scorer_model, text))
+
 
 def score(scorer_model, text, cache=None, context=None):
     """
