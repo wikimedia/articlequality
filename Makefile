@@ -63,8 +63,39 @@ models/enwiki.wp10.rf.model: datasets/enwiki.features_wp10.30k.tsv
 		wikiclass.feature_lists.enwiki.wp10 \
 		-p 'n_estimators=501' \
 		-p 'min_samples_leaf=8' \
-		--version=0.2.1 > \
+		--version=0.3.1 > \
 	models/enwiki.wp10.rf.model
+
+datasets/enwiki.features_wp10.nettrom_30k.tsv: \
+		datasets/enwiki.rev_wp10.nettrom_30k.tsv
+	cat datasets/enwiki.rev_wp10.nettrom_30k.tsv | \
+	revscoring extract_features \
+		wikiclass.feature_lists.enwiki.wp10 \
+		--host https://en.wikipedia.org \
+		--include-revid \
+		--verbose > \
+	datasets/enwiki.features_wp10.nettrom_30k.tsv
+
+tuning_reports/enwiki.nettrom_wp10.md: datasets/enwiki.features_wp10.nettrom_30k.tsv
+	cat datasets/enwiki.features_wp10.nettrom_30k.tsv | cut -f2- | \
+	revscoring tune \
+		config/classifiers.params.yaml \
+		wikiclass.feature_lists.enwiki.wp10 \
+		--cv-timeout=60 \
+		--scoring=accuracy \
+		--debug \
+		--label-type=str > \
+	tuning_reports/enwiki.nettrom_wp10.md
+
+models/enwiki.nettrom_wp10.rf.model: datasets/enwiki.features_wp10.nettrom_30k.tsv
+	cat datasets/enwiki.features_wp10.nettrom_30k.tsv | cut -f2- | \
+	revscoring train_test \
+		revscoring.scorer_models.RF \
+		wikiclass.feature_lists.enwiki.wp10 \
+		-p 'n_estimators=501' \
+		-p 'min_samples_leaf=8' \
+		--version=0.3.1 > \
+	models/enwiki.nettrom_wp10.rf.model
 
 enwiki_models:
 	models/enwiki.wp10.rf.model
