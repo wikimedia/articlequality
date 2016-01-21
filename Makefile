@@ -1,8 +1,8 @@
-all_models:
+all_models: \
 	enwiki_models \
 	frwiki_models
 
-all_tuning_reports:
+all_tuning_reports: \
 	enwiki_tuning_reports \
 	frwiki_tuning_reports
 
@@ -96,17 +96,20 @@ models/enwiki.nettrom_wp10.rf.model: datasets/enwiki.features_wp10.nettrom_30k.t
 	revscoring train_test \
 		revscoring.scorer_models.RF \
 		wikiclass.feature_lists.enwiki.wp10 \
-		-p 'n_estimators=501' \
+		-p 'criterion="entropy"' \
+		-p 'n_estimators=320' \
 		-p 'min_samples_leaf=8' \
+		-p 'max_features="log2"' \
 		--version=0.3.1 > \
 	models/enwiki.nettrom_wp10.rf.model
 
-enwiki_models:
-	models/enwiki.wp10.rf.model
+enwiki_models: \
 	models/enwiki.nettrom_wp10.rf.model
+	# models/enwiki.wp10.rf.model
 
-enwiki_tuning_reports:
-	tuning_reports/enwiki.wp10.md
+
+enwiki_tuning_reports: \
+	tuning_reports/enwiki.wp10.md \
 	tuning_reports/enwiki.nettrom_wp10.md
 
 ########################## French Wikipedia ###################################
@@ -164,15 +167,15 @@ tuning_reports/frwiki.wp10.md: datasets/frwiki.features_wp10.9k.tsv
 models/frwiki.wp10.rf.model: datasets/frwiki.features_wp10.9k.tsv
 	cat datasets/frwiki.features_wp10.9k.tsv | \
 	revscoring train_test \
-		revscoring.scorer_models.RFModel \
+		revscoring.scorer_models.RF \
 		wikiclass.feature_lists.frwiki.wp10 \
 		-p 'n_estimators=501' \
 		-p 'min_samples_leaf=8' \
 		--version=0.1.0 > \
 	models/frwiki.wp10.rf.model
 
-frwiki_models:
+frwiki_models: \
 	models/frwiki.wp10.rf.model
 
-frwiki_tuning_reports:
+frwiki_tuning_reports: \
 	tuning_reports/frwiki.wp10.md

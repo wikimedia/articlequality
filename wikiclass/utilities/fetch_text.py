@@ -51,8 +51,9 @@ def main(argv=None):
 def run(labelings, output, session, verbose):
 
     for labeling in fetch_text(session, labelings, verbose=verbose):
-        json.dump(labeling, output)
-        output.write("\n")
+        if labeling['text'] is not None:
+            json.dump(labeling, output)
+            output.write("\n")
 
 
 def fetch_text(session, labelings, verbose=False):
