@@ -2,6 +2,10 @@ all_models:
 	enwiki_models \
 	frwiki_models
 
+all_tuning_reports:
+	enwiki_tuning_reports \
+	frwiki_tuning_reports
+
 ########################## English Wikipedia ###################################
 datasets/enwiki.observations.first_labelings.20150602.tsv:
 	./utility extract_labelings \
@@ -99,6 +103,11 @@ models/enwiki.nettrom_wp10.rf.model: datasets/enwiki.features_wp10.nettrom_30k.t
 
 enwiki_models:
 	models/enwiki.wp10.rf.model
+	models/enwiki.nettrom_wp10.rf.model
+
+enwiki_tuning_reports:
+	tuning_reports/enwiki.wp10.md
+	tuning_reports/enwiki.nettrom_wp10.md
 
 ########################## French Wikipedia ###################################
 datasets/frwiki.observations.first_labelings.20150602.tsv:
@@ -163,4 +172,7 @@ models/frwiki.wp10.rf.model: datasets/frwiki.features_wp10.9k.tsv
 	models/frwiki.wp10.rf.model
 
 frwiki_models:
-	models/enwiki.wp10.rf.model
+	models/frwiki.wp10.rf.model
+
+frwiki_tuning_reports:
+	tuning_reports/frwiki.wp10.md
