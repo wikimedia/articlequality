@@ -1,6 +1,7 @@
 from revscoring.features import wikitext
 
 article = [
+    wikitext.revision.chars,
     wikitext.revision.content_chars,
     wikitext.revision.ref_tags,
     wikitext.revision.ref_tags / max(wikitext.revision.content_chars, 1),

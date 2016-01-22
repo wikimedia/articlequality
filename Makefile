@@ -113,25 +113,31 @@ enwiki_tuning_reports: \
 	tuning_reports/enwiki.nettrom_wp10.md
 
 ########################## French Wikipedia ###################################
-datasets/frwiki.observations.first_labelings.20150602.tsv:
+#datasets/frwiki.observations.first_labelings.20150602.tsv:
+#	./utility extract_labelings \
+#		/mnt/data/xmldatadumps/public/frwiki/20150602/frwiki-20150602-pages-meta-history*.xml*.bz2 > \
+#	datasets/frwiki.observations.first_labelings.20150602.tsv
+
+datasets/frwiki.observations.first_labelings.20151202.tsv:
 	./utility extract_labelings \
-		/mnt/data/xmldatadumps/public/frwiki/20150602/frwiki-20150602-pages-meta-history*.xml*.bz2 > \
-	datasets/frwiki.observations.first_labelings.20150602.tsv
+		/mnt/data/xmldatadumps/public/frwiki/20151202/frwiki-20151202-pages-meta-history*.xml*.bz2 > \
+	datasets/frwiki.observations.first_labelings.20151202.tsv
+
 
 datasets/frwiki.observations.first_labelings.9k.tsv: \
-		datasets/frwiki.observations.first_labelings.20150602.tsv
+		datasets/frwiki.observations.first_labelings.20151202.tsv
 	( \
-		grep -P '"label": "e"' datasets/frwiki.observations.first_labelings.20150602.tsv | \
+		grep -P '"label": "e"' datasets/frwiki.observations.first_labelings.20151202.tsv | \
 		shuf -n 1500; \
-		grep -P '"label": "bd"' datasets/frwiki.observations.first_labelings.20150602.tsv | \
+		grep -P '"label": "bd"' datasets/frwiki.observations.first_labelings.20151202.tsv | \
 		shuf -n 1500; \
-		grep -P '"label": "b"' datasets/frwiki.observations.first_labelings.20150602.tsv | \
+		grep -P '"label": "b"' datasets/frwiki.observations.first_labelings.20151202.tsv | \
 		shuf -n 1500; \
-		grep -P '"label": "a"' datasets/frwiki.observations.first_labelings.20150602.tsv | \
+		grep -P '"label": "a"' datasets/frwiki.observations.first_labelings.20151202.tsv | \
 		shuf -n 1500; \
-		grep -P '"label": "ba"' datasets/frwiki.observations.first_labelings.20150602.tsv | \
+		grep -P '"label": "ba"' datasets/frwiki.observations.first_labelings.20151202.tsv | \
 		shuf -n 1500; \
-		grep -P '"label": "adq"' datasets/frwiki.observations.first_labelings.20150602.tsv | \
+		grep -P '"label": "adq"' datasets/frwiki.observations.first_labelings.20151202.tsv | \
 		shuf -n 1500 \
 	) | \
 	shuf > \
@@ -171,7 +177,7 @@ models/frwiki.wp10.rf.model: datasets/frwiki.features_wp10.9k.tsv
 		wikiclass.feature_lists.frwiki.wp10 \
 		-p 'n_estimators=501' \
 		-p 'min_samples_leaf=8' \
-		--version=0.1.0 > \
+		--version=0.2.0 > \
 	models/frwiki.wp10.rf.model
 
 frwiki_models: \

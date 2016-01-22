@@ -105,7 +105,7 @@ local_wiki = [
     lvl4_cn_templates / max(wikitext.revision.content_chars, 1),
     lvl5_cn_templates,
     lvl5_cn_templates / max(wikitext.revision.content_chars, 1),
-    main_article_templates / max(wikitext.revision.content_chars, 1),
+    date_templates,
     date_templates / max(wikitext.revision.content_chars, 1)
 ]
 
