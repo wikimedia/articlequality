@@ -77,7 +77,7 @@ def run(dump_paths, threads, output, verbose=False, extractor=None):
 
     else:
         label_events = mwxml.map(lambda d, p: \
-                                    dump2labels(d, extractor, verbose),
+                                    extract_labelings(d, extractor, verbose),
                                  dump_paths,threads=threads)
 
     for labeling in label_events:
