@@ -4,7 +4,7 @@ French Wikipedia
 """
 
 from revscoring.features import wikitext
-from revscoring.features.modifiers import max, sub
+from revscoring.features.modifiers import log, max, sub
 from revscoring.languages import french
 
 from . import wikipedia
@@ -94,10 +94,16 @@ local_wiki = [
     main_article_templates / max(wikitext.revision.content_chars, 1),
     french.stemmed.revision.stem_chars /
         max(wikitext.revision.content_chars, 1),
+    french.dictionary.revision.dict_words / wikitext.revision.words,
+    lvl1_cn_templates,
     lvl1_cn_templates / max(wikitext.revision.content_chars, 1),
+    lvl2_cn_templates,
     lvl2_cn_templates / max(wikitext.revision.content_chars, 1),
+    lvl3_cn_templates,
     lvl3_cn_templates / max(wikitext.revision.content_chars, 1),
+    lvl4_cn_templates,
     lvl4_cn_templates / max(wikitext.revision.content_chars, 1),
+    lvl5_cn_templates,
     lvl5_cn_templates / max(wikitext.revision.content_chars, 1),
     main_article_templates / max(wikitext.revision.content_chars, 1),
     date_templates / max(wikitext.revision.content_chars, 1)
