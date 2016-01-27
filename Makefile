@@ -182,7 +182,6 @@ models/frwiki.wp10.rf.model: datasets/frwiki.features_wp10.9k.tsv
 		-p 'n_estimators=501' \
 		-p 'min_samples_leaf=8' \
 		-s 'roc' \
-		--balance-sample-weight \
 		--center --scale > \
 	models/frwiki.wp10.rf.model
 
