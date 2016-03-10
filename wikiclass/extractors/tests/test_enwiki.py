@@ -1,7 +1,7 @@
 from collections import namedtuple
 
 import mwparserfromhell as mwp
-from mw import Timestamp
+from mwtypes import Timestamp
 from nose.tools import eq_
 
 from .. import enwiki
