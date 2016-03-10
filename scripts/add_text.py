@@ -14,41 +14,42 @@ Options:
     <api_url>  The url of a MediaWiki API e.g.
                "https://en.wikipedia.org/w/api.php"
 """
-import sys, csv
+import csv
+import mwapi
+import sys
+
 from docopt import docopt
-from mw import api
-from mw.api.errors import APIError
 
 
 def main():
     args = docopt(__doc__, version="0.0.0")
-    
-    api_session = api.Session(args['<api_url>'])
-    
+
+    api_session = mwapi.Session(args['<api_url>'])
+
     writer = None
     for row in csv.DictReader(sys.stdin, delimiter="\t"):
-        if writer == None:
+        if writer is None:
             writer = csv.DictWriter(sys.stdout, list(row.keys()) + ['text'],
                                     delimiter="\t")
             writer.writeheader()
-        
+
         try:
             docs = list(api_session.revisions.query(revids={row['rev_id']},
                                                     properties={"content"}))
-            
+
             row['text'] = docs[0]['*']
-            
+
             writer.writerow(row)
-            
+
             sys.stderr.write(".")
-        except APIError:
+        except mwapi.errors.APIError:
             raise
             sys.stderr.write("a")
         except KeyError:
             sys.stderr.write("e")
         finally:
             sys.stderr.flush()
-        
-    
 
-if __name__ == "__main__": main()
+
+if __name__ == "__main__":
+    main()
