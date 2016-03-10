@@ -8,13 +8,14 @@
 """
 
 import logging
+import mwreverts
 import sys
 import traceback
 
 import mwparserfromhell as mwp
-from mw.lib import reverts
 
 logger = logging.getLogger(__name__)
+
 
 class Extractor:
     """
@@ -37,11 +38,11 @@ class Extractor:
 
     def extract(self, page, verbose=False):
         """
-        Processes an :class:`mw.xml_dump.Page` and returns a generator of
+        Processes an :class:`mwxml.Page` and returns a generator of
         first-observations of a project/label pair.
 
         :Parameters:
-            page : :class:`mw.xml_dump.Page`
+            page : :class:`mwxml.Page`
                 Page to process
             verbose : `bool`
                 print dots to stderr
@@ -56,7 +57,7 @@ class Extractor:
 
             labelings = {}
             last_labels = set()
-            detector = reverts.Detector()
+            detector = mwreverts.Detector()
 
             # Process all of the revisions looking for new class labels
             for revision in page:
