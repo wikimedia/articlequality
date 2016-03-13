@@ -6,6 +6,8 @@ tuning_reports: \
 	enwiki_tuning_reports \
 	frwiki_tuning_reports
 
+test_statistics = -s 'table' -s 'accuracy' -s 'roc' -s 'f1'
+
 ########################## English Wikipedia ###################################
 datasets/enwiki.observations.first_labelings.20150602.tsv:
 	./utility extract_labelings \
@@ -65,9 +67,12 @@ models/enwiki.wp10.rf.model: datasets/enwiki.features_wp10.30k.tsv
 	revscoring train_test \
 		revscoring.scorer_models.RF \
 		wikiclass.feature_lists.enwiki.wp10 \
+		--version 0.3.1 \
 		-p 'n_estimators=501' \
 		-p 'min_samples_leaf=8' \
-		--version=0.3.1 > \
+		$(test_statistics) \
+		--balance-sample \
+		--center --scale > \
 	models/enwiki.wp10.rf.model
 
 datasets/enwiki.features_wp10.nettrom_30k.tsv: \
@@ -101,15 +106,13 @@ models/enwiki.nettrom_wp10.rf.model: datasets/enwiki.features_wp10.nettrom_30k.t
 		-p 'n_estimators=320' \
 		-p 'min_samples_leaf=8' \
 		-p 'max_features="log2"' \
-		-s 'roc' \
-		--balance-sample-weight \
+		$(test_statistics) \
+		--balance-sample \
 		--center --scale > \
 	models/enwiki.nettrom_wp10.rf.model
 
 enwiki_models: \
 	models/enwiki.nettrom_wp10.rf.model
-	# models/enwiki.wp10.rf.model
-
 
 enwiki_tuning_reports: \
 	tuning_reports/enwiki.wp10.md \
@@ -181,7 +184,8 @@ models/frwiki.wp10.rf.model: datasets/frwiki.features_wp10.9k.tsv
 		--version 0.2.0 \
 		-p 'n_estimators=501' \
 		-p 'min_samples_leaf=8' \
-		-s 'roc' \
+		$(test_statistics) \
+		--balance-sample \
 		--center --scale > \
 	models/frwiki.wp10.rf.model
 
