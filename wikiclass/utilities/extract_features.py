@@ -39,7 +39,7 @@ from multiprocessing import Pool, cpu_count
 import docopt
 import yamlconf
 
-from revscoring.datasources import revision
+from revscoring.datasources import revision_oriented
 from revscoring.dependencies import solve
 from revscoring.utilities.util import encode
 
@@ -124,7 +124,7 @@ def extract_features(features, text, cache=None, context=None):
     :Returns:
         A list of extracted feature values
     """
-    local_cache = {revision.text: text}
+    local_cache = {revision_oriented.revision.text: text}
     local_cache.update(cache or {})
 
     return list(solve(features, cache=local_cache, context=context))
