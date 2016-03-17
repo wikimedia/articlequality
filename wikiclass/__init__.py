@@ -5,4 +5,4 @@ from .utilities.extract_text import extract_text
 from .utilities.fetch_text import fetch_text
 from .utilities.score import score
 
-__version__ = "0.2.3"
+__version__ = "0.3.0"
