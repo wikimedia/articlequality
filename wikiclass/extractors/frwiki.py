@@ -49,7 +49,7 @@ def normalize_label(value):
 sys.modules[__name__] = TemplateExtractor(
     __name__,
     doc="""
-wikiclass.extractors.itwiki
+wikiclass.extractors.frwiki
 +++++++++++++++++++++++++++
 
 This extractor looks for instances of the "wikiprojet" template on article talk
