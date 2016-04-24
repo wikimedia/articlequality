@@ -3,6 +3,8 @@ import re
 import sys
 import traceback
 
+import mwparserfromhell as mwp
+
 from .extractor import TemplateExtractor
 
 logger = logging.getLogger(__name__)
