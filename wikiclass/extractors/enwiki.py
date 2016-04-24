@@ -15,6 +15,11 @@ def from_template(template):
         project_name = normalize_project_name(template_name)
         try:
             label = str(template.get('class').value).strip().lower()
+            if re.search(r'<!--', label): # HTML comment in param value?
+                label = mwp.parse(label)
+                label.remove(label.filter_comments())
+                label = str(label).strip()
+
             if label in POSSIBLE_LABELS:
                 return project_name, label
             else:
