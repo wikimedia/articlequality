@@ -3,6 +3,8 @@ import re
 import sys
 import traceback
 
+import mwparserfromhell as mwp
+
 from .extractor import TemplateExtractor
 
 logger = logging.getLogger(__name__)
@@ -15,6 +17,7 @@ def from_template(template):
     if template_name == "wikiprojet" and template.has_param('avancement'):
         try:
             label = normalize_label(template.get('avancement').value)
+
             if label is not None:
                 return PROJECT_NAME, label
             else:
@@ -39,7 +42,11 @@ LABEL_MATCHES = [
 ]
 def normalize_label(value):
     value = str(value).lower().replace("_", " ").strip()
-
+    if re.search(r'<!--', value): # HTML comment in param value?
+        value = mwp.parse(value)
+        value.remove(value.filter_comments())
+        value = str(label).strip()
+    
     for label, regex in LABEL_MATCHES:
         if regex.match(value):
             return label
