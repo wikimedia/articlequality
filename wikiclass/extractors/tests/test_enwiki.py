@@ -32,7 +32,7 @@ def test_extractor():
         ),
         Revision(
             3, Timestamp(2), "aaa",
-            "{{talk page}}{{WikiProject Medicine|class=Stub}}..."
+            "{{talk page}}{{WikiProject Medicine|class=Stub<!-- test HTML comment -->}}..."
         ),
         Revision(
             4, Timestamp(3), "ccc",
