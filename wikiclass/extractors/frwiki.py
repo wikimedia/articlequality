@@ -45,7 +45,7 @@ def normalize_label(value):
     if re.search(r'<!--', value): # HTML comment in param value?
         value = mwp.parse(value)
         value.remove(value.filter_comments())
-        value = str(label).strip()
+        value = str(value).strip()
     
     for label, regex in LABEL_MATCHES:
         if regex.match(value):
