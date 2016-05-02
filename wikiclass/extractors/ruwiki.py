@@ -3,6 +3,8 @@ import re
 import sys
 import traceback
 
+import mwparserfromhell as mwp
+
 from .extractor import TemplateExtractor
 
 logger = logging.getLogger(__name__)
@@ -31,13 +33,17 @@ LABEL_MATCHES = [
     ("fa", re.compile(r"ис", re.I)),   # featured article
     ("ga", re.compile(r"хс", re.I)),   # good article
     ("sa", re.compile(r"дс", re.I)),   # strong article
-    ("I", re.compile(r"i", re.I)),     # Level I
-    ("II", re.compile(r"ii", re.I)),   # Level II
+    ("I", re.compile(r"^i$", re.I)),   # Level I
+    ("II", re.compile(r"^ii$", re.I)), # Level II
     ("III", re.compile(r"iii", re.I)), # Level III
     ("IV", re.compile(r"iv", re.I))    # Level IV
 ]
 def normalize_label(value):
     value = str(value).lower().replace("_", " ").strip()
+    if re.search(r'<!--', value): # HTML comment in param value?
+        value = mwp.parse(value)
+        value.remove(value.filter_comments())
+        value = str(value).strip()
 
     for label, regex in LABEL_MATCHES:
         if regex.match(value):
