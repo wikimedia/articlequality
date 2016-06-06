@@ -1,4 +1,4 @@
-revscoring >= 1.1.0, < 1.1.999
+revscoring >= 1.1.0, < 1.2.999
 mwapi
 mwreverts
 mwtypes >= 0.2.0
