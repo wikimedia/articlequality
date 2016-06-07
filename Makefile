@@ -194,3 +194,71 @@ frwiki_models: \
 
 frwiki_tuning_reports: \
 	tuning_reports/frwiki.wp10.md
+
+
+########################## Russian Wikipedia ###################################
+datasets/ruwiki.observations.first_labelings.20160501.json:
+	./utility extract_labelings \
+		/mnt/data/xmldatadumps/public/ruwiki/20160501/ruwiki-20160501-pages-meta-history*.xml*.bz2 > \
+	datasets/ruwiki.observations.first_labelings.20160501.json
+
+datasets/ruwiki.observations.first_labelings.8k.json: \
+	datasets/ruwiki.observations.first_labelings.20160501.json
+	( \
+		grep -P '"label": "I"' datasets/ruwiki.observations.first_labelings.20160501.json | \
+		shuf -n 1155; \
+		grep -P '"label": "II"' datasets/ruwiki.observations.first_labelings.20160501.json | \
+		shuf -n 1155; \
+		grep -P '"label": "III"' datasets/ruwiki.observations.first_labelings.20160501.json | \
+		shuf -n 1155; \
+		grep -P '"label": "IV"' datasets/ruwiki.observations.first_labelings.20160501.json | \
+		shuf -n 1155; \
+		grep -P '"label": "sa"' datasets/ruwiki.observations.first_labelings.20160501.json | \
+		shuf -n 1155; \
+		grep -P '"label": "ga"' datasets/ruwiki.observations.first_labelings.20160501.json | \
+		shuf -n 1155; \
+		grep -P '"label": "fa"' datasets/ruwiki.observations.first_labelings.20160501.json | \
+		shuf -n 1155 \
+	) | \
+	shuf > \
+	datasets/ruwiki.observations.first_labelings.8k.json
+
+datasets/ruwiki.observations.text_wp10.8k.json: \
+		datasets/ruwiki.observations.first_labelings.8k.json
+	cat datasets/ruwiki.observations.first_labelings.8k.json | \
+        ./utility fetch_text \
+                --api-host=https://ru.wikipedia.org \
+                --verbose > \
+        datasets/ruwiki.observations.text_wp10.8k.json
+
+datasets/ruwiki.features_wp10.8k.tsv: \
+		datasets/ruwiki.observations.text_wp10.8k.json
+	cat datasets/ruwiki.observations.text_wp10.8k.json | \
+        ./utility extract_features \
+                wikiclass.feature_lists.ruwiki.wp10 \
+                --verbose > \
+        datasets/ruwiki.features_wp10.8k.tsv
+
+tuning_reports/ruwiki.wp10.md: datasets/ruwiki.features_wp10.8k.tsv
+	cat datasets/ruwiki.features_wp10.8k.tsv | \
+        revscoring tune \
+                config/classifiers.params.yaml \
+                wikiclass.feature_lists.ruwiki.wp10 \
+                --cv-timeout=60 \
+                --scoring=accuracy \
+                --debug \
+                --label-type=str > \
+        tuning_reports/ruwiki.wp10.md
+
+models/ruwiki.wp10.rf.model: datasets/ruwiki.features_wp10.8k.tsv
+	cat datasets/ruwiki.features_wp10.8k.tsv | \
+        revscoring train_test \
+                revscoring.scorer_models.RF \
+                wikiclass.feature_lists.ruwiki.wp10 \
+                --version 0.0.1 \
+                -p 'n_estimators=501' \
+                -p 'min_samples_leaf=8' \
+                $(test_statistics) \
+                --balance-sample \
+                --center --scale > \
+        models/ruwiki.wp10.rf.model
