@@ -1,10 +1,12 @@
 models: \
 	enwiki_models \
-	frwiki_models
+	frwiki_models \
+	ruwiki_models
 
 tuning_reports: \
 	enwiki_tuning_reports \
-	frwiki_tuning_reports
+	frwiki_tuning_reports \
+	ruwiki_tuning_reports
 
 test_statistics = -s 'table' -s 'accuracy' -s 'roc' -s 'f1'
 
@@ -96,23 +98,24 @@ tuning_reports/enwiki.nettrom_wp10.md: datasets/enwiki.features_wp10.nettrom_30k
 		--label-type=str > \
 	tuning_reports/enwiki.nettrom_wp10.md
 
-models/enwiki.nettrom_wp10.rf.model: datasets/enwiki.features_wp10.nettrom_30k.tsv
+models/enwiki.nettrom_wp10.gradient_boosting.model: \
+		datasets/enwiki.features_wp10.nettrom_30k.tsv
 	cat datasets/enwiki.features_wp10.nettrom_30k.tsv | cut -f2- | \
 	revscoring train_test \
-		revscoring.scorer_models.RF \
+		revscoring.scorer_models.GradientBoosting \
 		wikiclass.feature_lists.enwiki.wp10 \
-		--version 0.3.1 \
-		-p 'criterion="entropy"' \
-		-p 'n_estimators=320' \
-		-p 'min_samples_leaf=8' \
+		--version 0.4.0 \
+		-p 'n_estimators=700' \
+		-p 'learning_rate=0.01' \
 		-p 'max_features="log2"' \
+		-p 'max_depth=7' \
 		$(test_statistics) \
 		--balance-sample \
 		--center --scale > \
-	models/enwiki.nettrom_wp10.rf.model
+	models/enwiki.nettrom_wp10.gradient_boosting.model
 
 enwiki_models: \
-	models/enwiki.nettrom_wp10.rf.model
+	models/enwiki.nettrom_wp10.gradient_boosting.model
 
 enwiki_tuning_reports: \
 	tuning_reports/enwiki.wp10.md \
@@ -176,21 +179,24 @@ tuning_reports/frwiki.wp10.md: datasets/frwiki.features_wp10.9k.tsv
 		--label-type=str > \
 	tuning_reports/frwiki.wp10.md
 
-models/frwiki.wp10.rf.model: datasets/frwiki.features_wp10.9k.tsv
+models/frwiki.wp10.gradient_boosting.model: \
+		datasets/frwiki.features_wp10.9k.tsv
 	cat datasets/frwiki.features_wp10.9k.tsv | \
 	revscoring train_test \
-		revscoring.scorer_models.RF \
+		revscoring.scorer_models.GradientBoosting \
 		wikiclass.feature_lists.frwiki.wp10 \
-		--version 0.2.0 \
-		-p 'n_estimators=501' \
-		-p 'min_samples_leaf=8' \
+		--version 0.4.0 \
+		-p 'learning_rate=0.01' \
+		-p 'max_features="log2"' \
+		-p 'n_estimators=100' \
+		-p 'max_depth=7' \
 		$(test_statistics) \
 		--balance-sample \
 		--center --scale > \
-	models/frwiki.wp10.rf.model
+	models/frwiki.wp10.gradient_boosting.model
 
 frwiki_models: \
-	models/frwiki.wp10.rf.model
+	models/frwiki.wp10.gradient_boosting.model
 
 frwiki_tuning_reports: \
 	tuning_reports/frwiki.wp10.md
@@ -250,15 +256,25 @@ tuning_reports/ruwiki.wp10.md: datasets/ruwiki.features_wp10.8k.tsv
                 --label-type=str > \
         tuning_reports/ruwiki.wp10.md
 
-models/ruwiki.wp10.rf.model: datasets/ruwiki.features_wp10.8k.tsv
+models/ruwiki.wp10.gradient_boosting.model: \
+		datasets/ruwiki.features_wp10.8k.tsv
 	cat datasets/ruwiki.features_wp10.8k.tsv | \
         revscoring train_test \
-                revscoring.scorer_models.RF \
+                revscoring.scorer_models.GradientBoosting \
                 wikiclass.feature_lists.ruwiki.wp10 \
-                --version 0.0.1 \
-                -p 'n_estimators=501' \
-                -p 'min_samples_leaf=8' \
+                --version 0.4.0 \
+		-p 'max_depth=5' \
+		-p 'learning_rate=0.01' \
+		-p 'max_features="log2"' \
+		-p 'n_estimators=300' \
                 $(test_statistics) \
                 --balance-sample \
                 --center --scale > \
-        models/ruwiki.wp10.rf.model
+        models/ruwiki.wp10.gradient_boosting.model
+
+ruwiki_models: \
+        models/ruwiki.wp10.gradient_boosting.model
+
+riwiki_tuning_reports: \
+        tuning_reports/ruwiki.wp10.md
+
