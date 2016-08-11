@@ -1,6 +1,7 @@
 # Data files
-*.tsv
-*.bz2
+datasets/*.tsv
+datasets/*.bz2
+datasets/*.json
 
 # Old model files!
 *.model.*
