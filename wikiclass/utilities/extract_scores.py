@@ -88,7 +88,7 @@ def run(paths, model, rev_scores, verbose=False):
             weighted_sum]
         )
         if verbose:
-            sys.stderr.write(CLASS_WEIGHTS[score['prediction']])
+            sys.stderr.write(str(CLASS_WEIGHTS[score['prediction']]))
             sys.stderr.flush()
 
     if verbose:
