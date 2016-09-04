@@ -70,7 +70,7 @@ def run(paths, model, rev_scores, verbose=False):
 
     def process_dump(dump, path):
         for page in dump:
-            if int(page.namespace) != 0:
+            if int(page.namespace) != 0 or page.redirect:
                 continue
             for revision in page:
                 feature_values = list(solve(model.features,
