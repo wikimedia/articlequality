@@ -59,7 +59,14 @@ CLASS_WEIGHTS = {
     'b': 2,
     'a': 3,
     'ba': 4,
-    'adq': 5
+    'adq': 5,
+    'fa': 6,
+    'ga': 5,
+    'sa': 4,
+    'I': 3,
+    'II': 2,
+    'III': 1,
+    'IV': 0
 }
 
 START_YEAR = 2001
