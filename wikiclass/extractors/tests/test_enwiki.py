@@ -32,7 +32,8 @@ def test_extractor():
         ),
         Revision(
             3, Timestamp(2), "aaa",
-            "{{talk page}}{{WikiProject Medicine|class=Stub<!-- test HTML comment -->}}..."
+            "{{talk page}}{{WikiProject Medicine|class=Stub<!--" +
+            " test HTML comment -->}}..."
         ),
         Revision(
             4, Timestamp(3), "ccc",
@@ -55,7 +56,8 @@ def test_extractor():
     page = Page("Foobar", 1, revisions)
 
     observations = enwiki.extract(page)
-    project_labels = {(ob['project'], ob['label']): ob for ob in observations}
+    project_labels = {(ob['project'], ob['wp10']): ob
+                      for ob in observations}
 
     expected = [("medicine", "stub", Timestamp(0)),
                 ("medicine", "c", Timestamp(3)),
