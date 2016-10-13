@@ -32,6 +32,7 @@ from multiprocessing import cpu_count
 import docopt
 import mwtypes
 import mwxml
+from revscoring.utilities.util import dump_observation, read_observations
 
 
 def main(argv=None):
@@ -40,10 +41,11 @@ def main(argv=None):
     dump_paths = args['<dump-file>']
 
     if args['--labelings'] == "<stdin>":
-        labelings = (json.loads(line) for line in sys.stdin)
+        labelings = read_observations(sys.stdin)
     else:
         path = os.path.expanduser(args['--labelings'])
-        labelings = (json.loads(line) for line in open(path))
+        labelings = read_observations(open(path))
+
     grouped_labelings = groupby(labelings, key=lambda l: l['page_title'])
     page_labelings = {title: sorted(list(labs), key=lambda l: l['timestamp'])
                       for title, labs in grouped_labelings}
@@ -80,8 +82,7 @@ def run(dump_paths, page_labelings, output, threads, verbose=False):
                               dump_paths, threads=threads)
 
     for labeling in labelings:
-        json.dump(labeling, output)
-        output.write("\n")
+        dump_observation(labeling, output)
 
 
 def extract_text(dump, page_labelings, verbose=False):

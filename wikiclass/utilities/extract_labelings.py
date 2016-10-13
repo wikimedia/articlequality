@@ -13,8 +13,8 @@
     Options:
         -h --help           Show this screen.
         <dump-file>         An XML dump file to process
-        --extractor=<name>  The dbname of the wiki extractor to use (e.g. 'enwiki')
-                            [default: <match>]
+        --extractor=<name>  The dbname of the wiki extractor to use
+                            (e.g. 'enwiki')  [default: <match>]
         --threads=<num>     If a collection of files are provided, how many
                             processor threads should be prepare?
                             [default: <cpu_count>]
@@ -22,7 +22,6 @@
                             [default: <stdout>]
         --verbose           Prints dots to <stderr>
 """
-import json
 import logging
 import os.path
 import sys
@@ -31,6 +30,7 @@ from multiprocessing import cpu_count
 
 import docopt
 import mwxml
+from revscoring.utilities.util import dump_observation
 
 
 def main(argv=None):
@@ -57,6 +57,7 @@ def main(argv=None):
 
     run(dump_paths, threads, output, verbose=verbose, extractor=extractor)
 
+
 def load_extractor(extractor_name):
     try:
         return import_module("wikiclass.extractors." + extractor_name)
@@ -64,26 +65,25 @@ def load_extractor(extractor_name):
         raise RuntimeError("Could not load extractor for '{0}'"
                            .format(extractor_name))
 
+
 def run(dump_paths, threads, output, verbose=False, extractor=None):
     logging.basicConfig(
         level=logging.DEBUG if verbose else logging.WARNING,
         format='%(asctime)s %(levelname)s:%(name)s -- %(message)s'
     )
 
-
     if len(dump_paths) == 0:
-        label_events = dump2labels(mwxml.Dump.from_file(sys.stdin),
-                                   extractor, verbose=verbose)
+        label_events = extract_labelings(mwxml.Dump.from_file(sys.stdin),
+                                         extractor, verbose=verbose)
 
     else:
-        label_events = mwxml.map(lambda d, p: \
+        label_events = mwxml.map(lambda d, p:
                                     extract_labelings(d, extractor, verbose),
-                                 dump_paths,threads=threads)
+                                 dump_paths, threads=threads)
 
     for labeling in label_events:
+        dump_observation(labeling, output)
 
-        json.dump(labeling, output)
-        output.write("\n")
 
 def extract_labelings(dump, extractor=None, verbose=False):
     """
@@ -121,7 +121,8 @@ def extract_labelings(dump, extractor=None, verbose=False):
             yield {'page_title': normalize_title(page.title, page.namespace),
                    'project': obs['project'],
                    'timestamp': obs['timestamp'].short_format(),
-                   'label': obs['label']}
+                   'wp10': obs['wp10']}
+
 
 def normalize_title(title, namespace):
     if namespace > 0:
