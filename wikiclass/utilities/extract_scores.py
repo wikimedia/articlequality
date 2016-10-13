@@ -23,7 +23,7 @@ Options:
                           [default: latest]
     --rev-scores=<path>   The location to write output to.
                           [default: <stdout>]
-    --extend=<path>       Path to an old output file for which scores should 
+    --extend=<path>       Path to an old output file for which scores should
                           not be duplicated
     --processes=<num>     The number of parallel processes to start
                           [default: <cpu count>]
@@ -37,8 +37,8 @@ from multiprocessing import cpu_count
 
 import docopt
 import mwtypes
-import mwxml
 import mwtypes.files
+import mwxml
 import mysqltsv
 from revscoring import ScorerModel
 from revscoring.datasources import revision_oriented
@@ -60,9 +60,9 @@ CLASS_WEIGHTS = {
     'a': 3,
     'ba': 4,
     'adq': 5,
-    'fa': 6,
-    'ga': 5,
-    'sa': 4,
+    'ИС': 6,
+    'ХС': 5,
+    'ДС': 4,
     'I': 3,
     'II': 2,
     'III': 1,
@@ -107,8 +107,9 @@ def main(argv=None):
     else:
         logger.info("Reading in past scores from {0}".format(args['--extend']))
         skip_scores_before = {}
-        rows = mysqltsv.read(open(args['--extend']),
-                             types=[int, str, int, mwtypes.Timestamp, str, float])
+        rows = mysqltsv.read(
+            open(args['--extend']),
+            types=[int, str, int, mwtypes.Timestamp, str, float])
         for row in rows:
             skip_scores_before[row.page_id] = row.timestamp
         logger.info("Completed reading scores from old output.")
@@ -119,11 +120,12 @@ def main(argv=None):
         processes = int(args['--processes'])
 
     verbose = args['--verbose']
-    run(paths, model, sunset, score_at, rev_scores, skip_scores_before, processes, verbose=verbose)
+    run(paths, model, sunset, score_at, rev_scores, skip_scores_before,
+        processes, verbose=verbose)
 
 
-def run(paths, model, sunset, score_at, rev_scores, skip_scores_before, processes,
-        verbose=False):
+def run(paths, model, sunset, score_at, rev_scores, skip_scores_before,
+        processes, verbose=False):
 
     if score_at == "revision":
         process_dump = revision_scores(model, sunset, skip_scores_before)
@@ -147,7 +149,8 @@ def run(paths, model, sunset, score_at, rev_scores, skip_scores_before, processe
         else:
             raise RuntimeError("{0} is not a valid 'score_at' value"
                                .format(score_at))
-        process_dump = threshold_scores(model, sunset, skip_scores_before, thresholds)
+        process_dump = threshold_scores(
+            model, sunset, skip_scores_before, thresholds)
 
     results = mwxml.map(process_dump, paths, threads=processes)
     for page_id, title, rev_id, timestamp, (e, score) in results:
@@ -187,15 +190,17 @@ def revision_scores(model, sunset, skip_scores_before):
                 continue
 
             for revision in page:
-                if page.id in skip_scores_before and skip_scores_before[page.id] >= revision.timestamp:
+                if page.id in skip_scores_before and \
+                   skip_scores_before[page.id] >= revision.timestamp:
                     continue
                 error_score = score_text(model, revision.text)
-                yield (page.id, page.title, revision.id, revision.timestamp, error_score)
+                yield (page.id, page.title, revision.id, revision.timestamp,
+                       error_score)
 
     return _revision_scores
 
 
-def latest_scores(model, sunset):
+def latest_scores(model, sunset, skip_scores_before):
 
     def _latest_scores(dump, path):
 
@@ -207,7 +212,8 @@ def latest_scores(model, sunset):
             for revision in page:
                 last_revision = revision
 
-            if page.id in skip_scores_before and skip_scores_before[page.id] >= sunset:
+            if page.id in skip_scores_before and \
+               skip_scores_before[page.id] >= sunset:
                 continue
             error_score = score_text(model, last_revision.text)
             yield (page.id, page.title, last_revision.id, sunset, error_score)
@@ -230,8 +236,9 @@ def threshold_scores(model, sunset, skip_scores_before, thresholds):
                 if page_ts is None:
                     page_ts = [ts for ts in thresholds
                                if ts > revision.timestamp and
-                               ts <= sunset and (page.id not in skip_scores_before or
-                                                 ts > skip_scores_before[page.id])]
+                               ts <= sunset and
+                               (page.id not in skip_scores_before or
+                                ts > skip_scores_before[page.id])]
 
                 if len(page_ts) > 0 and revision.timestamp > page_ts[0] and \
                    last_revision is not None:
