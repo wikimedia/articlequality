@@ -94,7 +94,7 @@ local_wiki = [
     main_article_templates / max(wikitext.revision.content_chars, 1),
     french.stemmed.revision.stem_chars /
         max(wikitext.revision.content_chars, 1),
-    french.dictionary.revision.dict_words / wikitext.revision.words,
+    french.dictionary.revision.dict_words / max(wikitext.revision.words, 1),
     lvl1_cn_templates,
     lvl1_cn_templates / max(wikitext.revision.content_chars, 1),
     lvl2_cn_templates,

@@ -28,7 +28,7 @@ local_wiki = [
     category_links,
     category_links / max(wikitext.revision.content_chars, 1),
     russian.dictionary.revision.dict_words,
-    russian.dictionary.revision.dict_words / wikitext.revision.words,
+    russian.dictionary.revision.dict_words / max(wikitext.revision.words, 1),
     cn_templates,
     cn_templates / max(wikitext.revision.content_chars, 1),
 ]
