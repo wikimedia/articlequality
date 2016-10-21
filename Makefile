@@ -23,17 +23,17 @@ datasets/enwiki.labelings.20150602.json:
 datasets/enwiki.labelings.30k.json: \
 		datasets/enwiki.labelings.20150602.json
 	( \
-	  grep -P '"article_quality": "stub"' datasets/enwiki.labelings.20150602.json | \
+	  grep -P '"wp10": "stub"' datasets/enwiki.labelings.20150602.json | \
 	  shuf -n 5000; \
-	  grep -P '"article_quality": "start"' datasets/enwiki.labelings.20150602.json | \
+	  grep -P '"wp10": "start"' datasets/enwiki.labelings.20150602.json | \
 	  shuf -n 5000; \
-	  grep -P '"article_quality": "c"' datasets/enwiki.labelings.20150602.json | \
+	  grep -P '"wp10": "c"' datasets/enwiki.labelings.20150602.json | \
 	  shuf -n 5000; \
-	  grep -P '"article_quality": "b"' datasets/enwiki.labelings.20150602.json | \
+	  grep -P '"wp10": "b"' datasets/enwiki.labelings.20150602.json | \
 	  shuf -n 5000; \
-	  grep -P '"article_quality": "ga"' datasets/enwiki.labelings.20150602.json | \
+	  grep -P '"wp10": "ga"' datasets/enwiki.labelings.20150602.json | \
 	  shuf -n 5000; \
-	  grep -P '"article_quality": "fa"' datasets/enwiki.labelings.20150602.json | \
+	  grep -P '"wp10": "fa"' datasets/enwiki.labelings.20150602.json | \
 	  shuf -n 5000 \
 	) | \
 	shuf > \
@@ -61,7 +61,7 @@ tuning_reports/enwiki.wp10.md: \
 	revscoring tune \
 	  config/classifiers.params.yaml \
 	  wikiclass.feature_lists.enwiki.wp10 \
-	  article_quality \
+	  wp10 \
 	  --cv-timeout=60 \
 	  --scoring=accuracy \
 	  --debug \
@@ -74,7 +74,7 @@ models/enwiki.wp10.rf.model: \
 	revscoring cv_train \
 	  revscoring.scorer_models.GradientBoosting \
 	  wikiclass.feature_lists.enwiki.wp10 \
-	  article_quality \
+	  wp10 \
 	  --version $(wp10_major_minor).0 \
 	  -p 'n_estimators=700' \
 	  -p 'learning_rate=0.01' \
@@ -91,7 +91,6 @@ datasets/enwiki.labeling_revisions.w_cache.nettrom_30k.json: \
 	revscoring extract \
 	  wikiclass.feature_lists.enwiki.wp10 \
 	  --host https://en.wikipedia.org \
-	  --include-revid \
 	  --verbose > \
 	datasets/enwiki.labeling_revisions.w_cache.nettrom_30k.json
 
@@ -101,7 +100,7 @@ tuning_reports/enwiki.nettrom_wp10.md: \
 	revscoring tune \
 	  config/classifiers.params.yaml \
 	  wikiclass.feature_lists.enwiki.wp10 \
-	  article_quality \
+	  wp10 \
 	  --cv-timeout=60 \
 	  --scoring=accuracy \
 	  --debug \
@@ -114,7 +113,7 @@ models/enwiki.nettrom_wp10.gradient_boosting.model: \
 	revscoring cv_train \
 	  revscoring.scorer_models.GradientBoosting \
 	  wikiclass.feature_lists.enwiki.wp10 \
-	  article_quality \
+	  wp10 \
 	  --version $(wp10_major_minor).0 \
 	  -p 'n_estimators=700' \
 	  -p 'learning_rate=0.01' \
@@ -147,17 +146,17 @@ datasets/frwiki.labelings.20151202.json:
 datasets/frwiki.labelings.9k.json: \
 		datasets/frwiki.labelings.20151202.json
 	( \
-	  grep -P '"label": "e"' datasets/frwiki.labelings.20151202.json | \
+	  grep -P '"wp10": "e"' datasets/frwiki.labelings.20151202.json | \
 	  shuf -n 1500; \
-	  grep -P '"label": "bd"' datasets/frwiki.labelings.20151202.json | \
+	  grep -P '"wp10": "bd"' datasets/frwiki.labelings.20151202.json | \
 	  shuf -n 1500; \
-	  grep -P '"label": "b"' datasets/frwiki.labelings.20151202.json | \
+	  grep -P '"wp10": "b"' datasets/frwiki.labelings.20151202.json | \
 	  shuf -n 1500; \
-	  grep -P '"label": "a"' datasets/frwiki.labelings.20151202.json | \
+	  grep -P '"wp10": "a"' datasets/frwiki.labelings.20151202.json | \
 	  shuf -n 1500; \
-	  grep -P '"label": "ba"' datasets/frwiki.labelings.20151202.json | \
+	  grep -P '"wp10": "ba"' datasets/frwiki.labelings.20151202.json | \
 	  shuf -n 1500; \
-	  grep -P '"label": "adq"' datasets/frwiki.labelings.20151202.json | \
+	  grep -P '"wp10": "adq"' datasets/frwiki.labelings.20151202.json | \
 	  shuf -n 1500 \
 	) | \
 	shuf > \
@@ -185,7 +184,7 @@ tuning_reports/frwiki.wp10.md: \
 	revscoring tune \
 	  config/classifiers.params.yaml \
 	  wikiclass.feature_lists.frwiki.wp10 \
-	  article_quality \
+	  wp10 \
 	  --cv-timeout=60 \
 	  --scoring=accuracy \
 	  --debug \
@@ -198,7 +197,7 @@ models/frwiki.wp10.gradient_boosting.model: \
 	revscoring cv_train \
 	  revscoring.scorer_models.GradientBoosting \
 	  wikiclass.feature_lists.frwiki.wp10 \
-	  article_quality \
+	  wp10 \
 	  --version $(wp10_major_minor).0 \
 	  -p 'learning_rate=0.01' \
 	  -p 'max_features="log2"' \
@@ -225,19 +224,19 @@ datasets/ruwiki.labelings.20160501.json:
 datasets/ruwiki.labelings.8k.json: \
 	datasets/ruwiki.labelings.20160501.json
 	( \
-	  grep -P '"label": "I"' datasets/ruwiki.labelings.20160501.json | \
+	  grep -P '"wp10": "I"' datasets/ruwiki.labelings.20160501.json | \
 	  shuf -n 1155; \
-	  grep -P '"label": "II"' datasets/ruwiki.labelings.20160501.json | \
+	  grep -P '"wp10": "II"' datasets/ruwiki.labelings.20160501.json | \
 	  shuf -n 1155; \
-	  grep -P '"label": "III"' datasets/ruwiki.labelings.20160501.json | \
+	  grep -P '"wp10": "III"' datasets/ruwiki.labelings.20160501.json | \
 	  shuf -n 1155; \
-	  grep -P '"label": "IV"' datasets/ruwiki.labelings.20160501.json | \
+	  grep -P '"wp10": "IV"' datasets/ruwiki.labelings.20160501.json | \
 	  shuf -n 1155; \
-	  grep -P '"label": "sa"' datasets/ruwiki.labelings.20160501.json | \
+	  grep -P '"wp10": "ДС"' datasets/ruwiki.labelings.20160501.json | \
 	  shuf -n 1155; \
-	  grep -P '"label": "ga"' datasets/ruwiki.labelings.20160501.json | \
+	  grep -P '"wp10": "ХС"' datasets/ruwiki.labelings.20160501.json | \
 	  shuf -n 1155; \
-	  grep -P '"label": "fa"' datasets/ruwiki.labelings.20160501.json | \
+	  grep -P '"wp10": "ИС"' datasets/ruwiki.labelings.20160501.json | \
 	  shuf -n 1155 \
 	) | \
 	shuf > \
@@ -257,15 +256,15 @@ datasets/ruwiki.labeling_revisions.w_cache.8k.json: \
 	./utility extract_from_text \
 	  wikiclass.feature_lists.ruwiki.wp10 \
 	  --verbose > \
-	datasets/ruwiki.features_wp10.8k.json
+	datasets/ruwiki.labeling_revisions.w_cache.8k.json
 
 tuning_reports/ruwiki.wp10.md: \
 		datasets/ruwiki.labeling_revisions.w_cache.8k.json
-	cat datasets/ruwiki.features_wp10.8k.json | \
+	cat datasets/ruwiki.labeling_revisions.w_cache.8k.json | \
 	revscoring tune \
 	  config/classifiers.params.yaml \
 	  wikiclass.feature_lists.ruwiki.wp10 \
-	  article_quality \
+	  wp10 \
 	  --cv-timeout=60 \
 	  --scoring=accuracy \
 	  --debug \
@@ -273,12 +272,12 @@ tuning_reports/ruwiki.wp10.md: \
 	tuning_reports/ruwiki.wp10.md
 
 models/ruwiki.wp10.gradient_boosting.model: \
-		datasets/ruwiki.features_wp10.8k.json
-	cat datasets/ruwiki.features_wp10.8k.json | \
+		datasets/ruwiki.labeling_revisions.w_cache.8k.json
+	cat datasets/ruwiki.labeling_revisions.w_cache.8k.json | \
 	revscoring cv_train \
 	  revscoring.scorer_models.GradientBoosting \
 	  wikiclass.feature_lists.ruwiki.wp10 \
-	  article_quality \
+	  wp10 \
 	  --version $(wp10_major_minor).0 \
 	  -p 'max_depth=5' \
 	  -p 'learning_rate=0.01' \
