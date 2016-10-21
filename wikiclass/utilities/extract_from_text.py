@@ -1,23 +1,23 @@
 """
-``$ wikclass extract_features -h``
+``$ wikclass extract_from_text -h``
 ::
 
     Extracts dependents from a labeling doc containing text and an
     `wp10` label writes a new set of labeling docs that is
     compatible as observations for `revscoring`'s cv_train and tune utilities.
 
-    Input: { ... "label": ..., "text": ..., ... }
+    Input: { ... "wp10": ..., "text": ..., ... }
 
-    Output: { ... "label": ..., "cache": ..., ... }
+    Output: { ... "wp10": ..., "cache": ..., ... }
 
 
     Usage:
-        extract_features -h | --help
-        extract_features <dependent>... [--labelings=<path>]
-                                    [--value-labels=<path>]
-                                    [--extractors=<num>]
-                                    [--verbose]
-                                    [--debug]
+        extract_from_text <dependent>... 
+                          [--input=<path>]
+                          [--output=<path>]
+                          [--extractors=<num>]
+                          [--verbose]
+                          [--debug]
 
     Options:
         -h --help               Print this documentation
@@ -86,7 +86,7 @@ def run(labelings, dependents, output, extractors, verbose=False):
 
     extractor = LabelingDependentExtractor(dependents)
 
-    for observation in extractor_pool.imap(extractor.extract, labelings):
+    for observation in extractor_pool.imap(extractor.extract_and_cache, labelings):
         if observation is not None:
             if verbose:
                 sys.stderr.write(".")
