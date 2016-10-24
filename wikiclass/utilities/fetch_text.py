@@ -5,8 +5,8 @@
     Fetches text & metadata for labelings using a MediaWiki API.
 
     Usage:
-        fetch_text --api-host=<url> [--labelings=<path>] [--output=<path>] [--verbose]
-        fetch_text -h | --help
+        fetch_text --api-host=<url> [--labelings=<path>] [--output=<path>]
+                                    [--verbose]
 
     Options:
         -h --help           Show this documentation.
@@ -20,10 +20,10 @@
 """
 import json
 import sys
-import traceback
 
 import mwapi
 from docopt import docopt
+from revscoring.utilities.util import dump_observation, read_observations
 
 from .extract_text import not_an_article
 
@@ -32,9 +32,9 @@ def main(argv=None):
     args = docopt(__doc__, argv=argv)
 
     if args['--labelings'] == '<stdin>':
-        labelings = (json.loads(line) for line in sys.stdin)
+        labelings = read_observations(sys.stdin)
     else:
-        labelings = (json.loads(line) for line in open(args['--labelings']))
+        labelings = read_observations(open(args['--labelings']))
 
     if args['--output'] == '<stdout>':
         output = sys.stdout
@@ -48,12 +48,12 @@ def main(argv=None):
 
     run(labelings, output, session, verbose)
 
+
 def run(labelings, output, session, verbose):
 
     for labeling in fetch_text(session, labelings, verbose=verbose):
         if labeling['text'] is not None:
-            json.dump(labeling, output)
-            output.write("\n")
+            dump_observation(labeling, output)
 
 
 def fetch_text(session, labelings, verbose=False):
@@ -81,7 +81,8 @@ def fetch_text(session, labelings, verbose=False):
         if rev_doc is None:
             if verbose:
                 sys.stderr.write("?")
-                sys.stderr.write(labeling['page_title'] + " " + labeling['timestamp'])
+                sys.stderr.write(
+                    labeling['page_title'] + " " + labeling['timestamp'])
                 sys.stderr.flush()
         else:
             if verbose:
@@ -95,7 +96,6 @@ def fetch_text(session, labelings, verbose=False):
                 labeling['text'] = None
             else:
                 labeling['text'] = text
-
 
             yield labeling
 

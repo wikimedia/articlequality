@@ -4,9 +4,9 @@ and features from the command-line.  When the wikiclass python package is
 installed, a `wikiclass` utility should be available from the commandline.
 Run `revscoring -h` for more information:
 
-wikiclass extract_features
+wikiclass extract_from_text
 ++++++++++++++++++++++++++
-.. automodule:: wikiclass.utilities.extract_features
+.. automodule:: wikiclass.utilities.extract_from_text
 
 wikiclass extract_labelings
 +++++++++++++++++++++++++++

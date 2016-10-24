@@ -8,11 +8,11 @@
 """
 
 import logging
-import mwreverts
 import sys
 import traceback
 
 import mwparserfromhell as mwp
+import mwreverts
 
 logger = logging.getLogger(__name__)
 
@@ -103,10 +103,11 @@ class Extractor:
                     if len(new_labels) > 0:
                         labelings[revision.id] = [
                             {'rev_id': revision.id,
-                             'project': project, 'label': label,
+                             'project': project,
+                             'wp10': wp10,
                              'timestamp': revision.timestamp,
                              'reverted': False}
-                             for project, label in new_labels
+                             for project, wp10 in new_labels
                         ]
 
                 # Update state so we make an appropriate comparison next time
@@ -116,10 +117,12 @@ class Extractor:
             first_observations = {}
             for observations in labelings.values():
                 for ob in observations:
-                    if ob['reverted']: continue
-                    pair = (ob['project'], ob['label'])
+                    if ob['reverted']:
+                        continue
+                    pair = (ob['project'], ob['wp10'])
                     if pair in first_observations:
-                        if ob['timestamp'] < first_observations[pair]['timestamp']:
+                        if ob['timestamp'] < \
+                           first_observations[pair]['timestamp']:
                             first_observations[pair] = ob
                     else:
                         first_observations[pair] = ob
@@ -160,7 +163,6 @@ class TemplateExtractor(Extractor):
         """
         parsed_text = mwp.parse(text)
         templates = parsed_text.filter_templates()
-        assessments = []
         for template in templates:
 
             project_label = self.from_template(template)
