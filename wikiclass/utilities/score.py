@@ -17,10 +17,9 @@
 import sys
 
 import docopt
-
 from revscoring.scorer_models import MLScorerModel
 
-from .extract_features import extract_features
+from .extract_from_text import extract_from_text
 
 
 def main(argv=None):
@@ -53,8 +52,8 @@ def score(scorer_model, text, cache=None, context=None):
         A `dict` of score information.
     """
 
-    feature_values = extract_features(scorer_model.features, text, cache=cache,
-                                      context=context)
+    feature_values = extract_from_text(
+        scorer_model.features, text, cache=cache, context=context)
 
     score = scorer_model.score(feature_values)
 

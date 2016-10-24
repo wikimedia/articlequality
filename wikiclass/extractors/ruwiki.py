@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 PROJECT_NAME = "wikiproject"
 PROJECT_RE = re.compile(r"^статья[\s_]проекта\b", re.I)
 
+
 def from_template(template):
     template_name = str(template.name).lower().strip()
     if PROJECT_RE.match(template_name) \
@@ -23,24 +24,26 @@ def from_template(template):
             else:
                 logger.debug("Class '{0}' not in possible classes."
                              .format(template.get("уровень").value))
-                pass # not a quality assessment class
+                pass  # not a quality assessment class
 
-        except ValueError as e:
+        except ValueError:
             logger.warning(traceback.format_exc())
-            pass # no assessment class in template
+            pass  # no assessment class in template
 
 LABEL_MATCHES = [
-    ("fa", re.compile(r"ис", re.I)),   # featured article
-    ("ga", re.compile(r"хс", re.I)),   # good article
-    ("sa", re.compile(r"дс", re.I)),   # strong article
-    ("I", re.compile(r"^i$", re.I)),   # Level I
-    ("II", re.compile(r"^ii$", re.I)), # Level II
-    ("III", re.compile(r"iii", re.I)), # Level III
-    ("IV", re.compile(r"iv", re.I))    # Level IV
+    ("ИС", re.compile(r"ис", re.I)),    # featured article
+    ("ХС", re.compile(r"хс", re.I)),    # good article
+    ("ДС", re.compile(r"дс", re.I)),    # strong article
+    ("I", re.compile(r"^i$", re.I)),    # Level I
+    ("II", re.compile(r"^ii$", re.I)),  # Level II
+    ("III", re.compile(r"iii", re.I)),  # Level III
+    ("IV", re.compile(r"iv", re.I))     # Level IV
 ]
+
+
 def normalize_label(value):
     value = str(value).lower().replace("_", " ").strip()
-    if re.search(r'<!--', value): # HTML comment in param value?
+    if re.search(r'<!--', value):  # HTML comment in param value?
         value = mwp.parse(value)
         value.remove(value.filter_comments())
         value = str(value).strip()

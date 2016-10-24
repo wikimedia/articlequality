@@ -10,108 +10,118 @@ tuning_reports: \
 
 test_statistics = -s 'table' -s 'accuracy' -s 'roc' -s 'f1'
 
+wp10_major_minor = 0.5
+
 ########################## English Wikipedia ###################################
-datasets/enwiki.observations.first_labelings.20150602.tsv:
+datasets/enwiki.labelings.20150602.json:
 	./utility extract_labelings \
-		/mnt/data/xmldatadumps/public/enwiki/20150602/enwiki-20150602-pages-meta-history*.xml*.bz2 \
-		--verbose > \
-	datasets/enwiki.observations.first_labelings.20150602.tsv
+	  /mnt/data/xmldatadumps/public/enwiki/20150602/enwiki-20150602-pages-meta-history*.xml*.bz2 \
+	  --verbose > \
+	datasets/enwiki.labelings.20150602.json
 
 
-datasets/enwiki.observations.first_labelings.30k.tsv: \
-		datasets/enwiki.observations.first_labelings.20150602.tsv
+datasets/enwiki.labelings.30k.json: \
+		datasets/enwiki.labelings.20150602.json
 	( \
-		grep -P '"label": "stub"' datasets/enwiki.observations.first_labelings.20150602.tsv | \
-		shuf -n 5000; \
-		grep -P '"label": "start"' datasets/enwiki.observations.first_labelings.20150602.tsv | \
-		shuf -n 5000; \
-		grep -P '"label": "c"' datasets/enwiki.observations.first_labelings.20150602.tsv | \
-		shuf -n 5000; \
-		grep -P '"label": "b"' datasets/enwiki.observations.first_labelings.20150602.tsv | \
-		shuf -n 5000; \
-		grep -P '"label": "ga"' datasets/enwiki.observations.first_labelings.20150602.tsv | \
-		shuf -n 5000; \
-		grep -P '"label": "fa"' datasets/enwiki.observations.first_labelings.20150602.tsv | \
-		shuf -n 5000 \
+	  grep -P '"wp10": "stub"' datasets/enwiki.labelings.20150602.json | \
+	  shuf -n 5000; \
+	  grep -P '"wp10": "start"' datasets/enwiki.labelings.20150602.json | \
+	  shuf -n 5000; \
+	  grep -P '"wp10": "c"' datasets/enwiki.labelings.20150602.json | \
+	  shuf -n 5000; \
+	  grep -P '"wp10": "b"' datasets/enwiki.labelings.20150602.json | \
+	  shuf -n 5000; \
+	  grep -P '"wp10": "ga"' datasets/enwiki.labelings.20150602.json | \
+	  shuf -n 5000; \
+	  grep -P '"wp10": "fa"' datasets/enwiki.labelings.20150602.json | \
+	  shuf -n 5000 \
 	) | \
 	shuf > \
-	datasets/enwiki.observations.first_labelings.30k.tsv
+	datasets/enwiki.labelings.30k.json
 
-datasets/enwiki.observations.text_wp10.30k.tsv: \
-		datasets/enwiki.observations.first_labelings.30k.tsv
-	cat datasets/enwiki.observations.first_labelings.30k.tsv | \
+datasets/enwiki.labeling_revisions.w_text.30k.json: \
+		datasets/enwiki.labelings.30k.json
+	cat datasets/enwiki.labelings.30k.json | \
 	./utility fetch_text \
-		--api-host=https://en.wikipedia.org \
-		--verbose > \
-	datasets/enwiki.observations.text_wp10.30k.tsv
+	  --api-host=https://en.wikipedia.org \
+	  --verbose > \
+	datasets/enwiki.labeling_revisions.w_text.30k.json
 
-datasets/enwiki.features_wp10.30k.tsv: \
-		datasets/enwiki.observations.text_wp10.30k.tsv
-	cat datasets/enwiki.observations.text_wp10.30k.tsv | \
-	./utility extract_features \
-		wikiclass.feature_lists.enwiki.wp10 \
-		--verbose > \
-	datasets/enwiki.features_wp10.30k.tsv
+datasets/enwiki.labeling_revisions.w_cache.30k.json: \
+		datasets/enwiki.labeling_revisions.w_text.30k.json
+	cat datasets/enwiki.labeling_revisions.w_text.30k.json | \
+	./utility extract_from_text \
+	  wikiclass.feature_lists.enwiki.wp10 \
+	  --verbose > \
+	datasets/enwiki.labeling_revisions.w_cache.30k.json
 
-tuning_reports/enwiki.wp10.md: datasets/enwiki.features_wp10.30k.tsv
-	cat datasets/enwiki.features_wp10.30k.tsv | \
+tuning_reports/enwiki.wp10.md: \
+		datasets/enwiki.labeling_revisions.w_cache.30k.json
+	cat datasets/enwiki.labeling_revisions.w_cache.30k.json | \
 	revscoring tune \
-		config/classifiers.params.yaml \
-		wikiclass.feature_lists.enwiki.wp10 \
-		--cv-timeout=60 \
-		--scoring=accuracy \
-		--debug \
-		--label-type=str > \
+	  config/classifiers.params.yaml \
+	  wikiclass.feature_lists.enwiki.wp10 \
+	  wp10 \
+	  --cv-timeout=60 \
+	  --scoring=accuracy \
+	  --debug \
+	  --label-type=str > \
 	tuning_reports/enwiki.wp10.md
 
-models/enwiki.wp10.rf.model: datasets/enwiki.features_wp10.30k.tsv
-	cat datasets/enwiki.features_wp10.30k.tsv | \
-	revscoring train_test \
-		revscoring.scorer_models.RF \
-		wikiclass.feature_lists.enwiki.wp10 \
-		--version 0.3.1 \
-		-p 'n_estimators=501' \
-		-p 'min_samples_leaf=8' \
-		$(test_statistics) \
-		--balance-sample \
-		--center --scale > \
+models/enwiki.wp10.rf.model: \
+		datasets/enwiki.labeling_revisions.w_cache.30k.json
+	cat datasets/enwiki.labeling_revisions.w_cache.30k.json | \
+	revscoring cv_train \
+	  revscoring.scorer_models.GradientBoosting \
+	  wikiclass.feature_lists.enwiki.wp10 \
+	  wp10 \
+	  --version $(wp10_major_minor).0 \
+	  -p 'n_estimators=700' \
+	  -p 'learning_rate=0.01' \
+	  -p 'max_features="log2"' \
+	  -p 'max_depth=7' \
+	  $(test_statistics) \
+	  --balance-sample \
+	  --center --scale > \
 	models/enwiki.wp10.rf.model
 
-datasets/enwiki.features_wp10.nettrom_30k.tsv: \
-		datasets/enwiki.rev_wp10.nettrom_30k.tsv
-	cat datasets/enwiki.rev_wp10.nettrom_30k.tsv | \
-	revscoring extract_features \
-		wikiclass.feature_lists.enwiki.wp10 \
-		--host https://en.wikipedia.org \
-		--include-revid \
-		--verbose > \
-	datasets/enwiki.features_wp10.nettrom_30k.tsv
+datasets/enwiki.labeling_revisions.w_cache.nettrom_30k.json: \
+		datasets/enwiki.labeling_revisions.nettrom_30k.json
+	cat datasets/enwiki.labeling_revisions.nettrom_30k.json | \
+	revscoring extract \
+	  wikiclass.feature_lists.enwiki.wp10 \
+	  --host https://en.wikipedia.org \
+	  --verbose > \
+	datasets/enwiki.labeling_revisions.w_cache.nettrom_30k.json
 
-tuning_reports/enwiki.nettrom_wp10.md: datasets/enwiki.features_wp10.nettrom_30k.tsv
-	cat datasets/enwiki.features_wp10.nettrom_30k.tsv | cut -f2- | \
+tuning_reports/enwiki.nettrom_wp10.md: \
+		datasets/enwiki.labeling_revisions.w_cache.nettrom_30k.json
+	cat datasets/enwiki.labeling_revisions.w_cache.nettrom_30k.json | \
 	revscoring tune \
-		config/classifiers.params.yaml \
-		wikiclass.feature_lists.enwiki.wp10 \
-		--cv-timeout=60 \
-		--scoring=accuracy \
-		--debug \
-		--label-type=str > \
+	  config/classifiers.params.yaml \
+	  wikiclass.feature_lists.enwiki.wp10 \
+	  wp10 \
+	  --cv-timeout=60 \
+	  --scoring=accuracy \
+	  --debug \
+	  --label-type=str > \
 	tuning_reports/enwiki.nettrom_wp10.md
 
 models/enwiki.nettrom_wp10.gradient_boosting.model: \
-		datasets/enwiki.features_wp10.nettrom_30k.tsv
-	cat datasets/enwiki.features_wp10.nettrom_30k.tsv | cut -f2- | \
-	revscoring train_test \
-		revscoring.scorer_models.GradientBoosting \
-		wikiclass.feature_lists.enwiki.wp10 \
-		--version 0.4.0 \
-		-p 'n_estimators=700' \
-		-p 'learning_rate=0.01' \
-		-p 'max_features="log2"' \
-		-p 'max_depth=7' \
-		$(test_statistics) \
-		--balance-sample \
-		--center --scale > \
+		datasets/enwiki.labeling_revisions.w_cache.nettrom_30k.json
+	cat datasets/enwiki.labeling_revisions.w_cache.nettrom_30k.json | \
+	revscoring cv_train \
+	  revscoring.scorer_models.GradientBoosting \
+	  wikiclass.feature_lists.enwiki.wp10 \
+	  wp10 \
+	  --version $(wp10_major_minor).0 \
+	  -p 'n_estimators=700' \
+	  -p 'learning_rate=0.01' \
+	  -p 'max_features="log2"' \
+	  -p 'max_depth=7' \
+	  $(test_statistics) \
+	  --balance-sample \
+	  --center --scale > \
 	models/enwiki.nettrom_wp10.gradient_boosting.model
 
 enwiki_models: \
@@ -122,77 +132,80 @@ enwiki_tuning_reports: \
 	tuning_reports/enwiki.nettrom_wp10.md
 
 ########################## French Wikipedia ###################################
-#datasets/frwiki.observations.first_labelings.20150602.tsv:
+#datasets/frwiki.observations.first_labelings.20150602.json:
 #	./utility extract_labelings \
 #		/mnt/data/xmldatadumps/public/frwiki/20150602/frwiki-20150602-pages-meta-history*.xml*.bz2 > \
-#	datasets/frwiki.observations.first_labelings.20150602.tsv
+#	datasets/frwiki.observations.first_labelings.20150602.json
 
-datasets/frwiki.observations.first_labelings.20151202.tsv:
+datasets/frwiki.labelings.20151202.json:
 	./utility extract_labelings \
-		/mnt/data/xmldatadumps/public/frwiki/20151202/frwiki-20151202-pages-meta-history*.xml*.bz2 > \
-	datasets/frwiki.observations.first_labelings.20151202.tsv
+	  /mnt/data/xmldatadumps/public/frwiki/20151202/frwiki-20151202-pages-meta-history*.xml*.bz2 > \
+	datasets/frwiki.labelings.20151202.json
 
 
-datasets/frwiki.observations.first_labelings.9k.tsv: \
-		datasets/frwiki.observations.first_labelings.20151202.tsv
+datasets/frwiki.labelings.9k.json: \
+		datasets/frwiki.labelings.20151202.json
 	( \
-		grep -P '"label": "e"' datasets/frwiki.observations.first_labelings.20151202.tsv | \
-		shuf -n 1500; \
-		grep -P '"label": "bd"' datasets/frwiki.observations.first_labelings.20151202.tsv | \
-		shuf -n 1500; \
-		grep -P '"label": "b"' datasets/frwiki.observations.first_labelings.20151202.tsv | \
-		shuf -n 1500; \
-		grep -P '"label": "a"' datasets/frwiki.observations.first_labelings.20151202.tsv | \
-		shuf -n 1500; \
-		grep -P '"label": "ba"' datasets/frwiki.observations.first_labelings.20151202.tsv | \
-		shuf -n 1500; \
-		grep -P '"label": "adq"' datasets/frwiki.observations.first_labelings.20151202.tsv | \
-		shuf -n 1500 \
+	  grep -P '"wp10": "e"' datasets/frwiki.labelings.20151202.json | \
+	  shuf -n 1500; \
+	  grep -P '"wp10": "bd"' datasets/frwiki.labelings.20151202.json | \
+	  shuf -n 1500; \
+	  grep -P '"wp10": "b"' datasets/frwiki.labelings.20151202.json | \
+	  shuf -n 1500; \
+	  grep -P '"wp10": "a"' datasets/frwiki.labelings.20151202.json | \
+	  shuf -n 1500; \
+	  grep -P '"wp10": "ba"' datasets/frwiki.labelings.20151202.json | \
+	  shuf -n 1500; \
+	  grep -P '"wp10": "adq"' datasets/frwiki.labelings.20151202.json | \
+	  shuf -n 1500 \
 	) | \
 	shuf > \
-	datasets/frwiki.observations.first_labelings.9k.tsv
+	datasets/frwiki.labelings.9k.json
 
-datasets/frwiki.observations.text_wp10.9k.tsv: \
-		datasets/frwiki.observations.first_labelings.9k.tsv
-	cat datasets/frwiki.observations.first_labelings.9k.tsv | \
+datasets/frwiki.labeling_revisions.w_text.9k.json: \
+		datasets/frwiki.labelings.9k.json
+	cat datasets/frwiki.labelings.9k.json | \
 	./utility fetch_text \
-                --api-host=https://fr.wikipedia.org \
-                --verbose > \
-	datasets/frwiki.observations.text_wp10.9k.tsv
+	  --api-host=https://fr.wikipedia.org \
+	  --verbose > \
+	datasets/frwiki.labeling_revisions.w_text.9k.json
 
-datasets/frwiki.features_wp10.9k.tsv: \
-		datasets/frwiki.observations.text_wp10.9k.tsv
-	cat datasets/frwiki.observations.text_wp10.9k.tsv | \
-	./utility extract_features \
-		wikiclass.feature_lists.frwiki.wp10 \
-		--verbose > \
-	datasets/frwiki.features_wp10.9k.tsv
+datasets/frwiki.labeling_revisions.w_cache.9k.json: \
+		datasets/frwiki.labeling_revisions.w_text.9k.json
+	cat datasets/frwiki.labeling_revisions.w_text.9k.json | \
+	./utility extract_from_text \
+	  wikiclass.feature_lists.frwiki.wp10 \
+	  --verbose > \
+	datasets/frwiki.labeling_revisions.w_cache.9k.json
 
-tuning_reports/frwiki.wp10.md: datasets/frwiki.features_wp10.9k.tsv
-	cat datasets/frwiki.features_wp10.9k.tsv | \
+tuning_reports/frwiki.wp10.md: \
+		datasets/frwiki.labeling_revisions.w_cache.9k.json
+	cat datasets/frwiki.labeling_revisions.w_cache.9k.json | \
 	revscoring tune \
-		config/classifiers.params.yaml \
-		wikiclass.feature_lists.frwiki.wp10 \
-		--cv-timeout=60 \
-		--scoring=accuracy \
-		--debug \
-		--label-type=str > \
+	  config/classifiers.params.yaml \
+	  wikiclass.feature_lists.frwiki.wp10 \
+	  wp10 \
+	  --cv-timeout=60 \
+	  --scoring=accuracy \
+	  --debug \
+	  --label-type=str > \
 	tuning_reports/frwiki.wp10.md
 
 models/frwiki.wp10.gradient_boosting.model: \
-		datasets/frwiki.features_wp10.9k.tsv
-	cat datasets/frwiki.features_wp10.9k.tsv | \
-	revscoring train_test \
-		revscoring.scorer_models.GradientBoosting \
-		wikiclass.feature_lists.frwiki.wp10 \
-		--version 0.4.0 \
-		-p 'learning_rate=0.01' \
-		-p 'max_features="log2"' \
-		-p 'n_estimators=100' \
-		-p 'max_depth=7' \
-		$(test_statistics) \
-		--balance-sample \
-		--center --scale > \
+		datasets/frwiki.labeling_revisions.w_cache.9k.json
+	cat datasets/frwiki.labeling_revisions.w_cache.9k.json | \
+	revscoring cv_train \
+	  revscoring.scorer_models.GradientBoosting \
+	  wikiclass.feature_lists.frwiki.wp10 \
+	  wp10 \
+	  --version $(wp10_major_minor).0 \
+	  -p 'learning_rate=0.01' \
+	  -p 'max_features="log2"' \
+	  -p 'n_estimators=100' \
+	  -p 'max_depth=7' \
+	  $(test_statistics) \
+	  --balance-sample \
+	  --center --scale > \
 	models/frwiki.wp10.gradient_boosting.model
 
 frwiki_models: \
@@ -203,78 +216,80 @@ frwiki_tuning_reports: \
 
 
 ########################## Russian Wikipedia ###################################
-datasets/ruwiki.observations.first_labelings.20160501.json:
+datasets/ruwiki.labelings.20160501.json:
 	./utility extract_labelings \
 		/mnt/data/xmldatadumps/public/ruwiki/20160501/ruwiki-20160501-pages-meta-history*.xml*.bz2 > \
-	datasets/ruwiki.observations.first_labelings.20160501.json
+	datasets/ruwiki.labelings.20160501.json
 
-datasets/ruwiki.observations.first_labelings.8k.json: \
-	datasets/ruwiki.observations.first_labelings.20160501.json
+datasets/ruwiki.labelings.8k.json: \
+	datasets/ruwiki.labelings.20160501.json
 	( \
-		grep -P '"label": "I"' datasets/ruwiki.observations.first_labelings.20160501.json | \
-		shuf -n 1155; \
-		grep -P '"label": "II"' datasets/ruwiki.observations.first_labelings.20160501.json | \
-		shuf -n 1155; \
-		grep -P '"label": "III"' datasets/ruwiki.observations.first_labelings.20160501.json | \
-		shuf -n 1155; \
-		grep -P '"label": "IV"' datasets/ruwiki.observations.first_labelings.20160501.json | \
-		shuf -n 1155; \
-		grep -P '"label": "sa"' datasets/ruwiki.observations.first_labelings.20160501.json | \
-		shuf -n 1155; \
-		grep -P '"label": "ga"' datasets/ruwiki.observations.first_labelings.20160501.json | \
-		shuf -n 1155; \
-		grep -P '"label": "fa"' datasets/ruwiki.observations.first_labelings.20160501.json | \
-		shuf -n 1155 \
+	  grep -P '"wp10": "I"' datasets/ruwiki.labelings.20160501.json | \
+	  shuf -n 1155; \
+	  grep -P '"wp10": "II"' datasets/ruwiki.labelings.20160501.json | \
+	  shuf -n 1155; \
+	  grep -P '"wp10": "III"' datasets/ruwiki.labelings.20160501.json | \
+	  shuf -n 1155; \
+	  grep -P '"wp10": "IV"' datasets/ruwiki.labelings.20160501.json | \
+	  shuf -n 1155; \
+	  grep -P '"wp10": "ДС"' datasets/ruwiki.labelings.20160501.json | \
+	  shuf -n 1155; \
+	  grep -P '"wp10": "ХС"' datasets/ruwiki.labelings.20160501.json | \
+	  shuf -n 1155; \
+	  grep -P '"wp10": "ИС"' datasets/ruwiki.labelings.20160501.json | \
+	  shuf -n 1155 \
 	) | \
 	shuf > \
-	datasets/ruwiki.observations.first_labelings.8k.json
+	datasets/ruwiki.labelings.8k.json
 
-datasets/ruwiki.observations.text_wp10.8k.json: \
-		datasets/ruwiki.observations.first_labelings.8k.json
-	cat datasets/ruwiki.observations.first_labelings.8k.json | \
-        ./utility fetch_text \
-                --api-host=https://ru.wikipedia.org \
-                --verbose > \
-        datasets/ruwiki.observations.text_wp10.8k.json
+datasets/ruwiki.labeling_revisions.w_text.8k.json: \
+		datasets/ruwiki.labelings.8k.json
+	cat datasets/ruwiki.labelings.8k.json | \
+	./utility fetch_text \
+	  --api-host=https://ru.wikipedia.org \
+	  --verbose > \
+	datasets/ruwiki.labeling_revisions.w_text.8k.json
 
-datasets/ruwiki.features_wp10.8k.tsv: \
-		datasets/ruwiki.observations.text_wp10.8k.json
-	cat datasets/ruwiki.observations.text_wp10.8k.json | \
-        ./utility extract_features \
-                wikiclass.feature_lists.ruwiki.wp10 \
-                --verbose > \
-        datasets/ruwiki.features_wp10.8k.tsv
+datasets/ruwiki.labeling_revisions.w_cache.8k.json: \
+		datasets/ruwiki.labeling_revisions.w_text.8k.json
+	cat datasets/ruwiki.labeling_revisions.w_text.8k.json | \
+	./utility extract_from_text \
+	  wikiclass.feature_lists.ruwiki.wp10 \
+	  --verbose > \
+	datasets/ruwiki.labeling_revisions.w_cache.8k.json
 
-tuning_reports/ruwiki.wp10.md: datasets/ruwiki.features_wp10.8k.tsv
-	cat datasets/ruwiki.features_wp10.8k.tsv | \
-        revscoring tune \
-                config/classifiers.params.yaml \
-                wikiclass.feature_lists.ruwiki.wp10 \
-                --cv-timeout=60 \
-                --scoring=accuracy \
-                --debug \
-                --label-type=str > \
-        tuning_reports/ruwiki.wp10.md
+tuning_reports/ruwiki.wp10.md: \
+		datasets/ruwiki.labeling_revisions.w_cache.8k.json
+	cat datasets/ruwiki.labeling_revisions.w_cache.8k.json | \
+	revscoring tune \
+	  config/classifiers.params.yaml \
+	  wikiclass.feature_lists.ruwiki.wp10 \
+	  wp10 \
+	  --cv-timeout=60 \
+	  --scoring=accuracy \
+	  --debug \
+	  --label-type=str > \
+	tuning_reports/ruwiki.wp10.md
 
 models/ruwiki.wp10.gradient_boosting.model: \
-		datasets/ruwiki.features_wp10.8k.tsv
-	cat datasets/ruwiki.features_wp10.8k.tsv | \
-        revscoring train_test \
-                revscoring.scorer_models.GradientBoosting \
-                wikiclass.feature_lists.ruwiki.wp10 \
-                --version 0.4.0 \
-		-p 'max_depth=5' \
-		-p 'learning_rate=0.01' \
-		-p 'max_features="log2"' \
-		-p 'n_estimators=300' \
-                $(test_statistics) \
-                --balance-sample \
-                --center --scale > \
-        models/ruwiki.wp10.gradient_boosting.model
+		datasets/ruwiki.labeling_revisions.w_cache.8k.json
+	cat datasets/ruwiki.labeling_revisions.w_cache.8k.json | \
+	revscoring cv_train \
+	  revscoring.scorer_models.GradientBoosting \
+	  wikiclass.feature_lists.ruwiki.wp10 \
+	  wp10 \
+	  --version $(wp10_major_minor).0 \
+	  -p 'max_depth=5' \
+	  -p 'learning_rate=0.01' \
+	  -p 'max_features="log2"' \
+	  -p 'n_estimators=300' \
+	  $(test_statistics) \
+	  --balance-sample \
+	  --center --scale > \
+	models/ruwiki.wp10.gradient_boosting.model
 
 ruwiki_models: \
-        models/ruwiki.wp10.gradient_boosting.model
+	models/ruwiki.wp10.gradient_boosting.model
 
 riwiki_tuning_reports: \
-        tuning_reports/ruwiki.wp10.md
-
+	tuning_reports/ruwiki.wp10.md
