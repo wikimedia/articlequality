@@ -2,22 +2,26 @@ import os
 
 from setuptools import find_packages, setup
 
+about_path = os.path.join(os.path.dirname(__file__), "wikiclass/about.py")
+exec(compile(open(about_path).read(), about_path, "exec"))
+
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
+
 
 def requirements(fname):
     for line in open(os.path.join(os.path.dirname(__file__), fname)):
         yield line.strip()
 
 setup(
-    name="wikiclass",
-    version="0.3.1",  # see wikiclass/__init__.py
-    author="Aaron Halfaker / Morten Warncke-Wang",
-    author_email="ahalfaker@wikimedia.org",
-    description=("A library for performing automatic detection of assessment classes of Wikipedia articles."),
-    license="MIT",
-    url="https://github.com/halfak/wikiclass",
+    name=__name__,  # noqa
+    version=__version__,  # noqa
+    author=__author__,  # noqa
+    author_email=__author_email__,  # noqa
+    description=__description__,  # noqa
+    url=__url__,  # noqa
+    license=__license__,  # noqa
     packages=find_packages(),
     entry_points={
         'console_scripts': [
