@@ -5,6 +5,7 @@ building article quality classifiers.
 * extract_labelings -- Gathers quality labeling events from XML dumps
 * extract_text -- Gathers text for each labeling observation from XML dumps
 * extract_features -- Extracts feature_lists for observations
+* fetch_item_info -- Gets interesting statements from wikidata items
 * fetch_text -- Gathers text for each labeling observation from a MediaWiki API
 
 Usage:
