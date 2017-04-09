@@ -298,7 +298,7 @@ riwiki_tuning_reports: \
 ##############################################################################
 ################### Wikidata
 
-# From https://quarry.wmflabs.org/query/17885
+# From https://quarry.wmflabs.org/query/17904
 datasets/wikidata.stratified_revisions.filtered_sample.json:
 	wget https://quarry.wmflabs.org/run/167696/output/0/json-lines?download=true -qO- | \
 	./utility fetch_item_info --api-host https://wikidata.org --claim P31 --verbose | \
