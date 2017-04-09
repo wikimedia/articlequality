@@ -300,7 +300,7 @@ riwiki_tuning_reports: \
 
 # From https://quarry.wmflabs.org/query/17885
 datasets/wikidata.stratified_revisions.filtered_sample.json:
-	wget https://quarry.wmflabs.org/run/167508/output/0/json-lines?download=true -qO- | \
+	wget https://quarry.wmflabs.org/run/167696/output/0/json-lines?download=true -qO- | \
 	./utility fetch_item_info --api-host https://wikidata.org --claim P31 --verbose | \
 	grep -v '"P31": "Q4167410"' | \
 	grep -v '"P31": "Q4167836"' | \
@@ -320,7 +320,9 @@ datasets/wikidata.stratified_revisions.5k_sample.json: \
 	  cat datasets/wikidata.stratified_revisions.filtered_sample.json | \
 	  grep '"strata": "131072"' | shuf -n 1000; \
 	  cat datasets/wikidata.stratified_revisions.filtered_sample.json | \
-	  grep '"strata": "262144"' | shuf -n 1000; \
+	  grep '"strata": "262144"' | shuf -n 250; \
 	  cat datasets/wikidata.stratified_revisions.filtered_sample.json | \
-	  grep '"strata": "inf"' | shuf -n 1000 \
+	  grep '"strata": "inf"' | shuf -n 250; \
+	  cat datasets/wikidata.stratified_revisions.filtered_sample.json | \
+	  grep '"strata": "low-qid"' | shuf -n 1500 \
 	) > datasets/wikidata.stratified_revisions.5k_sample.json
