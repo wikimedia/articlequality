@@ -299,7 +299,7 @@ riwiki_tuning_reports: \
 ################### Wikidata
 
 # From https://quarry.wmflabs.org/query/17904
-datasets/wikidata.stratified_revisions.filtered_sample.json:
+datasets/wikidatawiki.stratified_revisions.filtered_sample.json:
 	wget https://quarry.wmflabs.org/run/167696/output/0/json-lines?download=true -qO- | \
 	./utility fetch_item_info --api-host https://wikidata.org --claim P31 --verbose | \
 	grep -v '"P31": "Q4167410"' | \
@@ -307,22 +307,22 @@ datasets/wikidata.stratified_revisions.filtered_sample.json:
 	grep -v '"P31": "Q17633526"' | \
 	grep -v '"P31": "Q11266439"' | \
 	grep -v '"P31": "Q13406463"' > \
-	datasets/wikidata.stratified_revisions.filtered_sample.json
+	datasets/wikidatawiki.stratified_revisions.filtered_sample.json
 
 
-datasets/wikidata.stratified_revisions.5k_sample.json: \
-		datasets/wikidata.stratified_revisions.filtered_sample.json
+datasets/wikidatawiki.stratified_revisions.5k_sample.json: \
+		datasets/wikidatawiki.stratified_revisions.filtered_sample.json
 	( \
-	  cat datasets/wikidata.stratified_revisions.filtered_sample.json | \
+	  cat datasets/wikidatawiki.stratified_revisions.filtered_sample.json | \
 	  grep '"strata": "1024"' | shuf -n 1000; \
-	  cat datasets/wikidata.stratified_revisions.filtered_sample.json | \
+	  cat datasets/wikidatawiki.stratified_revisions.filtered_sample.json | \
 	  grep '"strata": "8192"' | shuf -n 1000; \
-	  cat datasets/wikidata.stratified_revisions.filtered_sample.json | \
+	  cat datasets/wikidatawiki.stratified_revisions.filtered_sample.json | \
 	  grep '"strata": "131072"' | shuf -n 1000; \
-	  cat datasets/wikidata.stratified_revisions.filtered_sample.json | \
+	  cat datasets/wikidatawiki.stratified_revisions.filtered_sample.json | \
 	  grep '"strata": "262144"' | shuf -n 250; \
-	  cat datasets/wikidata.stratified_revisions.filtered_sample.json | \
+	  cat datasets/wikidatawiki.stratified_revisions.filtered_sample.json | \
 	  grep '"strata": "inf"' | shuf -n 250; \
-	  cat datasets/wikidata.stratified_revisions.filtered_sample.json | \
+	  cat datasets/wikidatawiki.stratified_revisions.filtered_sample.json | \
 	  grep '"strata": "low-qid"' | shuf -n 1500 \
-	) > datasets/wikidata.stratified_revisions.5k_sample.json
+	) > datasets/wikidatawiki.stratified_revisions.5k_sample.json
