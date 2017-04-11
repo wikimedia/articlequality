@@ -123,6 +123,7 @@ def build_fetch_item_info(session, claims):
             if ob['rev_id'] not in rev_doc_map:
                 logger.warn("Could not find information for {0}".format(ob))
             else:
+                rev_doc = rev_doc_map[ob['rev_id']]
                 try:
                     item = mwbase.Entity.from_json(
                         json.loads(rev_doc['content']))
