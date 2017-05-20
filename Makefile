@@ -371,7 +371,7 @@ models/wikidatawiki.item_quality.rf.model: \
 	  --version $(item_quality_major_minor).0 \
 	  -p 'n_estimators=20' \
 	  -p 'criterion="gini"' \
-	  -p 'min_samples_leaf=13,' \
+	  -p 'min_samples_leaf=13' \
 	  -p 'max_features="log2"' \
 	  $(test_statistics) \
 	  --balance-sample \
