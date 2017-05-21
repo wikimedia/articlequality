@@ -11,7 +11,7 @@ tuning_reports: \
 test_statistics = -s 'table' -s 'accuracy' -s 'roc' -s 'f1'
 
 wp10_major_minor = 0.5
-item_quality = 0.1
+item_quality_major_minor = 0.1
 
 ########################## English Wikipedia ###################################
 datasets/enwiki.labelings.20150602.json:
