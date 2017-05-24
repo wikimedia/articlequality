@@ -18,7 +18,7 @@ weird_word_things = RegexMatches(
 
 # proportion of brackets and semi-colons
 nonsense_markup = aggregators.len(
-    wikitext.revision.datasource.tokens_matching(r"[\{\}\[\]\|\;\\\/\:]"),
+    wikitext.revision.datasources.tokens_matching(r"[\{\}\[\]\|\;\\\/\:]"),
     name="wikitext.revision.nonsense_markup")
 
 # <ref name="derp">...</ref> (in another page
@@ -29,8 +29,9 @@ nonsense_markup = aggregators.len(
 good_tags = wikitext.revision.tag_names_matching(
     r"big|small|center|div|span|b|i|poem|section",
     name="wikitext.revision.good_tags")
-expected_markup = wikitext.revision.datasources.tokens_matching(
-    r"'''|''", name="wiktext.revision.expected_markup")
+expected_markup = aggregators.len(
+    wikitext.revision.datasources.tokens_matching(r"'''|''"),
+    name="wiktext.revision.expected_markup")
 
 page = [
     wikitext.revision.ref_tags,
