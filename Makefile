@@ -215,6 +215,24 @@ frwiki_models: \
 frwiki_tuning_reports: \
 	tuning_reports/frwiki.wp10.md
 
+############################# French Wikisource ###############################
+
+# TODO: Use: https://fr.wikisource.org/w/api.php?action=query&prop=revisions&revids=6515962&rvprop=content&rvcontentformat=application/json&formatversion=2
+
+# https://quarry.wmflabs.org/query/18839
+datasets/frwikisource.sampled_revision.200k_2017.json:
+	wget https://quarry.wmflabs.org/run/178341/output/0/json-lines?download=true -qO- > \
+	datasets/frwikisource.sampled_revision.200k_2017.json
+
+datasets/frwikisource.sampled_revisions.with_text.200k_2017.json: \
+		datasets/frwikisource.sampled_revision.200k_2017.json
+	cat datasets/frwikisource.sampled_revisions.200k_2017.json | \
+	./utility fetch_text \
+		--api-host=https://fr.wikisource.org \
+		--threads=12 \
+		--verbose > \
+	datasets/frwikisource.sampled_revisions.with_text.200k_2017.json
+
 
 ########################## Russian Wikipedia ###################################
 datasets/ruwiki.labelings.20160501.json:
