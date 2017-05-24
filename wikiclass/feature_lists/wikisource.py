@@ -3,6 +3,8 @@ from revscoring.features.meta import aggregators
 from revscoring.languages.features import RegexMatches
 
 # TODO: This is designed for English and French
+# TODO: This ends up being case insensitive even though taht doesn't
+#       make any sense.
 weird_regexes = [
     # capital letters in the middle of a word
     r'\w[^\WA-Z\u00c0-\u00dd]*[A-Z\u00c0-\u00dd][^\WA-Z\u00c0-\u00dd]+',
@@ -12,7 +14,7 @@ weird_regexes = [
     r'<<|>>'
 ]
 weird_word_things = RegexMatches(
-    "wikitext.revision.weird_word_things", weird_regexes, regex_flags=None)
+    "wikitext.revision.weird_word_things", weird_regexes)
 
 # proportion of brackets and semi-colons
 nonsense_markup = aggregators.len(
