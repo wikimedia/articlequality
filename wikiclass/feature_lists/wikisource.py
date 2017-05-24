@@ -1,4 +1,5 @@
 from revscoring.features import wikitext
+from revscoring.features.modifiers import max
 from revscoring.features.meta import aggregators
 from revscoring.languages.features import RegexMatches
 
@@ -35,13 +36,13 @@ expected_markup = aggregators.len(
 
 page = [
     wikitext.revision.ref_tags,
-    wikitext.revision.ref_tags / wikitext.revision.chars,
+    wikitext.revision.ref_tags / max(wikitext.revision.chars, 1),
     weird_word_things.revision.matches,
-    weird_word_things.revision.matches / wikitext.revision.chars,
+    weird_word_things.revision.matches / max(wikitext.revision.chars, 1),
     nonsense_markup,
-    nonsense_markup / wikitext.revision.chars,
+    nonsense_markup / max(wikitext.revision.chars, 1),
     good_tags,
-    good_tags / wikitext.revision.chars,
+    good_tags / max(wikitext.revision.chars, 1),
     expected_markup,
-    expected_markup / wikitext.revision.chars
+    expected_markup / max(wikitext.revision.chars, 1)
 ]

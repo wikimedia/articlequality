@@ -16,7 +16,7 @@ local_wiki = [
         max(wikitext.revision.chars, 1),
     french.dictionary.revision.dict_words / max(wikitext.revision.words, 1),
     french.dictionary.revision.dict_words /
-    french.dictionary.revision.non_dict_words
+    max(french.dictionary.revision.non_dict_words, 1)
 ]
 
-pagelevel = local_wiki + wikisource.article
+pagelevel = local_wiki + wikisource.page
