@@ -11,6 +11,7 @@ tuning_reports: \
 test_statistics = -s 'table' -s 'accuracy' -s 'roc' -s 'f1'
 
 wp10_major_minor = 0.5
+item_quality_major_minor = 0.1
 
 ########################## English Wikipedia ###################################
 datasets/enwiki.labelings.20150602.json:
@@ -293,3 +294,92 @@ ruwiki_models: \
 
 riwiki_tuning_reports: \
 	tuning_reports/ruwiki.wp10.md
+
+
+############################# Wikidata ######################################
+
+# From https://quarry.wmflabs.org/query/17904
+datasets/wikidatawiki.stratified_revisions.filtered_sample.json:
+	wget https://quarry.wmflabs.org/run/167696/output/0/json-lines?download=true -qO- | \
+	./utility fetch_item_info --api-host https://wikidata.org --claim P31 --verbose | \
+	grep -v '"P31": "Q4167410"' | \
+	grep -v '"P31": "Q4167836"' | \
+	grep -v '"P31": "Q17633526"' | \
+	grep -v '"P31": "Q11266439"' | \
+	grep -v '"P31": "Q13406463"' > \
+	datasets/wikidatawiki.stratified_revisions.filtered_sample.json
+
+
+datasets/wikidatawiki.stratified_revisions.5k_sample.json: \
+		datasets/wikidatawiki.stratified_revisions.filtered_sample.json
+	( \
+	  cat datasets/wikidatawiki.stratified_revisions.filtered_sample.json | \
+	  grep '"strata": "1024"' | shuf -n 1000; \
+	  cat datasets/wikidatawiki.stratified_revisions.filtered_sample.json | \
+	  grep '"strata": "8192"' | shuf -n 1000; \
+	  cat datasets/wikidatawiki.stratified_revisions.filtered_sample.json | \
+	  grep '"strata": "131072"' | shuf -n 1000; \
+	  cat datasets/wikidatawiki.stratified_revisions.filtered_sample.json | \
+	  grep '"strata": "262144"' | shuf -n 250; \
+	  cat datasets/wikidatawiki.stratified_revisions.filtered_sample.json | \
+	  grep '"strata": "inf"' | shuf -n 250; \
+	  cat datasets/wikidatawiki.stratified_revisions.filtered_sample.json | \
+	  grep '"strata": "low-qid"' | shuf -n 1500 \
+	) > datasets/wikidatawiki.stratified_revisions.5k_sample.json
+
+datasets/wikidatawiki.labelings.5k.json:
+	./utility fetch_labels \
+		https://labels.wmflabs.org/campaigns/wikidatawiki/53/ > \
+	datasets/wikidatawiki.labelings.5k.json
+
+datasets/wikidatawiki.labeling_revisions.w_text.5k.json: \
+		datasets/wikidatawiki.labelings.5k.json
+	cat datasets/wikidatawiki.labelings.5k.json | \
+	./utility fetch_text \
+	  --api-host=https://www.wikidata.org \
+	  --verbose > \
+	datasets/wikidatawiki.labeling_revisions.w_text.5k.json
+
+datasets/wikidatawiki.labeling_revisions.w_cache.5k.json: \
+		datasets/wikidatawiki.labeling_revisions.w_text.5k.json
+	cat datasets/wikidatawiki.labeling_revisions.w_text.5k.json | \
+	./utility extract_from_text \
+	  wikiclass.feature_lists.wikidatawiki.item_quality \
+	  --verbose > \
+	datasets/wikidatawiki.labeling_revisions.w_cache.5k.json
+
+tuning_reports/wikidatawiki.item_quality.md: \
+		datasets/wikidatawiki.labeling_revisions.w_cache.5k.json
+	cat datasets/wikidatawiki.labeling_revisions.w_cache.5k.json | \
+	revscoring tune \
+	  config/classifiers.params.yaml \
+	  wikiclass.feature_lists.wikidatawiki.item_quality \
+	  item_quality \
+	  --cv-timeout=60 \
+	  --scoring=accuracy \
+	  --debug \
+	  --label-type=str > \
+	tuning_reports/wikidatawiki.item_quality.md
+
+models/wikidatawiki.item_quality.rf.model: \
+		datasets/wikidatawiki.labeling_revisions.w_cache.5k.json
+	cat datasets/wikidatawiki.labeling_revisions.w_cache.5k.json | \
+	revscoring cv_train \
+	  revscoring.scorer_models.RF \
+	  wikiclass.feature_lists.wikidatawiki.item_quality \
+	  item_quality \
+	  --version $(item_quality_major_minor).0 \
+	  -p 'n_estimators=20' \
+	  -p 'criterion="gini"' \
+	  -p 'min_samples_leaf=13' \
+	  -p 'max_features="log2"' \
+	  $(test_statistics) \
+	  --balance-sample \
+	  --center --scale > \
+	models/wikidatawiki.item_quality.rf.model
+
+wikidatawiki_models: \
+	models/wikidatawiki.item_quality.rf.model
+
+wikidatawiki_tuning_reports: \
+	tuning_reports/wikidatawiki.item_quality.md
