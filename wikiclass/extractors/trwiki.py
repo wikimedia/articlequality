@@ -34,7 +34,6 @@ def from_template(template):
 
 LABEL_MATCHES = [
     ("sm", re.compile(r"\bsm|sl\b", re.I)), #featured article or list
-    ("a", re.compile(r"\ba\b", re.I)),
     ("km", re.compile(r"\bkm\b", re.I)),
     ("b", re.compile(r"\bb\b", re.I)),
     ("c", re.compile(r"\bc\b", re.I)),
