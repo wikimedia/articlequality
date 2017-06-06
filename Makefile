@@ -266,6 +266,23 @@ tuning_reports/frwikisource.page_level.md: \
 	  --label-type=str > \
 	tuning_reports/frwikisource.page_level.md
 
+models/frwikisource.page_level.gradient_boosting.model: \
+		datasets/frwikisource.labeled_revisions.w_cache.20k_balanced_2017.json
+	cat datasets/frwikisource.labeled_revisions.w_cache.20k_balanced_2017.json | \
+	revscoring cv_train \
+	  revscoring.scorer_models.GradientBoosting \
+	  wikiclass.feature_lists.frwikisource.pagelevel \
+	  page_level \
+	  --version 0.0.1 \
+	  -p 'n_estimators=700' \
+	  -p 'learning_rate=0.01' \
+	  -p 'max_features="log2"' \
+	  -p 'max_depth=7' \
+	  $(test_statistics) \
+	  --balance-sample \
+	  --center --scale > \
+	models/frwikisource.page_level.gradient_boosting.model
+
 
 ########################## Russian Wikipedia ###################################
 datasets/ruwiki.labelings.20160501.json:
