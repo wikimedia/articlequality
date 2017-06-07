@@ -3,8 +3,6 @@ import re
 import sys
 import traceback
 
-import mwparserfromhell as mwp
-
 from .extractor import TemplateExtractor
 
 logger = logging.getLogger(__name__)
@@ -42,11 +40,7 @@ LABEL_MATCHES = [
 
 
 def normalize_label(value):
-    value = str(value).lower().replace("_", " ").strip()
-    if re.search(r'<!--', value):  # HTML comment in param value?
-        value = mwp.parse(value)
-        value.remove(value.filter_comments())
-        value = str(value).strip()
+    value = str(value.strip_code()).lower().replace("_", " ").strip()
 
     for label, regex in LABEL_MATCHES:
         if regex.match(value):

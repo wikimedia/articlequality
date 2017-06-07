@@ -51,6 +51,21 @@ def test_extractor():
             7, Timestamp(5), "ddd",
             "{{talk page}}{{WikiProject Medicine|class=B}}\n" +
             "{{WP_Hats|class=B}}..."
+        ),
+        Revision(
+            8, Timestamp(6), "eee",
+            """{{talkheader}}
+{{WikiProjectBannerShell|1=
+{{WPMILHIST|class=C
+<!-- B-Class 5-criteria checklist -->
+|B1 <!-- Referencing and citations --> =n
+|B2 <!-- Coverage and accuracy --> =y
+|B3 <!-- Structure --> =y
+|B4 <!-- Grammar and style --> =y
+|B5 <!-- Supporting materials --> =y
+|National=y|African=y}}
+{{AfricaProject|class=C|importance=Top|Djibouti=y|Djibouti-importance=Top}}
+}}"""
         )
     ]
     page = Page("Foobar", 1, revisions)
@@ -62,7 +77,9 @@ def test_extractor():
     expected = [("medicine", "stub", Timestamp(0)),
                 ("medicine", "c", Timestamp(3)),
                 ("medicine", "b", Timestamp(5)),
-                ("hats", "b", Timestamp(5))]
+                ("hats", "b", Timestamp(5)),
+                ("wpmilhist", "c", Timestamp(6)),
+                ("africaproject", "c", Timestamp(6))]
 
     print(project_labels)
     for proj, lab, timestamp in expected:
