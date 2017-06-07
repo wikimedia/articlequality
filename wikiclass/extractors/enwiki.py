@@ -3,8 +3,6 @@ import re
 import sys
 import traceback
 
-import mwparserfromhell as mwp
-
 from .extractor import TemplateExtractor
 
 logger = logging.getLogger(__name__)
@@ -16,11 +14,7 @@ def from_template(template):
         template_name = normalize_template_name(template.name)
         project_name = normalize_project_name(template_name)
         try:
-            label = str(template.get('class').value).strip().lower()
-            if re.search(r'<!--', label): # HTML comment in param value?
-                label = mwp.parse(label)
-                label.remove(label.filter_comments())
-                label = str(label).strip()
+            label = str(template.get('class').value.strip_code()).strip().lower()
 
             if label in POSSIBLE_LABELS:
                 return project_name, label
