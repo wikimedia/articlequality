@@ -33,19 +33,15 @@ def from_template(template):
 
 
 LABEL_MATCHES = [
-    ("sm", re.compile(r"\bsm|sl\b", re.I)), #featured article or list
-    ("km", re.compile(r"\bkm\b", re.I)),
-    ("b", re.compile(r"\bb\b", re.I)),
-    ("c", re.compile(r"\bc\b", re.I)),
-    ("baslağıç", re.compile(r"\bbaşlanğıç\b", re.I))
-    ("taslak", re.compile(r"\btaslak\b", re.I)) #stub
+    ("sm", re.compile(r"\bsm\b", re.I)), # featured article 
+    ("km", re.compile(r"\bkm\b", re.I)), # good article
+    ("b", re.compile(r"\bb\b", re.I)), # B class
+    ("c", re.compile(r"\bc\b", re.I)), # C class
+    ("baslağıç", re.compile(r"\bbaşlanğıç\b", re.I)) # start class
+    ("taslak", re.compile(r"\btaslak\b", re.I)) # stub class
 ]
 def normalize_label(value):
-    value = str(value).lower().replace("_", " ").strip()
-    if re.search(r'<!--', value): # HTML comment in param value?
-        value = mwp.parse(value)
-        value.remove(value.filter_comments())
-        value = str(value).strip()
+    value = str(value.strip_code()).lower().replace("_", " ").strip()
     
     for label, regex in LABEL_MATCHES:
         if regex.match(value):
@@ -61,7 +57,7 @@ wikiclass.extractors.trwiki
 
 This extractor looks for instances of the "VikiProje" template on article talk
 pages (namespace = 1) with a parameter called "Sınıf".  All `project` s are
-hard-coded to "wikiprojet"
+hard-coded to "VikiProje"
 """,
     namespaces={1},
     from_template=from_template)
