@@ -5,8 +5,8 @@ A library for performing automatic detection of assessment classes of Wikipedia
 articles.
 
 * **Install:** ``pip install wikiclass``
-* **Models:** `<https://github.com/halfak/Wiki-Class/tree/master/models>`_
-* **Repo:** `<https://github.com/halfak/Wiki-Class>`_
+* **Models:** `<https://github.com/wiki-ai/wikiclass/tree/master/models>`_
+* **Repo:** `<https://github.com/wiki-ai/wikiclass>`_
 * **License:** MIT License
 
 Contents
