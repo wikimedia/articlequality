@@ -364,6 +364,14 @@ riwiki_tuning_reports: \
 	tuning_reports/ruwiki.wp10.md
 
 
+############################ Turkish Wikipedia #############################
+datasets/trwiki.observations.first_labelings.20170501.json:
+	./utility extract_labelings \
+		/mnt/data/xmldatadumps/public/trwiki/20170501/trwiki-20170501-pages-meta-history.xml.bz2 > \
+	datasets/trwiki.observations.first_labelings.20170501.json
+
+
+
 ############################# Wikidata ######################################
 
 # From https://quarry.wmflabs.org/query/17904

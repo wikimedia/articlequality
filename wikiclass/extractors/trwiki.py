@@ -9,17 +9,21 @@ from .extractor import TemplateExtractor
 
 logger = logging.getLogger(__name__)
 
-PROJECT_NAME = "VikiProje"
+PROJECT_NAME = "vikiproje"
 
 
 def from_template(template):
     template_name = str(template.name).lower().strip()
-    if template_name == "VikiProje" and template.has_param('Sınıf'):
+    if template_name == "vikiproje" and template.has_param('Sınıf'):
         try:
             label = normalize_label(template.get('Sınıf').value)
+            project_name = None
+            if 'Proje' in template:
+                project_name = template.get('Proje').value.strip().lower()
+            project_name = project_name or PROJECT_NAME
 
             if label is not None:
-                return PROJECT_NAME, label
+                return project_name, label
             else:
                 logger.debug("Class '{0}' not in possible classes."
                              .format(template.get('Sınıf').value))
@@ -37,7 +41,7 @@ LABEL_MATCHES = [
     ("km", re.compile(r"\bkm\b", re.I)), # good article
     ("b", re.compile(r"\bb\b", re.I)), # B class
     ("c", re.compile(r"\bc\b", re.I)), # C class
-    ("baslağıç", re.compile(r"\bbaşlanğıç\b", re.I)) # start class
+    ("baslağıç", re.compile(r"\bbaşlanğıç\b", re.I)), # start class
     ("taslak", re.compile(r"\btaslak\b", re.I)) # stub class
 ]
 def normalize_label(value):
