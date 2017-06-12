@@ -226,7 +226,7 @@ def _process_important_translations(item):
 	
 	#if an important language consists of both item label and item description exist, add the language into result_set
 	for value in combined_dict.items():
-		if((len(value[1]) == 2) and (value[0] == 'en' or value[0] == 'de' or value[0] == 'ar' or value[0] == 'zh' or value[0] == 'es' or value[0] == 'pt' or value[0] == 'ru' or value[0] == 'fr')): 
+		if((len(value[1]) == 2) and (value[0] in ('en', 'de', 'ar', 'zh', 'es', 'pt', 'ru', 'fr'))):
 			result_set.append(value[0])
 
 	return len(result_set)/8
