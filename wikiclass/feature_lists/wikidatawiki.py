@@ -48,14 +48,14 @@ all_external_sources = wikidata.revision.all_external_sources
 local_wiki = [
     is_human,
     is_blp,
-	external_sources_ratio,
-	unique_sources,
-	complete_translations,
-	complete_important_translations,
-	image_quality,
-	all_sources,
-	all_wikimedia_sources,
-	all_external_sources
+    external_sources_ratio,
+    unique_sources,
+    complete_translations,
+    complete_important_translations,
+    image_quality,
+    all_sources,
+    all_wikimedia_sources,
+    all_external_sources
 ]
 
 item_quality = wikibase.item + local_wiki
