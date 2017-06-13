@@ -31,13 +31,6 @@ class Revision(DependentSet):
         """
         A `~pywikibase.Item` for the Wikibase content
         """
-
-        self.external_sources_ratio = Datasource(
-			name + ".external_sources_ratio", _process_external_sources_ratio, depends_on=[self.item]
-		)
-        """
-		A `float` of the ratio between number of external references and number of claims that have references in the revision
-		"""
 		
         self.unique_sources = Datasource(
 	        name + ".unique_sources", _process_unique_sources, depends_on=[self.item]
@@ -53,22 +46,6 @@ class Revision(DependentSet):
 
         """
         A `list` of completed translations (a pair of completed label and description) in the revision
-        """
-		
-        self.complete_important_translations = Datasource(
-	        name + ".complete_important_translations", _process_important_translations, depends_on=[self.item]
-        )
-
-        """
-        A `float` of the ratio of completed important translations (a pair of completed label and description) in the revision
-        """
-		
-        self.image_quality = Datasource(
-	        name + ".image_quality", _process_image_quality, depends_on=[self.item]
-        )
-
-        """
-        A `float` of the image megapixels in the revision
         """
 	
         self.all_sources = Datasource(
@@ -86,15 +63,6 @@ class Revision(DependentSet):
         """
         A `list` of all sources which come from Wikimedia projects in the revision
         """
-		
-        self.all_external_sources = Datasource(
-	        name + ".all_external_sources", _process_external_sources, depends_on=[self.item]
-        )
-
-        """
-        A count of all sources which do not come from Wikimedia projects in the revision
-        """
-	
 
 def _process_item_doc(text):
     if text is not None:
@@ -230,38 +198,3 @@ def _process_important_translations(item):
 			result_set.append(value[0])
 
 	return len(result_set)/8
-
-def _process_image_quality(item):
-
-    image_filename = ''
-    claims = list(set(
-        (property, _claim_to_str(claim)) 
-        for property in item.claims
-        for claim in item.claims[property]) 
-    )
-
-    try:
-        #find the image filename in P18 (image)
-        for x in claims:
-            if(x[0] ==  'P18'):
-                image_filename = x[1]
-                break
-
-        image_filename = image_filename.replace(' ', '_').strip()
-
-        #access the Commons API, retrieve the JSON response		
-        params = {'action': 'query', 'titles': 'Image:'+ image_filename, 'prop': 'imageinfo', 'iiprop': 'dimensions', 'iimetadataversion': 'latest','format': 'json'}
-        url = "https://commons.wikimedia.org/w/api.php?{}".format(urlencode(params))
-        url_request = urllib.request.urlopen(url)
-        data = url_request.read()
-        json_result = json.loads(data.decode("utf-8"))
-
-        #get the image weight and height from the JSON result
-        list_json_image_values = list(json_result['query']['pages'].values())
-        image_width = list_json_image_values[0]['imageinfo'][0]['width']
-        image_height = list_json_image_values[0]['imageinfo'][0]['height']
-
-        return (image_width*image_height)/1000000
-
-    except:
-    	return 0.0 #if the revision does not have an image, return 0
