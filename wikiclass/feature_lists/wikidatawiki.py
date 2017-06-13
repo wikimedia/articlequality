@@ -1,9 +1,7 @@
 from revscoring.features import wikibase as wikibase_features
 from revscoring.features.modifiers import not_
 from wikiclass.wikiclass.feature_lists import wikidata
-
 from . import wikibase 
-
 
 name = "wikidatawiki"
 
@@ -35,29 +33,17 @@ dead = revision.has_property(properties.DATE_OF_DEATH,
 is_blp = has_birthday.and_(not_(dead))
 
 
-
-external_sources_ratio = wikidata.revision.external_sources_ratio
-unique_sources = wikidata.revision.unique_sources
-complete_translations = wikidata.revision.complete_translations
-complete_important_translations = wikidata.revision.complete_important_translations
-image_quality = wikidata.revision.image_quality
-all_sources = wikidata.revision.all_sources
-all_wikimedia_sources = wikidata.revision.all_wikimedia_sources
-all_external_sources = wikidata.revision.all_external_sources
-
 local_wiki = [
     is_human,
     is_blp,
-    external_sources_ratio,
-    unique_sources,
-    complete_translations,
-    complete_important_translations,
-    image_quality,
-    all_sources,
-    all_wikimedia_sources,
-    all_external_sources
+	wikidata.revision.external_sources_ratio,
+	wikidata.revision.unique_sources,
+	wikidata.revision.complete_translations,
+	wikidata.revision.complete_important_translations,
+	wikidata.revision.all_sources,
+	wikidata.revision.all_wikimedia_sources,
+	wikidata.revision.all_external_sources
 ]
 
 item_quality = wikibase.item + local_wiki
-
 
