@@ -14,19 +14,26 @@ PROJECT_NAME = "vikiproje"
 
 def from_template(template):
     template_name = str(template.name).lower().strip()
-    if template_name == "vikiproje" and template.has_param('Sınıf'):
+    if template_name[:9] == "vikiproje" and (template.has_param('Sınıf') or template.has_param('sınıf')):
         try:
-            label = normalize_label(template.get('Sınıf').value)
+            if template.has_param('Sınıf'):
+                label = normalize_label(template.get('Sınıf').value)
+            else:
+                label = normalize_label(template.get('sınıf').value)
             project_name = None
-            if 'Proje' in template:
+            if template.has_param('Proje'):
                 project_name = template.get('Proje').value.strip().lower()
+            elif template.has_param('proje'):
+                project_name = template.get('proje').value.strip().lower()
+            else:
+                project_name = template_name[9:].strip()
             project_name = project_name or PROJECT_NAME
 
             if label is not None:
                 return project_name, label
             else:
                 logger.debug("Class '{0}' not in possible classes."
-                             .format(template.get('Sınıf').value))
+                             .format(label))
                 pass # not a quality assessment class
 
         except ValueError as e:
