@@ -364,6 +364,70 @@ riwiki_tuning_reports: \
 	tuning_reports/ruwiki.wp10.md
 
 
+############################ Turkish Wikipedia #############################
+datasets/trwiki.labelings.20170501.json:
+	./utility extract_labelings \
+		/mnt/data/xmldatadumps/public/trwiki/20170501/trwiki-20170501-pages-meta-history.xml.bz2 > \
+	datasets/trwiki.labelings.20170501.json
+
+datasets/trwiki.labelings.2k.json: \
+		datasets/trwiki.labelings.20170501.json
+	(cat datasets/trwiki.labelings.20170501.json | grep '"wp10": "taslak"' | shuf -n 272; \
+	 cat datasets/trwiki.labelings.20170501.json | grep '"wp10": "c"' | shuf -n 272; \
+	 cat datasets/trwiki.labelings.20170501.json | grep '"wp10": "b"' | shuf -n 272; \
+	 cat datasets/trwiki.labelings.20170501.json | grep '"wp10": "km"' | shuf -n 272; \
+	 cat datasets/trwiki.labelings.20170501.json | grep '"wp10": "sm"' | shuf -n 272) > \
+	datasets/trwiki.labelings.2k.json
+
+datasets/trwiki.labeling_revisions.w_text.2k.json: \
+		datasets/trwiki.labelings.2k.json
+	cat datasets/trwiki.labelings.2k.json | \
+	./utility fetch_text \
+	  --api-host=https://tr.wikipedia.org \
+	  --verbose > \
+	datasets/trwiki.labeling_revisions.w_text.2k.json
+
+datasets/trwiki.labeling_revisions.w_cache.2k.json: \
+		datasets/trwiki.labeling_revisions.w_text.2k.json
+	cat datasets/trwiki.labeling_revisions.w_text.2k.json | \
+	./utility extract_from_text \
+	  wikiclass.feature_lists.trwiki.wp10 \
+	  --verbose > \
+	datasets/trwiki.labeling_revisions.w_cache.2k.json
+
+tuning_reports/trwiki.wp10.md: \
+		datasets/trwiki.labeling_revisions.w_cache.2k.json
+	cat datasets/trwiki.labeling_revisions.w_cache.2k.json | \
+	revscoring tune \
+	  config/classifiers.params.yaml \
+	  wikiclass.feature_lists.trwiki.wp10 \
+	  wp10 \
+	  --cv-timeout=60 \
+	  --scoring=accuracy \
+	  --debug \
+	  --folds 20 \
+	  --label-type=str > \
+	tuning_reports/trwiki.wp10.md
+
+max_depth=7, max_features="log2", n_estimators=300, learning_rate=0.1
+
+models/trwiki.wp10.gradient_boosting.model: \
+		datasets/trwiki.labeling_revisions.w_cache.2k.json
+	cat datasets/trwiki.labeling_revisions.w_cache.2k.json | \
+	revscoring cv_train \
+	  revscoring.scorer_models.GradientBoosting \
+	  wikiclass.feature_lists.trwiki.wp10 \
+	  wp10 \
+	  --version $(wp10_major_minor).0 \
+	  -p 'max_depth=5' \
+	  -p 'learning_rate=0.01' \
+	  -p 'max_features="log2"' \
+	  -p 'n_estimators=300' \
+	  $(test_statistics) \
+	  --balance-sample \
+	  --center --scale > \
+	models/trwiki.wp10.gradient_boosting.model
+
 ############################# Wikidata ######################################
 
 # From https://quarry.wmflabs.org/query/17904
