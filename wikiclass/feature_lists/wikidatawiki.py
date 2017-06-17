@@ -43,13 +43,6 @@ def _process_item(item_doc):
     item.get(content=item_doc or {'aliases': {}})
     return item
 
-item_doc = Datasource(name + ".item_doc", _process_item_doc, depends_on=[revision_oriented.revision.text])
-"A JSONable `dict` of content for a Wikibase content."
-
-item = Datasource(name + ".item", _process_item,depends_on=[item_doc])
-"A `~pywikibase.Item` for the Wikibase content"
-
-
 def _process_all_sources(item):
 
 	list_sources_in_JSON = []
@@ -170,6 +163,12 @@ def _process_important_translations(item):
 			result_set.append(value[0])
 
 	return len(result_set)/8
+
+item_doc = Datasource(name + ".item_doc", _process_item_doc, depends_on=[revision_oriented.revision.text])
+"A JSONable `dict` of content for a Wikibase content."
+
+item = Datasource(name + ".item", _process_item,depends_on=[item_doc])
+"A `~pywikibase.Item` for the Wikibase content"
 
 external_sources_ratio = Feature(name + ".external_sources_ratio", _process_external_sources_ratio, depends_on= [item], returns=float)
 "`float` : A ratio/division between number of external references and number of claims that have references in the revision"
