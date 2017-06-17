@@ -32,61 +32,23 @@ class items:
     """
     HUMAN = 'Q5'
 
-class Revision:
-    
-    global name
-    def __init__(self, name, revision_datasources):
-        super().__init__()
-        self.name = name
-        
-        self.item_doc = Datasource(
-            name + ".item_doc", _process_item_doc,
-            depends_on=[revision_datasources.text]
-        )
-        """
-        A JSONable `dict` of content for a Wikibase content.
-        """
-
-        self.item = Datasource(
-            name + ".item", _process_item,
-            depends_on=[self.item_doc]
-        )
-        """
-        A `~pywikibase.Item` for the Wikibase content
-        """
-
-        self.external_sources_ratio = Feature(self.name + ".external_sources_ratio", _process_external_sources_ratio, depends_on= [self.item], returns=float)
-        "`float` : A ratio/division between number of external references and number of claims that have references in the revision"
-
-        self.unique_sources = aggregators.len(Feature(self.name + ".unique_sources", _process_unique_sources, depends_on= [self.item], returns=set)) 
-        "`int` : A count of unique sources in the revision" 
-        
-        self.complete_translations = aggregators.len(Feature(self.name + ".complete_translations", _process_complete_translations, depends_on= [self.item], returns=list))
-        "`int` :A count of completed translations (a pair of completed label and description) in the revision" 
-        
-        self.complete_important_translations = Feature(self.name + ".complete_important_translations", _process_important_translations, depends_on= [self.item], returns=float)
-        "`float` : A ratio of completed important translations (a pair of completed label and description) in the revision"
-
-        self.all_sources = aggregators.len(Datasource(name + ".all_sources", _process_all_sources, depends_on=[self.item]))
-        "`int` : A count of all sources in the revision" 
-
-        self.all_wikimedia_sources = aggregators.len(Datasource(name + ".all_wikimedia_sources", _process_wikimedia_sources, depends_on=[self.item]))
-        "`int` : A count of all sources which come from Wikimedia projects in the revision" 
-        
-        self.all_external_sources = Feature(self.name + ".all_external_sources", _process_external_sources, depends_on= [self.item], returns=int)
-        "`int` : A count of all sources which do not come from Wikimedia projects in the revision" 
-
 def _process_item_doc(text):
     if text is not None:
         return json.loads(text)
     else:
         return None
 
-
 def _process_item(item_doc):
     item = pywikibase.ItemPage()
     item.get(content=item_doc or {'aliases': {}})
     return item
+
+item_doc = Datasource(name + ".item_doc", _process_item_doc, depends_on=[revision_oriented.revision.text])
+"A JSONable `dict` of content for a Wikibase content."
+
+item = Datasource(name + ".item", _process_item,depends_on=[item_doc])
+"A `~pywikibase.Item` for the Wikibase content"
+
 
 def _process_all_sources(item):
 
@@ -209,6 +171,26 @@ def _process_important_translations(item):
 
 	return len(result_set)/8
 
+external_sources_ratio = Feature(name + ".external_sources_ratio", _process_external_sources_ratio, depends_on= [item], returns=float)
+"`float` : A ratio/division between number of external references and number of claims that have references in the revision"
+
+unique_sources = aggregators.len(Feature(name + ".unique_sources", _process_unique_sources, depends_on= [item], returns=set)) 
+"`int` : A count of unique sources in the revision" 
+
+complete_translations = aggregators.len(Feature(name + ".complete_translations", _process_complete_translations, depends_on= [item], returns=list))
+"`int` :A count of completed translations (a pair of completed label and description) in the revision" 
+
+complete_important_translations = Feature(name + ".complete_important_translations", _process_important_translations, depends_on= [item], returns=float)
+"`float` : A ratio of completed important translations (a pair of completed label and description) in the revision"
+
+all_sources = aggregators.len(Datasource(name + ".all_sources", _process_all_sources, depends_on=[item]))
+"`int` : A count of all sources in the revision" 
+
+all_wikimedia_sources = aggregators.len(Datasource(name + ".all_wikimedia_sources", _process_wikimedia_sources, depends_on=[item]))
+"`int` : A count of all sources which come from Wikimedia projects in the revision" 
+
+all_external_sources = Feature(name + ".all_external_sources", _process_external_sources, depends_on= [item], returns=int)
+"`int` : A count of all sources which do not come from Wikimedia projects in the revision" 
 
 # Status
 revision = wikibase_features.revision
@@ -223,13 +205,13 @@ is_blp = has_birthday.and_(not_(dead))
 local_wiki = [
     is_human,
     is_blp,
-    Revision(name, revision_oriented.revision).external_sources_ratio,
-    Revision(name, revision_oriented.revision).unique_sources,
-    Revision(name, revision_oriented.revision).complete_translations,
-    Revision(name, revision_oriented.revision).complete_important_translations,
-    Revision(name, revision_oriented.revision).all_sources,
-    Revision(name, revision_oriented.revision).all_wikimedia_sources,
-    Revision(name, revision_oriented.revision).all_external_sources
+    external_sources_ratio,
+    unique_sources,
+    complete_translations,
+    complete_important_translations,
+    all_sources,
+    all_wikimedia_sources,
+    all_external_sources
 ]
 
 item_quality = wikibase.item + local_wiki
