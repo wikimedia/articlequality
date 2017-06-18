@@ -10,11 +10,18 @@ from urllib.parse import urlencode
 import urllib.request
 import pywikibase
 from revscoring.datasources.datasource import Datasource 
-from revscoring.features.wikibase.datasources.revision_oriented import _process_sources
-from revscoring.features.wikibase.datasources.revision_oriented import _claim_to_str
+from revscoring.features.wikibase.datasources.revision_oriented import Revision as Revision_Datasource
+from revscoring.features.wikibase.features.revision_oriented import Revision as Revision_Feature
 from revscoring.datasources import revision_oriented
+from revscoring.features import modifiers
+
 
 name = "wikidatawiki"
+
+IMPORTANT_LANG_CODES = ('en', 'de', 'ar', 'zh', 'es', 'pt', 'ru', 'fr')
+"""
+Language codes for important languages which are described in https://www.wikidata.org/wiki/Wikidata:Item_quality#Translations
+"""
 
 
 class properties:
@@ -31,17 +38,6 @@ class items:
     Mapping of english descriptions to item idenifiers
     """
     HUMAN = 'Q5'
-
-def _process_item_doc(text):
-    if text is not None:
-        return json.loads(text)
-    else:
-        return None
-
-def _process_item(item_doc):
-    item = pywikibase.ItemPage()
-    item.get(content=item_doc or {'aliases': {}})
-    return item
 
 def _process_all_sources(item):
 
@@ -66,7 +62,6 @@ def _process_wikimedia_sources(item):
 	list_sources_in_JSON = []
 	list_wikimedia_sources = []
 	
-	
 	for property in item.claims:
 		list_of_properties = property
 		for claim in item.claims[list_of_properties]:
@@ -75,7 +70,7 @@ def _process_wikimedia_sources(item):
 				for index_list_1, index_list_2 in source.items(): 
 					sources_in_JSON = index_list_2[0].toJSON()
 					list_sources_in_JSON.append(sources_in_JSON['datavalue']['value'])
-
+    
 	wdir_path = os.path.dirname(os.path.realpath(__file__)) #get the current working directory path
 	csv_path = os.path.join(wdir_path, 'excluded_qids.csv')
 
@@ -90,22 +85,6 @@ def _process_wikimedia_sources(item):
 				except:
 					continue
 	return list_wikimedia_sources
-
-def _process_external_sources(item):
-    
-    count_all_sources = len(_process_all_sources(item))
-    count_wiki_sources = len(_process_wikimedia_sources(item))
-    return count_all_sources - count_wiki_sources
-
-
-def _process_external_sources_ratio(item):
-	
-	try: 
-		count_external_sources = _process_external_sources(item)
-		count_claims_with_sources = len(_process_sources(item))
-		return count_external_sources/count_claims_with_sources
-	except: 
-		return 0.0 #if the revision does not contain any sources, return 0 
 	
 def _process_unique_sources(item):
 	
@@ -125,12 +104,12 @@ def _process_unique_sources(item):
 	for value in list_sources_in_JSON:
 		result_set.add(value)
 	
-	return result_set
+	return len(result_set)
 	
 
-def _process_complete_translations(item):
-	item_labels_dict = item.labels
-	item_desc_dict = item.descriptions
+def _process_complete_translations(item_labels, item_descriptions):
+	item_labels_dict = item_labels
+	item_desc_dict = item_descriptions
 	combined_dict = {}
 	result_set = []
 	
@@ -144,11 +123,11 @@ def _process_complete_translations(item):
 		if(len(value[1]) == 2): 
 			result_set.append(value[0])
 			
-	return result_set
+	return len(result_set)
 
-def _process_important_translations(item):
-	item_labels_dict = item.labels
-	item_desc_dict = item.descriptions
+def _process_important_translations(item_labels, item_descriptions):
+	item_labels_dict = item_labels
+	item_desc_dict = item_descriptions
 	combined_dict = {}
 	result_set = []
 	
@@ -159,37 +138,38 @@ def _process_important_translations(item):
 	
 	#if an important language consists of both item label and item description exist, add the language into result_set
 	for value in combined_dict.items():
-		if((len(value[1]) == 2) and (value[0] in ('en', 'de', 'ar', 'zh', 'es', 'pt', 'ru', 'fr'))):
+		if((len(value[1]) == 2) and (value[0] in IMPORTANT_LANG_CODES)):
 			result_set.append(value[0])
 
 	return len(result_set)/8
 
-item_doc = Datasource(name + ".item_doc", _process_item_doc, depends_on=[revision_oriented.revision.text])
-"A JSONable `dict` of content for a Wikibase content."
-
-item = Datasource(name + ".item", _process_item,depends_on=[item_doc])
+item = Revision_Datasource(name, revision_oriented.revision).item
 "A `~pywikibase.Item` for the Wikibase content"
 
-external_sources_ratio = Feature(name + ".external_sources_ratio", _process_external_sources_ratio, depends_on= [item], returns=float)
-"`float` : A ratio/division between number of external references and number of claims that have references in the revision"
-
-unique_sources = aggregators.len(Feature(name + ".unique_sources", _process_unique_sources, depends_on= [item], returns=set)) 
+unique_sources = Feature(name + ".unique_sources", _process_unique_sources, depends_on=[item], returns=int)
 "`int` : A count of unique sources in the revision" 
 
-complete_translations = aggregators.len(Feature(name + ".complete_translations", _process_complete_translations, depends_on= [item], returns=list))
+item_labels = Revision_Datasource(name, revision_oriented.revision).labels
+item_descriptions = Revision_Datasource(name, revision_oriented.revision).descriptions
+complete_translations = Feature(name + ".complete_translations", _process_complete_translations, depends_on=[item_labels, item_descriptions], returns=int)
 "`int` :A count of completed translations (a pair of completed label and description) in the revision" 
 
-complete_important_translations = Feature(name + ".complete_important_translations", _process_important_translations, depends_on= [item], returns=float)
+complete_important_translations = Feature(name + ".complete_important_translations", _process_important_translations, depends_on=[item_labels, item_descriptions], returns=float)
 "`float` : A ratio of completed important translations (a pair of completed label and description) in the revision"
 
-all_sources = aggregators.len(Datasource(name + ".all_sources", _process_all_sources, depends_on=[item]))
+all_sources_datasource = Datasource(name + ".all_sources", _process_all_sources, depends_on=[item])
+all_sources = aggregators.len(all_sources_datasource)
 "`int` : A count of all sources in the revision" 
 
-all_wikimedia_sources = aggregators.len(Datasource(name + ".all_wikimedia_sources", _process_wikimedia_sources, depends_on=[item]))
+all_wikimedia_sources_datasource = Datasource(name + ".all_wikimedia_sources", _process_wikimedia_sources, depends_on=[item])
+all_wikimedia_sources = aggregators.len(all_wikimedia_sources_datasource)
 "`int` : A count of all sources which come from Wikimedia projects in the revision" 
 
-all_external_sources = Feature(name + ".all_external_sources", _process_external_sources, depends_on= [item], returns=int)
-"`int` : A count of all sources which do not come from Wikimedia projects in the revision" 
+all_external_sources = modifiers.sub(all_sources, all_wikimedia_sources)
+"A count of all sources which do not come from Wikimedia projects in the revision" 
+
+external_sources_ratio = all_external_sources / modifiers.max (Revision_Feature(name, Revision_Datasource(name, revision_oriented.revision)).sources, 1)
+"A ratio/division between number of external references and number of claims that have references in the revision"
 
 # Status
 revision = wikibase_features.revision
