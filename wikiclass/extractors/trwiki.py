@@ -48,7 +48,7 @@ LABEL_MATCHES = [
     ("km", re.compile(r"\bkm\b", re.I)), # good article
     ("b", re.compile(r"\bb\b", re.I)), # B class
     ("c", re.compile(r"\bc\b", re.I)), # C class
-    ("baslağıç", re.compile(r"\bbaşlanğıç\b", re.I)), # start class
+    ("baslagıç", re.compile(r"\bbaşlan[gğ]ıç\b", re.I)), # start class
     ("taslak", re.compile(r"\btaslak\b", re.I)) # stub class
 ]
 def normalize_label(value):
