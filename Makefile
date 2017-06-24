@@ -373,6 +373,7 @@ datasets/trwiki.labelings.20170501.json:
 datasets/trwiki.labelings.2k.json: \
 		datasets/trwiki.labelings.20170501.json
 	(cat datasets/trwiki.labelings.20170501.json | grep '"wp10": "taslak"' | shuf -n 272; \
+	 cat datasets/trwiki.labelings.20170501.json | grep '"wp10": "baslag\\u0131\\u00e7"' | shuf -n 272; \
 	 cat datasets/trwiki.labelings.20170501.json | grep '"wp10": "c"' | shuf -n 272; \
 	 cat datasets/trwiki.labelings.20170501.json | grep '"wp10": "b"' | shuf -n 272; \
 	 cat datasets/trwiki.labelings.20170501.json | grep '"wp10": "km"' | shuf -n 272; \
