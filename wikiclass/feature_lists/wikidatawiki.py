@@ -27,6 +27,18 @@ IMPORTANT_LANG_CODES = {'en', 'de', 'ar', 'zh', 'es', 'pt', 'ru', 'fr'}
 Language codes for important languages which are described in https://www.wikidata.org/wiki/Wikidata:Item_quality#Translations
 """
 
+wdir_path = os.path.dirname(os.path.realpath(__file__)) #get the current working directory path
+csv_path = os.path.join(wdir_path, 'excluded_qids.csv')
+WIKIMEDIA_SOURCES = set()
+"""
+A set which contains the QID of Wikimedia wikis 
+"""	
+#add content from the CSV to set
+with open(csv_path) as csvfile:
+	readCSV = csv.reader(csvfile, delimiter=',')
+	for line in readCSV:
+		WIKIMEDIA_SOURCES.add(int(line[0]))
+
 class properties:
     """
     Mapping of english descriptions to property identifiers
@@ -47,37 +59,29 @@ def _process_all_sources(item):
 	
 	try:
 		for property in item.claims:
-			list_of_properties = property
-			for claim in item.claims[list_of_properties]:
-				list_of_claims = claim
-				for i, source in enumerate(list_of_claims.sources):
+			for claim in item.claims[property]:
+				for i, source in enumerate(claim.sources):
 					for index_list_1, index_list_2 in source.items(): 
 						sources_in_JSON = index_list_2[0].toJSON()
-						list_sources_in_JSON.append(sources_in_JSON['datavalue']['value'])
-			
+						if('numeric-id' in sources_in_JSON['datavalue']['value']):
+							list_sources_in_JSON.append("property:" + str(sources_in_JSON['property']) + "&value:" + str(sources_in_JSON['datavalue']['value']['numeric-id']))
+						else:
+							list_sources_in_JSON.append("property:" + str(sources_in_JSON['property']) + "&value:" + str(sources_in_JSON['datavalue']['value']))
+
 		return list_sources_in_JSON
-	except:
+	except: 
 		return 0 #if the revision does not contain any sources, return 0
 
 def _process_wikimedia_sources(list_all_sources):
 
-	wikimedia_sources = set()
 	result_list = []
     
-	wdir_path = os.path.dirname(os.path.realpath(__file__)) #get the current working directory path
-	csv_path = os.path.join(wdir_path, 'excluded_qids.csv')
-	
-	#add content from the CSV to set
-	with open(csv_path) as csvfile:
-		readCSV = csv.reader(csvfile, delimiter=',')
-		for line in readCSV:
-			wikimedia_sources.add(int(line[0]))
-	
 	#check revision sources for any Wikimedia project sources
 	for list_all_sources_content in list_all_sources:
-		for wikimedia_sources_content in wikimedia_sources:
+		for wikimedia_sources_content in WIKIMEDIA_SOURCES:
 			try:
-				if(list_all_sources_content['numeric-id'] == wikimedia_sources_content): #if a source comes from Wikimedia projects and DBpedia (i.e. DBpedia collects data from Wikipedia), append that source to the list
+				split_source = list_all_sources_content.split("&value:")
+				if(int(split_source[1]) == wikimedia_sources_content): #if a source comes from Wikimedia projects and DBpedia (i.e. DBpedia collects data from Wikipedia), append that source to the list
 					result_list.append(list_all_sources_content)
 					break
 			except:
@@ -85,18 +89,12 @@ def _process_wikimedia_sources(list_all_sources):
 
 	return result_list
 	
-def _process_unique_sources(item):
+def _process_unique_sources(list_all_sources):
 	
 	result_set = set()
 	
-	for property in item.claims:
-		list_of_properties = property
-		for claim in item.claims[list_of_properties]:
-			list_of_claims = claim
-			for i, source in enumerate(list_of_claims.sources):
-				for index_list_1, index_list_2 in source.items(): 
-					sources_in_JSON = index_list_2[0].toJSON()
-					result_set.add ("property : " + str(sources_in_JSON['property']) + " & value : " + str(sources_in_JSON['datavalue']['value']))
+	for value in list_all_sources:
+		result_set.add(value)
 	
 	return len(result_set)
 	
@@ -134,9 +132,6 @@ item_doc = Datasource(name + ".item_doc", _process_item_doc,depends_on=[revision
 item = Datasource(name + ".item", _process_item, depends_on=[item_doc])
 """A `~pywikibase.Item` for the Wikibase content"""
 
-unique_sources = Feature(name + ".unique_sources", _process_unique_sources, depends_on=[item], returns=int)
-"`int` : A count of unique sources in the revision" 
-
 item_labels_datasource = Datasource(name + ".labels", _process_labels, depends_on=[item])
 item_descriptions_datasource = Datasource(name + ".descriptions", _process_descriptions,depends_on=[item])
 complete_translations = Feature(name + ".complete_translations", _process_complete_translations, depends_on=[item_labels_datasource, item_descriptions_datasource], returns=int)
@@ -164,6 +159,9 @@ all_external_sources = modifiers.sub(all_sources, all_wikimedia_sources)
 
 external_sources_ratio = all_external_sources / modifiers.max (wikibase_features.revision.sources, 1)
 "A ratio/division between number of external references and number of claims that have references in the revision"
+
+unique_sources = Feature(name + ".unique_sources", _process_unique_sources, depends_on=[all_sources_datasource], returns=int)
+"`int` : A count of unique sources in the revision" 
 
 # Status
 is_human = revision.has_property_value(properties.INSTANCE_OF, items.HUMAN,
