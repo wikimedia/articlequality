@@ -1,3 +1,6 @@
+# Remove target files after command failure.    
+.DELETE_ON_ERROR:      
+
 models: \
 	enwiki_models \
 	frwiki_models \
