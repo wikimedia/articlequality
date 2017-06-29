@@ -76,9 +76,13 @@ def simplify_target(target):
         return target
     elif hasattr(target, "toTimestr"):
         return target.toTimestr()
+    elif isinstance(target, dict) and 'text' in target:
+        return target['text']
+    elif target is None:
+        return None
     else:
         raise RuntimeError("Could not simplify target {0}"
-                           .format(target.toJSON()))
+                           .format(target))
 
 
 def _process_complete_translations(item_labels, item_descriptions):
