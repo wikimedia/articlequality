@@ -5,7 +5,7 @@ format:
 
 Usage:
     extract_scores -h | --help
-    extract_scores <dump-file>... --model=<model-file> --sunset=<date>
+    extract_scores <dump-file>... --model=<model-file> --weights=<dbname> --sunset=<date>
                                  [--score-at=<when>]
                                  [--rev-scores=<path>]
                                  [--extend=<path>]
@@ -17,6 +17,8 @@ Options:
     -h --help             Prints out this documentation.
     <dump-file>           Path to an XML dump file to gather texts
     --model=<model-file>  Path to the model file to use for scoring.
+    --weights=<dbname>    The dbname of the originating wiki for looking 
+                          up weights for each prediction class.
     --sunset=<date>       The date when the XML dump file was generated
     --score-at=<when>     When should scores be generated?  Options include
                           (revision, monthly, biannually, annually, latest).
@@ -48,25 +50,34 @@ logger = logging.getLogger(__name__)
 r_text = revision_oriented.revision.text
 
 CLASS_WEIGHTS = {
-    'Stub': 0,
-    'Start': 1,
-    'C': 2,
-    'B': 3,
-    'GA': 4,
-    'FA': 5,
-    'e': 0,
-    'bd': 1,
-    'b': 2,
-    'a': 3,
-    'ba': 4,
-    'adq': 5,
-    'ИС': 6,
-    'ХС': 5,
-    'ДС': 4,
-    'I': 3,
-    'II': 2,
-    'III': 1,
-    'IV': 0
+    'enwiki': {
+        'Stub': 0,
+        'Start': 1,
+        'C': 2,
+        'B': 3,
+        'GA': 4,
+        'FA': 5},
+    'frwiki': {
+        'e': 0,
+        'bd': 1,
+        'b': 2,
+        'a': 3,
+        'ba': 4,
+        'adq': 5},
+    'ruwiki': {
+        'ИС': 6,
+        'ХС': 5,
+        'ДС': 4,
+        'I': 3,
+        'II': 2,
+        'III': 1,
+        'IV': 0},
+    'wikidatawiki': {
+        'E': 0,
+        'D': 1,
+        'C': 2,
+        'B': 3,
+        'A': 4}
 }
 
 START_YEAR = 2001
@@ -87,6 +98,8 @@ def main(argv=None):
     paths = args['<dump-file>']
     with open(args['--model']) as f:
         model = ScorerModel.load(f)
+
+    weights = CLASS_WEIGHTS[args['--weights']]
 
     sunset = mwtypes.Timestamp(args['--sunset'])
 
@@ -120,11 +133,11 @@ def main(argv=None):
         processes = int(args['--processes'])
 
     verbose = args['--verbose']
-    run(paths, model, sunset, score_at, rev_scores, skip_scores_before,
+    run(paths, model, weights, sunset, score_at, rev_scores, skip_scores_before,
         processes, verbose=verbose)
 
 
-def run(paths, model, sunset, score_at, rev_scores, skip_scores_before,
+def run(paths, model, weights, sunset, score_at, rev_scores, skip_scores_before,
         processes, verbose=False):
 
     if score_at == "revision":
@@ -159,7 +172,7 @@ def run(paths, model, sunset, score_at, rev_scores, skip_scores_before,
                          .format(title, page_id, rev_id, e))
             continue
 
-        weighted_sum = sum(CLASS_WEIGHTS[cls] * score['probability'][cls]
+        weighted_sum = sum(weights	[cls] * score['probability'][cls]
                            for cls in score['probability'])
         rev_scores.write(
             [page_id, title, rev_id, timestamp.short_format(),
