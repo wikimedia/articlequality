@@ -1,20 +1,23 @@
-# Remove target files after command failure.    
-.DELETE_ON_ERROR:      
+# Remove target files after command failure.
+.DELETE_ON_ERROR:
 
 models: \
 	enwiki_models \
 	frwiki_models \
-	ruwiki_models
+	frwikisource_models \
+	ruwiki_models \
+	wikidatawiki_models
 
 tuning_reports: \
 	enwiki_tuning_reports \
 	frwiki_tuning_reports \
-	ruwiki_tuning_reports
+	frwikisource_tuning_reports \
+	ruwiki_tuning_reports \
+	wikidatawiki_tuning_reports
 
-test_statistics = -s 'table' -s 'accuracy' -s 'roc' -s 'f1'
-
-wp10_major_minor = 0.5
-item_quality_major_minor = 0.1
+wp10_major_minor = 0.6
+page_level_major_minor = 0.1
+item_quality_major_minor = 0.2
 
 ########################## English Wikipedia ###################################
 datasets/enwiki.labelings.20150602.json:
@@ -45,7 +48,7 @@ datasets/enwiki.labeling_revisions.w_text.30k.json: \
 		datasets/enwiki.labelings.30k.json
 	cat $< | \
 	./utility fetch_text \
-	  --api-host=https://en.wikipedia.org \
+	  --api-host=https://en.wikipedia.org  --threads 4 \
 	  --verbose > $@
 
 datasets/enwiki.labeling_revisions.w_cache.30k.json: \
@@ -54,34 +57,6 @@ datasets/enwiki.labeling_revisions.w_cache.30k.json: \
 	./utility extract_from_text \
 	  wikiclass.feature_lists.enwiki.wp10 \
 	  --verbose > $@
-
-tuning_reports/enwiki.wp10.md: \
-		datasets/enwiki.labeling_revisions.w_cache.30k.json
-	cat $< | \
-	revscoring tune \
-	  config/classifiers.params.yaml \
-	  wikiclass.feature_lists.enwiki.wp10 \
-	  wp10 \
-	  --cv-timeout=60 \
-	  --scoring=accuracy \
-	  --debug \
-	  --label-type=str > $@
-
-models/enwiki.wp10.rf.model: \
-		datasets/enwiki.labeling_revisions.w_cache.30k.json
-	cat $< | \
-	revscoring cv_train \
-	  revscoring.scorer_models.GradientBoosting \
-	  wikiclass.feature_lists.enwiki.wp10 \
-	  wp10 \
-	  --version $(wp10_major_minor).0 \
-	  -p 'n_estimators=700' \
-	  -p 'learning_rate=0.01' \
-	  -p 'max_features="log2"' \
-	  -p 'max_depth=7' \
-	  $(test_statistics) \
-	  --balance-sample \
-	  --center --scale > $@
 
 datasets/enwiki.labeling_revisions.w_cache.nettrom_30k.json: \
 		datasets/enwiki.labeling_revisions.nettrom_30k.json
@@ -98,8 +73,14 @@ tuning_reports/enwiki.nettrom_wp10.md: \
 	  config/classifiers.params.yaml \
 	  wikiclass.feature_lists.enwiki.wp10 \
 	  wp10 \
+	  accuracy.macro \
+	  --pop-rate '"Stub"=0.5762822268640726' \
+	  --pop-rate '"Start"=0.322262286213325' \
+	  --pop-rate '"C"=0.054466425789533986' \
+	  --pop-rate '"B"=0.034532319241616406' \
+	  --pop-rate '"GA"=0.009809850215598185' \
+	  --pop-rate '"FA"=0.002646891675853838' \
 	  --cv-timeout=60 \
-	  --scoring=accuracy \
 	  --debug \
 	  --label-type=str > $@
 
@@ -107,7 +88,7 @@ models/enwiki.nettrom_wp10.gradient_boosting.model: \
 		datasets/enwiki.labeling_revisions.w_cache.nettrom_30k.json
 	cat $< | \
 	revscoring cv_train \
-	  revscoring.scorer_models.GradientBoosting \
+	  revscoring.scoring.models.GradientBoosting \
 	  wikiclass.feature_lists.enwiki.wp10 \
 	  wp10 \
 	  --version $(wp10_major_minor).0 \
@@ -115,8 +96,12 @@ models/enwiki.nettrom_wp10.gradient_boosting.model: \
 	  -p 'learning_rate=0.01' \
 	  -p 'max_features="log2"' \
 	  -p 'max_depth=7' \
-	  $(test_statistics) \
-	  --balance-sample \
+	  --pop-rate '"Stub"=0.5762822268640726' \
+	  --pop-rate '"Start"=0.322262286213325' \
+	  --pop-rate '"C"=0.054466425789533986' \
+	  --pop-rate '"B"=0.034532319241616406' \
+	  --pop-rate '"GA"=0.009809850215598185' \
+	  --pop-rate '"FA"=0.002646891675853838' \
 	  --center --scale > $@
 
 enwiki_models: \
@@ -158,7 +143,7 @@ datasets/frwiki.labeling_revisions.w_text.9k.json: \
 		datasets/frwiki.labelings.9k.json
 	cat $< | \
 	./utility fetch_text \
-	  --api-host=https://fr.wikipedia.org \
+	  --api-host=https://fr.wikipedia.org --threads 4 \
 	  --verbose > $@
 
 datasets/frwiki.labeling_revisions.w_cache.9k.json: \
@@ -176,16 +161,22 @@ tuning_reports/frwiki.wp10.md: \
 	  config/classifiers.params.yaml \
 	  wikiclass.feature_lists.frwiki.wp10 \
 	  wp10 \
+	  accuracy.macro \
+	  --pop-rate '"e"=0.7314705724717468' \
+	  --pop-rate '"bd"=0.2314879676843963' \
+	  --pop-rate '"b"=0.03023005873940185' \
+	  --pop-rate '"a"=0.0029374402333403227' \
+	  --pop-rate '"ba"=0.002439090897978488' \
+	  --pop-rate '"adq"=0.00143486997313615' \
+	  --center --scale \
 	  --cv-timeout=60 \
-	  --scoring=accuracy \
-	  --debug \
-	  --label-type=str > $@
+	  --debug > $@
 
 models/frwiki.wp10.gradient_boosting.model: \
 		datasets/frwiki.labeling_revisions.w_cache.9k.json
 	cat $< | \
 	revscoring cv_train \
-	  revscoring.scorer_models.GradientBoosting \
+	  revscoring.scoring.models.GradientBoosting \
 	  wikiclass.feature_lists.frwiki.wp10 \
 	  wp10 \
 	  --version $(wp10_major_minor).0 \
@@ -193,8 +184,12 @@ models/frwiki.wp10.gradient_boosting.model: \
 	  -p 'max_features="log2"' \
 	  -p 'n_estimators=100' \
 	  -p 'max_depth=7' \
-	  $(test_statistics) \
-	  --balance-sample \
+	  --pop-rate '"e"=0.7314705724717468' \
+	  --pop-rate '"bd"=0.2314879676843963' \
+	  --pop-rate '"b"=0.03023005873940185' \
+	  --pop-rate '"a"=0.0029374402333403227' \
+	  --pop-rate '"ba"=0.002439090897978488' \
+	  --pop-rate '"adq"=0.00143486997313615' \
 	  --center --scale > $@
 
 frwiki_models: \
@@ -215,7 +210,7 @@ datasets/frwikisource.sampled_revisions.with_text.200k_2017.json: \
 		datasets/frwikisource.sampled_revisions.200k_2017.json
 	cat $< | \
 	revscoring fetch_text \
-		--host=https://fr.wikisource.org \
+		--host=https://fr.wikisource.org --threads 4 \
 		--verbose > $@
 
 datasets/frwikisource.labeled_revisions.with_text.20k_balanced_2017.json: \
@@ -245,27 +240,38 @@ tuning_reports/frwikisource.page_level.md: \
 	  config/classifiers.params.yaml \
 	  wikiclass.feature_lists.frwikisource.pagelevel \
 	  page_level \
+	  accuracy.macro \
+	  --pop-rate '"4"=0.17270922526244023' \
+	  --pop-rate '"3"=0.499288127776051' \
+	  --pop-rate '"1"=0.2962992670724004' \
+	  --pop-rate '"0"=0.03170337988910835' \
+	  --center --scale \
 	  --cv-timeout=60 \
-	  --scoring=accuracy \
-	  --debug \
-	  --label-type=str > $@
+	  --debug > $@
 
 models/frwikisource.page_level.gradient_boosting.model: \
 		datasets/frwikisource.labeled_revisions.w_cache.20k_balanced_2017.json
 	cat $< | \
 	revscoring cv_train \
-	  revscoring.scorer_models.GradientBoosting \
+	  revscoring.scoring.models.GradientBoosting \
 	  wikiclass.feature_lists.frwikisource.pagelevel \
 	  page_level \
-	  --version 0.0.1 \
+	  --version $(page_level_major_minor).0 \
 	  -p 'n_estimators=700' \
 	  -p 'learning_rate=0.01' \
 	  -p 'max_features="log2"' \
 	  -p 'max_depth=7' \
-	  $(test_statistics) \
-	  --balance-sample \
+	  --pop-rate '"4"=0.17270922526244023' \
+	  --pop-rate '"3"=0.499288127776051' \
+	  --pop-rate '"1"=0.2962992670724004' \
+	  --pop-rate '"0"=0.03170337988910835' \
 	  --center --scale > $@
 
+frwikisource_models: \
+	models/frwikisource.page_level.gradient_boosting.model
+
+frwikisource_tuning_reports: \
+	tuning_reports/frwikisource.page_level.md
 
 ########################## Russian Wikipedia ###################################
 datasets/ruwiki.labelings.20160501.json:
@@ -296,7 +302,7 @@ datasets/ruwiki.labeling_revisions.w_text.8k.json: \
 		datasets/ruwiki.labelings.8k.json
 	cat $< | \
 	./utility fetch_text \
-	  --api-host=https://ru.wikipedia.org \
+	  --api-host=https://ru.wikipedia.org --threads 4 \
 	  --verbose > $@
 
 datasets/ruwiki.labeling_revisions.w_cache.8k.json: \
@@ -313,16 +319,23 @@ tuning_reports/ruwiki.wp10.md: \
 	  config/classifiers.params.yaml \
 	  wikiclass.feature_lists.ruwiki.wp10 \
 	  wp10 \
+	  accuracy.macro \
+	  --pop-rate '"IV"=0.4872864906832298' \
+	  --pop-rate '"III"=0.3625905797101449' \
+	  --pop-rate '"II"=0.09298007246376812' \
+	  --pop-rate '"I"=0.02902432712215321' \
+	  --pop-rate '"ХС"=0.011380693581780538' \
+	  --pop-rate '"ДС"=0.009265010351966873' \
+	  --pop-rate '"ИС"=0.007472826086956522' \
+	  --center --scale \
 	  --cv-timeout=60 \
-	  --scoring=accuracy \
-	  --debug \
-	  --label-type=str > $@
+	  --debug > $@
 
 models/ruwiki.wp10.gradient_boosting.model: \
 		datasets/ruwiki.labeling_revisions.w_cache.8k.json
 	cat $< | \
 	revscoring cv_train \
-	  revscoring.scorer_models.GradientBoosting \
+	  revscoring.scoring.models.GradientBoosting \
 	  wikiclass.feature_lists.ruwiki.wp10 \
 	  wp10 \
 	  --version $(wp10_major_minor).0 \
@@ -330,8 +343,13 @@ models/ruwiki.wp10.gradient_boosting.model: \
 	  -p 'learning_rate=0.01' \
 	  -p 'max_features="log2"' \
 	  -p 'n_estimators=300' \
-	  $(test_statistics) \
-	  --balance-sample \
+	  --pop-rate '"IV"=0.4872864906832298' \
+	  --pop-rate '"III"=0.3625905797101449' \
+	  --pop-rate '"II"=0.09298007246376812' \
+	  --pop-rate '"I"=0.02902432712215321' \
+	  --pop-rate '"ХС"=0.011380693581780538' \
+	  --pop-rate '"ДС"=0.009265010351966873' \
+	  --pop-rate '"ИС"=0.007472826086956522' \
 	  --center --scale > $@
 
 ruwiki_models: \
@@ -360,7 +378,7 @@ datasets/trwiki.labeling_revisions.w_text.2k.json: \
 		datasets/trwiki.labelings.2k.json
 	cat $< | \
 	./utility fetch_text \
-	  --api-host=https://tr.wikipedia.org \
+	  --api-host=https://tr.wikipedia.org --threads 4 \
 	  --verbose > $@
 
 datasets/trwiki.labeling_revisions.w_cache.2k.json: \
@@ -377,11 +395,16 @@ tuning_reports/trwiki.wp10.md: \
 	  config/classifiers.params.yaml \
 	  wikiclass.feature_lists.trwiki.wp10 \
 	  wp10 \
+	  accuracy.macro \
+	  --pop-rate '"taslak"=0.5804005556841861' \
+	  --pop-rate '"baslag\\u0131\\u00e7"=0.24774253299374854' \
+	  --pop-rate '"c"=0.08595739754572818' \
+	  --pop-rate '"b"=0.05319518407038666' \
+	  --pop-rate '"km"=0.016959944431581383' \
+	  --pop-rate '"sm"=0.015744385274369065' \
+	  --center --scale \
 	  --cv-timeout=60 \
-	  --scoring=accuracy \
-	  --debug \
-	  --folds 20 \
-	  --label-type=str > $@
+	  --debug > $@
 
 max_depth=7, max_features="log2", n_estimators=300, learning_rate=0.1
 
@@ -389,7 +412,7 @@ models/trwiki.wp10.gradient_boosting.model: \
 		datasets/trwiki.labeling_revisions.w_cache.2k.json
 	cat $< | \
 	revscoring cv_train \
-	  revscoring.scorer_models.GradientBoosting \
+	  revscoring.scoring.models.GradientBoosting \
 	  wikiclass.feature_lists.trwiki.wp10 \
 	  wp10 \
 	  --version $(wp10_major_minor).0 \
@@ -397,8 +420,12 @@ models/trwiki.wp10.gradient_boosting.model: \
 	  -p 'learning_rate=0.01' \
 	  -p 'max_features="log2"' \
 	  -p 'n_estimators=300' \
-	  $(test_statistics) \
-	  --balance-sample \
+	  --pop-rate '"taslak"=0.5804005556841861' \
+	  --pop-rate '"baslag\\u0131\\u00e7"=0.24774253299374854' \
+	  --pop-rate '"c"=0.08595739754572818' \
+	  --pop-rate '"b"=0.05319518407038666' \
+	  --pop-rate '"km"=0.016959944431581383' \
+	  --pop-rate '"sm"=0.015744385274369065' \
 	  --center --scale > $@
 
 ############################# Wikidata ######################################
@@ -438,8 +465,8 @@ datasets/wikidatawiki.labelings.5k.json:
 datasets/wikidatawiki.labeling_revisions.w_text.5k.json: \
 		datasets/wikidatawiki.labelings.5k.json
 	cat $< | \
-	./utility fetch_text \
-	  --api-host=https://www.wikidata.org \
+	revscoring fetch_text \
+	  --host=https://www.wikidata.org --threads 4 \
 	  --verbose > $@
 
 datasets/wikidatawiki.labeling_revisions.w_cache.5k.json: \
@@ -456,16 +483,16 @@ tuning_reports/wikidatawiki.item_quality.md: \
 	  config/classifiers.params.yaml \
 	  wikiclass.feature_lists.wikidatawiki.item_quality \
 	  item_quality \
+	  accuracy.macro \
+	  --labels '"A","B","C","D","E"' \
 	  --cv-timeout=60 \
-	  --scoring=accuracy \
-	  --debug \
-	  --label-type=str > $@
+	  --debug > $@
 
 models/wikidatawiki.item_quality.rf.model: \
 		datasets/wikidatawiki.labeling_revisions.w_cache.5k.json
 	cat $< | \
 	revscoring cv_train \
-	  revscoring.scorer_models.RF \
+	  revscoring.scoring.models.RandomForest \
 	  wikiclass.feature_lists.wikidatawiki.item_quality \
 	  item_quality \
 	  --version $(item_quality_major_minor).0 \
@@ -473,8 +500,7 @@ models/wikidatawiki.item_quality.rf.model: \
 	  -p 'criterion="gini"' \
 	  -p 'min_samples_leaf=13' \
 	  -p 'max_features="log2"' \
-	  $(test_statistics) \
-	  --balance-sample \
+	  --labels '"A","B","C","D","E"' \
 	  --center --scale > $@
 
 wikidatawiki_models: \
