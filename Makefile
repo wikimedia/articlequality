@@ -6,6 +6,7 @@ models: \
 	frwiki_models \
 	frwikisource_models \
 	ruwiki_models \
+	trwiki_models \
 	wikidatawiki_models
 
 tuning_reports: \
@@ -13,6 +14,7 @@ tuning_reports: \
 	frwiki_tuning_reports \
 	frwikisource_tuning_reports \
 	ruwiki_tuning_reports \
+	trwiki_tuning_reports \
 	wikidatawiki_tuning_reports
 
 wp10_major_minor = 0.6
@@ -397,7 +399,7 @@ tuning_reports/trwiki.wp10.md: \
 	  wp10 \
 	  accuracy.macro \
 	  --pop-rate '"taslak"=0.5804005556841861' \
-	  --pop-rate '"baslag\\u0131\\u00e7"=0.24774253299374854' \
+	  --pop-rate '"baslagıç"=0.24774253299374854' \
 	  --pop-rate '"c"=0.08595739754572818' \
 	  --pop-rate '"b"=0.05319518407038666' \
 	  --pop-rate '"km"=0.016959944431581383' \
@@ -405,8 +407,6 @@ tuning_reports/trwiki.wp10.md: \
 	  --center --scale \
 	  --cv-timeout=60 \
 	  --debug > $@
-
-max_depth=7, max_features="log2", n_estimators=300, learning_rate=0.1
 
 models/trwiki.wp10.gradient_boosting.model: \
 		datasets/trwiki.labeling_revisions.w_cache.2k.json
@@ -421,12 +421,18 @@ models/trwiki.wp10.gradient_boosting.model: \
 	  -p 'max_features="log2"' \
 	  -p 'n_estimators=300' \
 	  --pop-rate '"taslak"=0.5804005556841861' \
-	  --pop-rate '"baslag\\u0131\\u00e7"=0.24774253299374854' \
+	  --pop-rate '"baslagıç"=0.24774253299374854' \
 	  --pop-rate '"c"=0.08595739754572818' \
 	  --pop-rate '"b"=0.05319518407038666' \
 	  --pop-rate '"km"=0.016959944431581383' \
 	  --pop-rate '"sm"=0.015744385274369065' \
 	  --center --scale > $@
+
+trwiki_models: \
+	models/trwiki.wp10.gradient_boosting.model
+
+trwiki_tuning_reports: \
+	tuning_reports/trwiki.wp10.md
 
 ############################# Wikidata ######################################
 
