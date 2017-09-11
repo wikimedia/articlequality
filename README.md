@@ -11,9 +11,9 @@ This library provides a set of utilities for performing automatic detection of a
 ## Basic usage
 
     >>> import wikiclass
-    >>> from revscoring.scorer_models import MLScorerModel
+    >>> from revscoring import Model
     >>>
-    >>> scorer_model = MLScorerModel.load(open("models/enwiki.wp10.rf.model", "rb"))
+    >>> scorer_model = Model.load(open("models/enwiki.nettrom_wp10.gradient_boosting.model", "rb"))
     >>>
     >>> text = "I am the text of a page.  I have a <ref>word</ref>"
     >>> wikiclass.score(scorer_model, text)

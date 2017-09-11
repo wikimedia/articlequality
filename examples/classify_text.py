@@ -1,15 +1,14 @@
-import pickle
-import sys;sys.path.insert(0, ".")
 from pprint import pprint
 
-from wikiclass.models import RFTextModel
+import wikiclass
+from revscoring import Model
 
-model = RFTextModel.from_file(open("enwiki.rf_text.model", "rb"))
+scorer_model = Model.load(open('../revscoring_models/enwiki.nettrom_wp10.gradient_boosting.model', 'rb'))
 
 # Classifies a revision of an article based on wikitext alone
 text = "An '''anachronism''' {{cite }}(from the [[Ancient Greek|Greek]] <ref ..."
-assessment, probs = model.classify(text)
+prediction_results = wikiclass.score(scorer_model, text)
 
 # Print predicted assessment class and probabilities for all classes.
-pprint(("assessment", assessment))
-pprint(("probs", probs))
+pprint(("assessment", prediction_results['prediction']))
+pprint(("probs", prediction_results['probability']))
