@@ -93,7 +93,7 @@ models/enwiki.nettrom_wp10.gradient_boosting.model: \
 	  revscoring.scoring.models.GradientBoosting \
 	  wikiclass.feature_lists.enwiki.wp10 \
 	  wp10 \
-	  --version $(wp10_major_minor).0 \
+	  --version $(wp10_major_minor).1 \
 	  -p 'n_estimators=700' \
 	  -p 'learning_rate=0.01' \
 	  -p 'max_features="log2"' \
