@@ -1,0 +1,19 @@
+language: python
+dist: trusty
+python:
+  - "3.5"
+
+# command to install dependencies
+install: 
+  - pip install -r requirements.txt
+  - python setup.py install
+  - pip install codecov
+  - pip install flake8
+
+script:
+  - flake8 . --ignore=E722
+  - coverage run --source wikiclass -m pytest -m "not nottravis"
+
+after_success:
+  - coverage report
+  - codecov

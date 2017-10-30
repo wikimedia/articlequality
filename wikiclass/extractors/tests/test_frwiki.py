@@ -1,7 +1,6 @@
 from collections import namedtuple
 
 from mwtypes import Timestamp
-from nose.tools import eq_
 
 from .. import frwiki
 
@@ -165,4 +164,4 @@ def test_extractor():
     print(project_labels)
     for proj, lab, timestamp in expected:
         ob = project_labels[(proj, lab)]
-        eq_(ob['timestamp'], timestamp)
+        assert ob['timestamp'] == timestamp
