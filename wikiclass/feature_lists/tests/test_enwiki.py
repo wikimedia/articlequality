@@ -1,4 +1,3 @@
-from nose.tools import eq_
 from revscoring.datasources.revision import text as revision_text
 from revscoring.dependencies import solve
 
@@ -13,7 +12,7 @@ def test_cite_templates():
     I am a new paragraph.<ref>{{cite book|title=The stuff}}</ref>
     {{Cite hat|ascii=_n_}}
     """
-    eq_(solve(enwiki.cite_templates, cache={revision_text: text}), 3)
+    assert solve(enwiki.cite_templates, cache={revision_text: text}) == 3
 
 
 def test_infobox_templates():
@@ -25,7 +24,7 @@ def test_infobox_templates():
     I am a new paragraph.<ref>{{cite book|title=The stuff}}</ref>
     {{Cite hat|ascii=_n_}}
     """
-    eq_(solve(enwiki.infobox_templates, cache={revision_text: text}), 1)
+    assert solve(enwiki.infobox_templates, cache={revision_text: text}) == 1
 
 
 def test_cn_templates():
@@ -38,7 +37,7 @@ def test_cn_templates():
 
     I am a new paragraph.{{Citation_needed|date=never}}
     """
-    eq_(solve(enwiki.cn_templates, cache={revision_text: text}), 3)
+    assert solve(enwiki.cn_templates, cache={revision_text: text}) == 3
 
 
 def test_who_templates():
@@ -50,7 +49,7 @@ def test_who_templates():
 
     I am a new paragraph.{{who|date=today}}
     """
-    eq_(solve(enwiki.who_templates, cache={revision_text: text}), 2)
+    assert solve(enwiki.who_templates, cache={revision_text: text}) == 2
 
 
 def test_main_article_templates():
@@ -63,4 +62,4 @@ def test_main_article_templates():
 
     I am a new paragraph.{{who|date=today}}
     """
-    eq_(solve(enwiki.main_article_templates, cache={revision_text: text}), 1)
+    assert solve(enwiki.main_article_templates, cache={revision_text: text}) == 1

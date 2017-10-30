@@ -1,4 +1,3 @@
-from nose.tools import eq_
 from revscoring.datasources.revision import text as revision_text
 from revscoring.dependencies import solve
 
@@ -13,7 +12,7 @@ def test_cite_templates():
     I am a new paragraph.<ref>{{Chapitre|title=The stuff}}</ref>
     {{Jugement|ascii=_n_}}{{Lien_web}}{{Loi}}{{Ouvrage}}
     """
-    eq_(solve(frwiki.cite_templates, cache={revision_text: text}), 6)
+    assert solve(frwiki.cite_templates, cache={revision_text: text}) == 6
 
 
 def test_infobox_templates():
@@ -25,7 +24,7 @@ def test_infobox_templates():
     I am a new paragraph.<ref>{{cite book|title=The stuff}}</ref>
     {{Cite hat|ascii=_n_}}
     """
-    eq_(solve(frwiki.infobox_templates, cache={revision_text: text}), 1)
+    assert solve(frwiki.infobox_templates, cache={revision_text: text}) == 1
 
 
 def test_lvl1_cn_templates():
@@ -38,7 +37,7 @@ def test_lvl1_cn_templates():
 
     I am a new paragraph.{{Référence souhaitée|date=never}}{{Inédit}}
     """
-    eq_(solve(frwiki.lvl1_cn_templates, cache={revision_text: text}), 5)
+    assert solve(frwiki.lvl1_cn_templates, cache={revision_text: text}) == 5
 
 
 def test_lvl2_cn_templates():
@@ -51,7 +50,7 @@ def test_lvl2_cn_templates():
 
     I am a new paragraph.{{Référence souhaitée|date=never}}{{Inédit}}
     """
-    eq_(solve(frwiki.lvl2_cn_templates, cache={revision_text: text}), 4)
+    assert solve(frwiki.lvl2_cn_templates, cache={revision_text: text}) == 4
 
 
 def test_lvl3_cn_templates():
@@ -64,7 +63,7 @@ def test_lvl3_cn_templates():
 
     I am a new paragraph.{{Sources secondaires|date=never}}{{BPV à sourcer}}
     """
-    eq_(solve(frwiki.lvl3_cn_templates, cache={revision_text: text}), 6)
+    assert solve(frwiki.lvl3_cn_templates, cache={revision_text: text}) == 6
 
 
 def test_lvl4_cn_templates():
@@ -77,7 +76,7 @@ def test_lvl4_cn_templates():
 
     I am a new paragraph.{{Sources secondaires|date=never}}{{BPV à sourcer}}
     """
-    eq_(solve(frwiki.lvl4_cn_templates, cache={revision_text: text}), 2)
+    assert solve(frwiki.lvl4_cn_templates, cache={revision_text: text}) == 2
 
 
 def test_lvl5_cn_templates():
@@ -90,7 +89,7 @@ def test_lvl5_cn_templates():
 
     I am a new paragraph.{{Vérifiabilité|date=never}}{{BPV à sourcer}}
     """
-    eq_(solve(frwiki.lvl5_cn_templates, cache={revision_text: text}), 2)
+    assert solve(frwiki.lvl5_cn_templates, cache={revision_text: text}) == 2
 
 
 def test_main_article_templates():
@@ -104,4 +103,4 @@ def test_main_article_templates():
 
     I am a new paragraph.{{who|date=today}}
     """
-    eq_(solve(frwiki.main_article_templates, cache={revision_text: text}), 2)
+    assert solve(frwiki.main_article_templates, cache={revision_text: text}) == 2
