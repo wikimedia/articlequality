@@ -4,7 +4,7 @@ Turkish Wikipedia
 """
 
 from revscoring.features import wikitext
-from revscoring.features.modifiers import log, max, sub
+from revscoring.features.modifiers import max, sub
 
 from . import wikipedia
 

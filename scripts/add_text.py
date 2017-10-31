@@ -1,7 +1,8 @@
 """
 Reads a TSV, looks for a 'rev_id' field and queries the MediaWiki API of your
 choosing to get the associated text.  If a text is found, a new line will be
-printed that contains all of the input column and an additional column for text.
+printed that contains all of the input column and an additional column for
+text.
 
 Usage:
     add_text <api_url>

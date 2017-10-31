@@ -12,7 +12,7 @@
 
 
     Usage:
-        extract_from_text <dependent>... 
+        extract_from_text <dependent>...
                           [--input=<path>]
                           [--output=<path>]
                           [--extractors=<num>]
@@ -32,7 +32,6 @@
         --verbose               Print dots and stuff to stderr
         --debug                 Print debug logs
 """
-import json
 import logging
 import sys
 from multiprocessing import Pool, cpu_count
@@ -86,7 +85,8 @@ def run(labelings, dependents, output, extractors, verbose=False):
 
     extractor = LabelingDependentExtractor(dependents)
 
-    for observation in extractor_pool.imap(extractor.extract_and_cache, labelings):
+    for observation in extractor_pool.imap(
+            extractor.extract_and_cache, labelings):
         if observation is not None:
             if verbose:
                 sys.stderr.write(".")
