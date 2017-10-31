@@ -14,6 +14,7 @@ def requirements(fname):
     for line in open(os.path.join(os.path.dirname(__file__), fname)):
         yield line.strip()
 
+
 setup(
     name=__name__,  # noqa
     version=__version__,  # noqa

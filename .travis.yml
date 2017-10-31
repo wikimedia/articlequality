@@ -6,6 +6,11 @@ addons:
   apt:
     packages:
     - enchant
+    - myspell-en-au
+    - myspell-en-gb
+    - myspell-en-us
+    - myspell-en-za
+    - myspell-fr
 
 # command to install dependencies
 install: 
@@ -13,11 +18,21 @@ install:
   - python setup.py install
   - pip install codecov
   - pip install flake8
+  - python -m nltk.downloader stopwords
 
 script:
-  - flake8 . --ignore=E722
-  - coverage run --source wikiclass -m pytest -m "not nottravis"
+  - flake8 . --ignore=E722 --exclude=.svn,CVS,.bzr,.hg,.git,__pycache__,.tox,.eggs,*.egg,doc,examples
+  - coverage run --source wikiclass -m pytest wikiclass -m "not nottravis"
 
 after_success:
   - coverage report
   - codecov
+
+notifications:
+  irc:
+    channels:
+      - "chat.freenode.net#wikimedia-ai"
+    on_success: change
+    on_failure: change
+    template:
+      - "%{repository_slug}#%{build_number} (%{branch} - %{commit} : %{author}): %{message} %{build_url}"

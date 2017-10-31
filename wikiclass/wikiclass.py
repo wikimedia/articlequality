@@ -20,8 +20,6 @@ import sys
 import traceback
 from importlib import import_module
 
-import docopt
-
 
 USAGE = """Usage:
     wikiclass (-h | --help)
@@ -42,7 +40,8 @@ def main():
 
     module_name = sys.argv[1]
     try:
-        module = import_module(".utilities." + module_name, package="wikiclass")
+        module = import_module(".utilities." + module_name,
+                               package="wikiclass")
     except ImportError:
         sys.stderr.write(traceback.format_exc())
         sys.stderr.write("Could not find utility {0}.\n".format(module_name))

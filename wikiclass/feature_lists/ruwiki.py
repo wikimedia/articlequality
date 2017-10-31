@@ -4,7 +4,7 @@ Russian Wikipedia
 """
 
 from revscoring.features import wikitext
-from revscoring.features.modifiers import log, max, sub
+from revscoring.features.modifiers import max
 from revscoring.languages import russian
 
 from . import wikipedia
@@ -21,8 +21,8 @@ image_links = wikitext.revision.wikilink_titles_matching(
 
 local_wiki = [
     russian.stemmed.revision.stem_chars,
-    russian.stemmed.revision.stem_chars /
-        max(wikitext.revision.content_chars, 1),
+    (russian.stemmed.revision.stem_chars /
+     max(wikitext.revision.content_chars, 1)),
     image_links,
     image_links / max(wikitext.revision.content_chars, 1),
     category_links,

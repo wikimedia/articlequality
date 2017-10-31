@@ -134,15 +134,15 @@ def run(paths, model, sunset, score_at, rev_scores, skip_scores_before,
     else:
         sunset_year = int(sunset.strftime("%Y"))
         if score_at == "monthly":
+            dates = chain(*(zip([year] * 12, MONTHS)
+                          for year in range(START_YEAR, sunset_year + 1)))
             thresholds = [mwtypes.Timestamp(str(year) + month + "01000000")
-                          for year, month in chain(
-                            *(zip([year] * 12, MONTHS)
-                              for year in range(START_YEAR, sunset_year + 1)))]
+                          for year, month in dates]
         elif score_at == "biannually":
+            dates = chain(*(zip([year] * 2, ["01", "07"])
+                          for year in range(START_YEAR, sunset_year + 1)))
             thresholds = [mwtypes.Timestamp(str(year) + month + "01000000")
-                          for year, month in chain(
-                            *(zip([year] * 2, ["01", "07"])
-                              for year in range(START_YEAR, sunset_year + 1)))]
+                          for year, month in dates]
         elif score_at == "annually":
             thresholds = [mwtypes.Timestamp(str(year) + "0101000000")
                           for year in range(START_YEAR, sunset_year + 1)]

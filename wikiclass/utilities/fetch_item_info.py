@@ -23,7 +23,6 @@
 """
 import json
 import logging
-import pprint
 import sys
 import traceback
 from concurrent.futures import ThreadPoolExecutor

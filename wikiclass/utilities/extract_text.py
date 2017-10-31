@@ -21,7 +21,6 @@
                             [default: <cpu_count>]
         --verbose           Prints dots to <stderr>
 """
-import json
 import logging
 import os.path
 import re
@@ -71,14 +70,13 @@ def run(dump_paths, page_labelings, output, threads, verbose=False):
         format='%(asctime)s %(levelname)s:%(name)s -- %(message)s'
     )
 
-
     if len(dump_paths) == 0:
         labelings = extract_text(mwxml.Dump.from_file(sys.stdin),
                                  page_labelings, verbose=verbose)
 
     else:
-        labelings = mwxml.map(lambda d, p: \
-                                    extract_text(d, page_labelings, verbose),
+        labelings = mwxml.map(lambda d, p:
+                              extract_text(d, page_labelings, verbose),
                               dump_paths, threads=threads)
 
     for labeling in labelings:
@@ -114,8 +112,9 @@ def extract_text(dump, page_labelings, verbose=False):
             last_revision = None
             for revision in page:
                 while last_revision is not None and \
-                      len(labelings) > 0 and \
-                      revision.timestamp > mwtypes.Timestamp(labelings[0]['timestamp']):
+                        len(labelings) > 0 and \
+                        revision.timestamp > \
+                        mwtypes.Timestamp(labelings[0]['timestamp']):
                     labeling = labelings.pop()
                     labeling['page_id'] = page.id
                     labeling['rev_id'] = last_revision.id

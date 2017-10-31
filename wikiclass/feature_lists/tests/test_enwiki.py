@@ -1,7 +1,9 @@
-from revscoring.datasources.revision import text as revision_text
+from revscoring.datasources.revision_oriented import revision
 from revscoring.dependencies import solve
 
 from .. import enwiki
+
+revision_text = revision.text
 
 
 def test_cite_templates():
@@ -62,4 +64,5 @@ def test_main_article_templates():
 
     I am a new paragraph.{{who|date=today}}
     """
-    assert solve(enwiki.main_article_templates, cache={revision_text: text}) == 1
+    assert solve(enwiki.main_article_templates,
+                 cache={revision_text: text}) == 1

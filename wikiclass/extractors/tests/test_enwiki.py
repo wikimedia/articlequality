@@ -1,6 +1,5 @@
 from collections import namedtuple
 
-import mwparserfromhell as mwp
 from mwtypes import Timestamp
 
 from .. import enwiki
@@ -77,7 +76,7 @@ def test_extractor():
                 ("medicine", "c", Timestamp(3)),
                 ("medicine", "b", Timestamp(5)),
                 ("hats", "b", Timestamp(5)),
-                ("wpmilhist", "c", Timestamp(6)),
+                ("milhist", "c", Timestamp(6)),
                 ("africaproject", "c", Timestamp(6))]
 
     print(project_labels)
