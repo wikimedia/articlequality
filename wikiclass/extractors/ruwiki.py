@@ -28,6 +28,7 @@ def from_template(template):
             logger.warning(traceback.format_exc())
             pass  # no assessment class in template
 
+
 LABEL_MATCHES = [
     ("ИС", re.compile(r"ис", re.I)),    # featured article
     ("ХС", re.compile(r"хс", re.I)),    # good article
@@ -47,6 +48,7 @@ def normalize_label(value):
             return label
 
     return None
+
 
 sys.modules[__name__] = TemplateExtractor(
     __name__,

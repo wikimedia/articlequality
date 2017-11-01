@@ -51,7 +51,7 @@ def _process_wikimedia_sources(source_claims):
     return [source_claim
             for source_claim in source_claims
             if isinstance(source_claim.target, pywikibase.ItemPage) and
-               source_claim.target.id in wikimedia.PROJECT_QIDS]
+            source_claim.target.id in wikimedia.PROJECT_QIDS]
 
 
 wikimedia_sources = Datasource(

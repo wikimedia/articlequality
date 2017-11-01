@@ -21,13 +21,11 @@ def from_template(template):
             else:
                 logger.debug("Class '{0}' not in possible classes."
                              .format(template.get('avancement').value))
-                pass # not a quality assessment class
+                pass  # not a quality assessment class
 
         except ValueError as e:
             logger.warning(traceback.format_exc())
-            pass # no assessment class in template
-
-
+            pass  # no assessment class in template
 
 
 LABEL_MATCHES = [
@@ -38,14 +36,17 @@ LABEL_MATCHES = [
     ("ba", re.compile(r"\bba\b", re.I)),
     ("adq", re.compile(r"\badq\b", re.I))
 ]
+
+
 def normalize_label(value):
     value = str(value.strip_code()).lower().replace("_", " ").strip()
-    
+
     for label, regex in LABEL_MATCHES:
         if regex.match(value):
             return label
 
     return None
+
 
 sys.modules[__name__] = TemplateExtractor(
     __name__,
@@ -54,8 +55,8 @@ wikiclass.extractors.frwiki
 +++++++++++++++++++++++++++
 
 This extractor looks for instances of the "wikiprojet" template on article talk
-pages (namespace = 1) with a parameter called "avancement".  All `project` s are
-hard-coded to "wikiprojet"
+pages (namespace = 1) with a parameter called "avancement".  All `project` s
+are hard-coded to "wikiprojet"
 """,
     namespaces={1},
     from_template=from_template)

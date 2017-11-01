@@ -35,7 +35,6 @@ class Extractor:
         self.__doc__ = str(doc)
         self.namespaces = set(namespaces)
 
-
     def extract(self, page, verbose=False):
         """
         Processes an :class:`mwxml.Page` and returns a generator of
@@ -67,7 +66,7 @@ class Extractor:
                 try:
                     revision_text = revision.text or ""
                     project_labels = set(pl for pl in
-                                         self.extract_labels(revision.text))
+                                         self.extract_labels(revision_text))
                 except:
                     logger.warning("Could not extract labels from text:")
                     logger.warning(traceback.format_exc())
@@ -107,7 +106,7 @@ class Extractor:
                              'wp10': wp10,
                              'timestamp': revision.timestamp,
                              'reverted': False}
-                             for project, wp10 in new_labels
+                            for project, wp10 in new_labels
                         ]
 
                 # Update state so we make an appropriate comparison next time
