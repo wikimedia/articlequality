@@ -22,8 +22,6 @@ import json
 import logging
 import re
 import sys
-from collections import defaultdict
-from statistics import mean
 
 import docopt
 import requests
@@ -82,12 +80,8 @@ def aggregate_labels(label_docs):
         return None
     else:
         if sum('automated' not in l['data'] for l in label_docs) > 0:
-            relevant_label_docs = (l for l in label_docs
-                                   if 'automated' not in l['data'])
             auto_labeled = False
         else:
-            relevant_label_docs = (l for l in label_docs
-                                   if 'automated' in l['data'])
             auto_labeled = True
 
         return {'item_quality': label_docs[0]['data']['item_quality'],
@@ -113,7 +107,7 @@ class Filter:
 
     def filter(self, doc):
         return sum(condition(doc) for condition in self.conditions) == \
-               len(self.conditions)
+            len(self.conditions)
 
     @classmethod
     def from_strings(cls, condition_strings):

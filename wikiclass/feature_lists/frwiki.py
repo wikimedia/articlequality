@@ -4,7 +4,7 @@ French Wikipedia
 """
 
 from revscoring.features import wikitext
-from revscoring.features.modifiers import log, max, sub
+from revscoring.features.modifiers import max, sub
 from revscoring.languages import french
 
 from . import wikipedia
@@ -36,14 +36,15 @@ infobox_templates = wikitext.revision.template_names_matching(
 # Copied (2015-10-29) from:
 # https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Citez_vos_sources#R.C3.A9clamation_et_contestation_de_sources
 LVL1_CN_TEMPLATES = [r"Référence[ _]souhaitée", r"Citation[ _]nécessaire",
-                     r"Référence[ _]à[ _]confirmer", r"Référence[ _]nécessaire",
-                     r"Inédit"]
+                     r"Référence[ _]à[ _]confirmer",
+                     r"Référence[ _]nécessaire", r"Inédit"]
 lvl1_cn_templates = wikitext.revision.template_names_matching(
     "|".join(LVL1_CN_TEMPLATES),
     name="frwiki.revision.lvl1_cn_templates")
 
 LVL2_CN_TEMPLATES = [r"Référence[ _]insuffisante", r"Référence[ _]incomplète",
-                     r"Détournement[ _]de[ _]sources", r"Section[ _]à[ _]sourcer"]
+                     r"Détournement[ _]de[ _]sources",
+                     r"Section[ _]à[ _]sourcer"]
 lvl2_cn_templates = wikitext.revision.template_names_matching(
     "|".join(LVL2_CN_TEMPLATES),
     name="frwiki.revision.lvl2_cn_templates")
@@ -92,8 +93,8 @@ local_wiki = [
     infobox_templates,
     main_article_templates,
     main_article_templates / max(wikitext.revision.content_chars, 1),
-    french.stemmed.revision.stem_chars /
-        max(wikitext.revision.content_chars, 1),
+    (french.stemmed.revision.stem_chars /
+     max(wikitext.revision.content_chars, 1)),
     french.dictionary.revision.dict_words / max(wikitext.revision.words, 1),
     lvl1_cn_templates,
     lvl1_cn_templates / max(wikitext.revision.content_chars, 1),

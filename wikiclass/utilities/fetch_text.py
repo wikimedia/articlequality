@@ -18,7 +18,6 @@
                             (with text) out to. [default: <stdout>]
         --verbose           Prints dots and stuff to stderr
 """
-import json
 import sys
 
 import mwapi

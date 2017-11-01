@@ -58,8 +58,8 @@ local_wiki = [
     who_templates / max(wikitext.revision.content_chars, 1),
     main_article_templates,
     main_article_templates / max(wikitext.revision.content_chars, 1),
-    english.stemmed.revision.stem_chars / \
-        max(wikitext.revision.content_chars, 1),
+    (english.stemmed.revision.stem_chars /
+     max(wikitext.revision.content_chars, 1)),
 ]
 
 wp10 = wikipedia.article + local_wiki

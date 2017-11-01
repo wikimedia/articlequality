@@ -7,13 +7,14 @@ def normalize_revision(rev_doc):
         del rev_doc['needs_review']
     if "reason" in rev_doc:
         autolabel['reason'] = rev_doc['reason'] \
-                              if rev_doc['reason'] != "NULL" else None
+            if rev_doc['reason'] != "NULL" else None
         del rev_doc['reason']
 
     rev_doc['rev_id'] = int(rev_doc['rev_id'])
     rev_doc['autolabel'] = autolabel
 
     return rev_doc
+
 
 def ensure_bool(val):
     if isinstance(val, bool):
