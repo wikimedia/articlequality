@@ -17,7 +17,7 @@
 import sys
 
 import docopt
-from revscoring.scorer_models import MLScorerModel
+from revscoring import Model
 
 from .extract_from_text import extract_from_text
 
@@ -25,7 +25,7 @@ from .extract_from_text import extract_from_text
 def main(argv=None):
     args = docopt.docopt(__doc__, argv=argv)
 
-    scorer_model = MLScorerModel.load(open(args['<model-file>'], 'rb'))
+    scorer_model = Model.load(open(args['<model-file>'], 'rb'))
     if args['<text>'] == "<stdin>":
         text = sys.stdin.read()
     else:
