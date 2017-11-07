@@ -22,9 +22,9 @@ Basic usage
 -----------
 
     >>> import wikiclass
-    >>> from revscoring.scorer_models import MLScorerModel
+    >>> from revscoring import Model
     >>>
-    >>> scorer_model = MLScorerModel.load(open("models/enwiki.wp10.rf.model", "rb"))
+    >>> scorer_model = Model.load(open("models/enwiki.wp10.rf.model", "rb"))
     >>>
     >>> text = "I am the text of a page.  I have a <ref>word</ref>"
     >>> wikiclass.score(scorer_model, text)
