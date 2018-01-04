@@ -1,4 +1,4 @@
-revscoring >= 2.0.2, < 2.0.999
+revscoring >= 2.0.2, < 2.1.999
 mwapi
 mwbase >= 0.0.6, < 0.0.999
 mwreverts
