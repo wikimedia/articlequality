@@ -1,41 +1,41 @@
-GradientBoostingClassifier:
-  class: sklearn.ensemble.GradientBoostingClassifier
+GradientBoosting:
+  class: revscoring.scoring.models.GradientBoosting
   params:
     n_estimators: [100, 300, 500, 700]
     max_depth: [1, 3, 5, 7]
     max_features: ["log2"]
     learning_rate: [0.01, 0.1,  0.5, 1]
 LogisticRegression:
-  class: sklearn.linear_model.LogisticRegression
+  class: revscoring.scoring.models.LogisticRegression
   params:
     penalty: ["l1", "l2"]
     C: [0.1, 1, 10]
 GaussianNB:
-  class: sklearn.naive_bayes.GaussianNB
+  class: revscoring.scoring.models.GaussianNB
   params: {}
 BernoulliNB:
-  class: sklearn.naive_bayes.BernoulliNB
+  class: revscoring.scoring.models.BernoulliNB
   params: {}
 #MultinomialNB:
-#  class: sklearn.naive_bayes.MultinomialNB
+#  class: revscoring.scoring.models.MultinomialNB
 #  params:
 #    alpha: [0.1, 1, 10]
 RandomForestClassifier:
-  class: sklearn.ensemble.RandomForestClassifier
+  class: revscoring.scoring.models.RandomForest
   params:
     n_estimators: [10, 20, 40, 80, 160, 320, 640]
     min_samples_leaf: [1, 3, 5, 7, 13]
     max_features: ["log2"]
     criterion: ["gini", "entropy"]
-SVC:
-  class: sklearn.svm.SVC
-  params:
-     -
-      kernel: ["rbf"]
-      probability: [true]
-      gamma: [0.0, 0.001, 0.0001]
-      C: [0.1, 1, 10]
-      cache_size: [1000]
+#SVC:
+#  class: sklearn.svm.SVC
+#  params:
+#     -
+#      kernel: ["rbf"]
+#      probability: [true]
+#      gamma: [0.0, 0.001, 0.0001]
+#      C: [0.1, 1, 10]
+#      cache_size: [1000]
 #     -
 #      kernel: ["linear"]
 #      probability: [true]

@@ -83,8 +83,7 @@ tuning_reports/enwiki.nettrom_wp10.md: \
 	  --pop-rate '"GA"=0.009809850215598185' \
 	  --pop-rate '"FA"=0.002646891675853838' \
 	  --cv-timeout=60 \
-	  --debug \
-	  --label-type=str > $@
+	  --debug > $@
 
 models/enwiki.nettrom_wp10.gradient_boosting.model: \
 		datasets/enwiki.labeling_revisions.w_cache.nettrom_30k.json
