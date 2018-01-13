@@ -4,8 +4,11 @@ English Wikipedia
 """
 
 from revscoring.features import wikitext
-from revscoring.features.modifiers import max, sub
+from revscoring.features.meta import aggregators
+from revscoring.features.modifiers import max, sub, log
+from revscoring.features.wikitext.datasources import Revision
 from revscoring.languages import english
+from revscoring.datasources.meta import mappers, filters
 
 from . import wikipedia
 
@@ -39,6 +42,25 @@ category_links = wikitext.revision.wikilink_titles_matching(
 image_links = wikitext.revision.wikilink_titles_matching(
     r"File|Image\:", name="enwiki.revision.image_links")
 
+# References
+revision = Revision(
+    "enwiki.revision.revision",
+    wikitext.revision.datasources,
+)
+paragraphs = mappers.map(
+    str, revision.paragraphs_sentences_and_whitespace,
+    name="enwiki.revision.paragraphs"
+)
+paragraphs_without_refs = filters.regex_matching(
+    r"^(?!\s*$)((?!<ref>)(.|\n))*$",
+    paragraphs,
+    name="enwiki.revision.paragraphs_without_refs"
+)
+paragraphs_without_refs_total_length = aggregators.sum(
+    mappers.map(len, paragraphs_without_refs),
+    name="enwiki.revision.paragraphs_without_refs_total_length"
+)
+
 local_wiki = [
     image_links,
     image_links / max(wikitext.revision.content_chars, 1),
@@ -60,6 +82,7 @@ local_wiki = [
     main_article_templates / max(wikitext.revision.content_chars, 1),
     (english.stemmed.revision.stem_chars /
      max(wikitext.revision.content_chars, 1)),
+    log(paragraphs_without_refs_total_length + 1),
 ]
 
 wp10 = wikipedia.article + local_wiki

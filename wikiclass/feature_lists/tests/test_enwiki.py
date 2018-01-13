@@ -66,3 +66,26 @@ def test_main_article_templates():
     """
     assert solve(enwiki.main_article_templates,
                  cache={revision_text: text}) == 1
+
+
+def test_paragraphs_without_refs_total_length():
+    text = """
+    Here is the first paragraph.
+    It contains some references <ref>first reference</ref>.
+
+    Here is second paragraph. One line with reference <ref>reference</ref>.
+
+    Here is third paragraph.
+    It has two lines, but no references.
+
+
+    Here is fourth paragraph.
+    It has two lines <ref>reference</ref>.
+    One of which has a reference.
+
+    Here is fifth paragraph. One line, no references.
+
+    Short line.<ref>last</ref><ref>One more reference</ref>
+    """
+    assert solve(enwiki.paragraphs_without_refs_total_length,
+                 cache={revision_text: text}) == 114
