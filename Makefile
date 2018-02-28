@@ -112,6 +112,12 @@ enwiki_tuning_reports: \
 	tuning_reports/enwiki.wp10.md \
 	tuning_reports/enwiki.nettrom_wp10.md
 
+########################## Persian Wikipedia ##################################
+# From https://quarry.wmflabs.org/query/25156
+datasets/fawiki.stratified_sample.100_pages.json:
+	wget -qO- https://quarry.wmflabs.org/run/240433/output/0/json-lines?download=true > $@
+
+
 ########################## French Wikipedia ###################################
 #datasets/frwiki.observations.first_labelings.20150602.json:
 #	./utility extract_labelings \
