@@ -9,8 +9,8 @@ building article quality classifiers.
 * fetch_text -- Gathers text for each labeling observation from a MediaWiki API
 
 Usage:
-    wikiclass (-h | --help)
-    wikiclass <utility> [-h | --help]
+    articlequality (-h | --help)
+    articlequality <utility> [-h | --help]
 
 Options:
     -h | --help  Prints this documentation
@@ -22,8 +22,8 @@ from importlib import import_module
 
 
 USAGE = """Usage:
-    wikiclass (-h | --help)
-    wikiclass <utility> [-h | --help]\n"""
+    articlequality (-h | --help)
+    articlequality <utility> [-h | --help]\n"""
 
 
 def main():
@@ -41,7 +41,7 @@ def main():
     module_name = sys.argv[1]
     try:
         module = import_module(".utilities." + module_name,
-                               package="wikiclass")
+                               package="articlequality")
     except ImportError:
         sys.stderr.write(traceback.format_exc())
         sys.stderr.write("Could not find utility {0}.\n".format(module_name))

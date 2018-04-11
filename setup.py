@@ -2,7 +2,7 @@ import os
 
 from setuptools import find_packages, setup
 
-about_path = os.path.join(os.path.dirname(__file__), "wikiclass/about.py")
+about_path = os.path.join(os.path.dirname(__file__), "articlequality/about.py")
 exec(compile(open(about_path).read(), about_path, "exec"))
 
 
@@ -26,7 +26,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'wikiclass=wikiclass.wikiclass:main'
+            'articlequality=articlequality.articlequality:main'
         ],
     },
     long_description=read('README.md'),

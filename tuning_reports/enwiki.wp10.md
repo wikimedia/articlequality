@@ -1,6 +1,6 @@
 # Model tuning report
 - Revscoring version: 1.0.0rc1
-- Features: wikiclass.feature_lists.enwiki.wp10
+- Features: articlequality.feature_lists.enwiki.wp10
 - Date: 2016-01-21T15:49:46.989508
 - Observations: 25966
 - Labels: ["stub", "b", "ga", "fa", "start", "c"]
