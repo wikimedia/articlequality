@@ -1,6 +1,6 @@
 # Model tuning report
 - Revscoring version: 1.0.0rc1
-- Features: wikiclass.feature_lists.frwiki.wp10
+- Features: articlequality.feature_lists.frwiki.wp10
 - Date: 2016-01-21T17:31:54.615159
 - Observations: 8975
 - Labels: ["bd", "adq", "b", "a", "ba", "e"]

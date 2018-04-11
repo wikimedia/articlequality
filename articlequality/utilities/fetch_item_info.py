@@ -1,5 +1,5 @@
 """
-``$ wikclass fetch_item_info -h``
+``$ articlequality fetch_item_info -h``
 ::
 
     Annotates wikibase items with additional information
@@ -57,7 +57,7 @@ def main(argv=None):
     claims = args['--claim']
 
     session = mwapi.Session(args['--api-host'],
-                            user_agent="WikiClass fetch_text utility.")
+                            user_agent="ArticleQuality fetch_text utility.")
 
     verbose = args['--verbose']
 

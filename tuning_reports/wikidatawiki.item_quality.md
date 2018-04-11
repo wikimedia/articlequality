@@ -1,6 +1,6 @@
 # Model tuning report
 - Revscoring version: 1.3.15
-- Features: wikiclass.feature_lists.wikidatawiki.item_quality
+- Features: articlequality.feature_lists.wikidatawiki.item_quality
 - Date: 2017-06-30T16:21:20.213856
 - Observations: 4996
 - Labels: ["E", "D", "C", "A", "B"]

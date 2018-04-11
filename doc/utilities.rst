@@ -1,4 +1,4 @@
 Utilities
 ==========
 
-.. automodule:: wikiclass.utilities
+.. automodule:: articlequality.utilities

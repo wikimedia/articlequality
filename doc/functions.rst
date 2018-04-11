@@ -2,22 +2,22 @@ Functions
 =========
 This module implements a set of functions for extracting labeling events and predicting article quality scores.
 
-wikiclass.extract_features
+articlequality.extract_features
 +++++++++++++++++++++++++
-.. autofunction:: wikiclass.extract_features
+.. autofunction:: articlequality.extract_features
 
-wikiclass.extract_labelings
+articlequality.extract_labelings
 ++++++++++++++++++++++++++
-.. autofunction:: wikiclass.extract_labelings
+.. autofunction:: articlequality.extract_labelings
 
-wikiclass.extract_text
+articlequality.extract_text
 +++++++++++++++++++++
-.. autofunction:: wikiclass.extract_text
+.. autofunction:: articlequality.extract_text
 
-wikiclass.fetch_text
+articlequality.fetch_text
 +++++++++++++++++++
-.. autofunction:: wikiclass.fetch_text
+.. autofunction:: articlequality.fetch_text
 
-wikiclass.score
+articlequality.score
 ++++++++++++++
-.. autofunction:: wikiclass.score
+.. autofunction:: articlequality.score

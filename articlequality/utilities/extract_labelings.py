@@ -1,5 +1,5 @@
 """
-``$ wikclass extract_labelings -h``
+``$ articlequality extract_labelings -h``
 ::
 
     Extracts labels from an XML dump and writes out labeled observations for
@@ -60,7 +60,7 @@ def main(argv=None):
 
 def load_extractor(extractor_name):
     try:
-        return import_module("wikiclass.extractors." + extractor_name)
+        return import_module("articlequality.extractors." + extractor_name)
     except ImportError:
         raise RuntimeError("Could not load extractor for '{0}'"
                            .format(extractor_name))
@@ -92,7 +92,7 @@ def extract_labelings(dump, extractor=None, verbose=False):
     :Parameters:
         dump : :class:`mwxml.Dump`
             The XML dump file to extract labelings from
-        extractor : :class:`wikiclass.Extractor`
+        extractor : :class:`articlequality.Extractor`
             An extractor to apply to the XML dump.  If no extractor is
             provided, an extract will be looked up based on <dbname> in the XML
             dump's <siteinfo> block.

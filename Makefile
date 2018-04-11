@@ -57,14 +57,14 @@ datasets/enwiki.labeling_revisions.w_cache.30k.json: \
 		datasets/enwiki.labeling_revisions.w_text.30k.json
 	cat $< | \
 	./utility extract_from_text \
-	  wikiclass.feature_lists.enwiki.wp10 \
+	  articlequality.feature_lists.enwiki.wp10 \
 	  --verbose > $@
 
 datasets/enwiki.labeling_revisions.w_cache.nettrom_30k.json: \
 		datasets/enwiki.labeling_revisions.nettrom_30k.json
 	cat $< | \
 	revscoring extract \
-	  wikiclass.feature_lists.enwiki.wp10 \
+	  articlequality.feature_lists.enwiki.wp10 \
 	  --host https://en.wikipedia.org \
 	  --verbose > $@
 
@@ -73,7 +73,7 @@ tuning_reports/enwiki.nettrom_wp10.md: \
 	cat $< | \
 	revscoring tune \
 	  config/classifiers.params.yaml \
-	  wikiclass.feature_lists.enwiki.wp10 \
+	  articlequality.feature_lists.enwiki.wp10 \
 	  wp10 \
 	  accuracy.macro \
 	  --pop-rate '"Stub"=0.5762822268640726' \
@@ -90,7 +90,7 @@ models/enwiki.nettrom_wp10.gradient_boosting.model: \
 	cat $< | \
 	revscoring cv_train \
 	  revscoring.scoring.models.GradientBoosting \
-	  wikiclass.feature_lists.enwiki.wp10 \
+	  articlequality.feature_lists.enwiki.wp10 \
 	  wp10 \
 	  --version $(wp10_major_minor).1 \
 	  -p 'n_estimators=700' \
@@ -151,7 +151,7 @@ datasets/frwiki.labeling_revisions.w_cache.9k.json: \
 		datasets/frwiki.labeling_revisions.w_text.9k.json
 	cat $< | \
 	./utility extract_from_text \
-	  wikiclass.feature_lists.frwiki.wp10 \
+	  articlequality.feature_lists.frwiki.wp10 \
 	  --verbose > $@
 
 
@@ -160,7 +160,7 @@ tuning_reports/frwiki.wp10.md: \
 	cat $< | \
 	revscoring tune \
 	  config/classifiers.params.yaml \
-	  wikiclass.feature_lists.frwiki.wp10 \
+	  articlequality.feature_lists.frwiki.wp10 \
 	  wp10 \
 	  accuracy.macro \
 	  --pop-rate '"e"=0.7314705724717468' \
@@ -178,7 +178,7 @@ models/frwiki.wp10.gradient_boosting.model: \
 	cat $< | \
 	revscoring cv_train \
 	  revscoring.scoring.models.GradientBoosting \
-	  wikiclass.feature_lists.frwiki.wp10 \
+	  articlequality.feature_lists.frwiki.wp10 \
 	  wp10 \
 	  --version $(wp10_major_minor).0 \
 	  -p 'learning_rate=0.01' \
@@ -231,7 +231,7 @@ datasets/frwikisource.labeled_revisions.w_cache.20k_balanced_2017.json: \
 		datasets/frwikisource.labeled_revisions.with_text.20k_balanced_2017.json
 	cat $< | \
 	./utility extract_from_text \
-	  wikiclass.feature_lists.frwikisource.pagelevel \
+	  articlequality.feature_lists.frwikisource.pagelevel \
 	  --verbose > $@
 
 tuning_reports/frwikisource.page_level.md: \
@@ -239,7 +239,7 @@ tuning_reports/frwikisource.page_level.md: \
 	cat $< | \
 	revscoring tune \
 	  config/classifiers.params.yaml \
-	  wikiclass.feature_lists.frwikisource.pagelevel \
+	  articlequality.feature_lists.frwikisource.pagelevel \
 	  page_level \
 	  accuracy.macro \
 	  --pop-rate '"4"=0.17270922526244023' \
@@ -255,7 +255,7 @@ models/frwikisource.page_level.gradient_boosting.model: \
 	cat $< | \
 	revscoring cv_train \
 	  revscoring.scoring.models.GradientBoosting \
-	  wikiclass.feature_lists.frwikisource.pagelevel \
+	  articlequality.feature_lists.frwikisource.pagelevel \
 	  page_level \
 	  --version $(page_level_major_minor).0 \
 	  -p 'n_estimators=700' \
@@ -310,7 +310,7 @@ datasets/ruwiki.labeling_revisions.w_cache.8k.json: \
 		datasets/ruwiki.labeling_revisions.w_text.8k.json
 	cat $< | \
 	./utility extract_from_text \
-	  wikiclass.feature_lists.ruwiki.wp10 \
+	  articlequality.feature_lists.ruwiki.wp10 \
 	  --verbose > $@
 
 tuning_reports/ruwiki.wp10.md: \
@@ -318,7 +318,7 @@ tuning_reports/ruwiki.wp10.md: \
 	cat $< | \
 	revscoring tune \
 	  config/classifiers.params.yaml \
-	  wikiclass.feature_lists.ruwiki.wp10 \
+	  articlequality.feature_lists.ruwiki.wp10 \
 	  wp10 \
 	  accuracy.macro \
 	  --pop-rate '"IV"=0.4872864906832298' \
@@ -337,7 +337,7 @@ models/ruwiki.wp10.gradient_boosting.model: \
 	cat $< | \
 	revscoring cv_train \
 	  revscoring.scoring.models.GradientBoosting \
-	  wikiclass.feature_lists.ruwiki.wp10 \
+	  articlequality.feature_lists.ruwiki.wp10 \
 	  wp10 \
 	  --version $(wp10_major_minor).0 \
 	  -p 'max_depth=5' \
@@ -386,7 +386,7 @@ datasets/trwiki.labeling_revisions.w_cache.2k.json: \
 		datasets/trwiki.labeling_revisions.w_text.2k.json
 	cat $< | \
 	./utility extract_from_text \
-	  wikiclass.feature_lists.trwiki.wp10 \
+	  articlequality.feature_lists.trwiki.wp10 \
 	  --verbose > $@
 
 tuning_reports/trwiki.wp10.md: \
@@ -394,7 +394,7 @@ tuning_reports/trwiki.wp10.md: \
 	cat $< | \
 	revscoring tune \
 	  config/classifiers.params.yaml \
-	  wikiclass.feature_lists.trwiki.wp10 \
+	  articlequality.feature_lists.trwiki.wp10 \
 	  wp10 \
 	  accuracy.macro \
 	  --pop-rate '"taslak"=0.5804005556841861' \
@@ -412,7 +412,7 @@ models/trwiki.wp10.gradient_boosting.model: \
 	cat $< | \
 	revscoring cv_train \
 	  revscoring.scoring.models.GradientBoosting \
-	  wikiclass.feature_lists.trwiki.wp10 \
+	  articlequality.feature_lists.trwiki.wp10 \
 	  wp10 \
 	  --version $(wp10_major_minor).0 \
 	  -p 'max_depth=5' \
@@ -478,7 +478,7 @@ datasets/wikidatawiki.labeling_revisions.w_cache.5k.json: \
 		datasets/wikidatawiki.labeling_revisions.w_text.5k.json
 	cat $< | \
 	./utility extract_from_text \
-	  wikiclass.feature_lists.wikidatawiki.item_quality \
+	  articlequality.feature_lists.wikidatawiki.item_quality \
 	  --verbose > $@
 
 tuning_reports/wikidatawiki.item_quality.md: \
@@ -486,7 +486,7 @@ tuning_reports/wikidatawiki.item_quality.md: \
 	cat $< | \
 	revscoring tune \
 	  config/classifiers.params.yaml \
-	  wikiclass.feature_lists.wikidatawiki.item_quality \
+	  articlequality.feature_lists.wikidatawiki.item_quality \
 	  item_quality \
 	  accuracy.macro \
 	  --labels '"A","B","C","D","E"' \
@@ -498,7 +498,7 @@ models/wikidatawiki.item_quality.rf.model: \
 	cat $< | \
 	revscoring cv_train \
 	  revscoring.scoring.models.RandomForest \
-	  wikiclass.feature_lists.wikidatawiki.item_quality \
+	  articlequality.feature_lists.wikidatawiki.item_quality \
 	  item_quality \
 	  --version $(item_quality_major_minor).0 \
 	  -p 'n_estimators=20' \

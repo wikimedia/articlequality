@@ -1,6 +1,6 @@
 # Model tuning report
 - Revscoring version: 1.3.5
-- Features: wikiclass.feature_lists.trwiki.wp10
+- Features: articlequality.feature_lists.trwiki.wp10
 - Date: 2017-06-15T20:17:55.876271
 - Observations: 1338
 - Labels: ["km", "taslak", "sm", "b", "c"]

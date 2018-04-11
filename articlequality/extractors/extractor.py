@@ -1,8 +1,8 @@
 """
-.. autoclass:: wikiclass.Extractor
+.. autoclass:: articlequality.Extractor
     :members:
 
-.. autoclass:: wikiclass.TemplateExtractor
+.. autoclass:: articlequality.TemplateExtractor
     :members:
     :inherited-members:
 """

@@ -1,5 +1,5 @@
 """
-``$ wikclass score -h``
+``$ articlequality score -h``
 ::
 
     Applies a scoring model to a chunch of text.
