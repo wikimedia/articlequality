@@ -170,24 +170,29 @@ models/euwiki.wp10.gradient_boosting.model: \
 datasets/fawiki.sampled_revisions.300.json:
 	wget https://quarry.wmflabs.org/run/244123/output/0/json-lines?download=true -qO- > $@
 
-datasets/fawiki.labelings.300.json:
+datasets/fawiki.human_labeled.100.json:
+        ./utility fetch_labels \
+                https://labels.wmflabs.org/campaigns/fawiki/70/ > $@
+
+datasets/fawiki.human_labeled.300.json:
 	./utility fetch_labels \
 		https://labels.wmflabs.org/campaigns/fawiki/71/ > $@
 
-datasets/fawiki.labeled_revisions.600.json: \
+datasets/fawiki.labeled_revisions.700.json: \
 		datasets/fawiki.sampled_revisions.300.json \
-		datasets/fawiki.labelings.300.json
+		datasets/fawiki.human_labeled.300.json \
+		datasets/fawiki.human_labeled.100.json
 	cat $^ > $@
 
-datasets/fawiki.labeling_revisions.w_text.600.json: \
-		datasets/fawiki.labeled_revisions.600.json
+datasets/fawiki.labeling_revisions.w_text.700.json: \
+		datasets/fawiki.labeled_revisions.700.json
 	cat $< | \
 	./utility fetch_text \
 	  --api-host=https://fa.wikipedia.org --threads 4 \
 	  --verbose > $@
 
-datasets/fawiki.labeling_revisions.w_cache.600.json: \
-		datasets/fawiki.labeling_revisions.w_text.600.json
+datasets/fawiki.labeling_revisions.w_cache.700.json: \
+		datasets/fawiki.labeling_revisions.w_text.700.json
 	cat $< | \
 	./utility extract_from_text \
 	  wikiclass.feature_lists.fawiki.wp10 \
@@ -195,7 +200,7 @@ datasets/fawiki.labeling_revisions.w_cache.600.json: \
 
 
 tuning_reports/fawiki.wp10.md: \
-		datasets/fawiki.labeling_revisions.w_cache.600.json
+		datasets/fawiki.labeling_revisions.w_cache.700.json
 	cat $< | \
 	revscoring tune \
 	  config/classifiers.params.yaml \
