@@ -1,6 +1,6 @@
 # Model tuning report
 - Revscoring version: 2.1.0
-- Features: wikiclass.feature_lists.enwiki.wp10
+- Features: articlequality.feature_lists.enwiki.wp10
 - Date: 2018-01-15T13:05:07.855569
 - Observations: 32449
 - Labels: ["Stub", "Start", "C", "B", "GA", "FA"]

@@ -1,4 +1,4 @@
 Extractors
 ==========
 
-.. automodule:: wikiclass.extractors
+.. automodule:: articlequality.extractors

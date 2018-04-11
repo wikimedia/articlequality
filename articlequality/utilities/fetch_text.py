@@ -1,5 +1,5 @@
 """
-``$ wikclass fetch_text -h``
+``$ articlequality fetch_text -h``
 ::
 
     Fetches text & metadata for labelings using a MediaWiki API.
@@ -41,7 +41,7 @@ def main(argv=None):
         output = open(args['--output'])
 
     session = mwapi.Session(args['--api-host'],
-                            user_agent="WikiClass fetch_text utility.")
+                            user_agent="ArticleQaulity fetch_text utility.")
 
     verbose = args['--verbose']
 

@@ -1,6 +1,6 @@
 # Model tuning report
 - Revscoring version: 1.3.11
-- Features: wikiclass.feature_lists.frwikisource.pagelevel
+- Features: articlequality.feature_lists.frwikisource.pagelevel
 - Date: 2017-05-25T16:03:02.310610
 - Observations: 20000
 - Labels: ["1", "3", "4", "0"]

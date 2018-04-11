@@ -1,5 +1,5 @@
 """
-``$ wikclass extract_from_text -h``
+``$ articlequality extract_from_text -h``
 ::
 
     Extracts dependents from a labeling doc containing text and an

@@ -52,7 +52,7 @@ def normalize_project_name(template_name):
 sys.modules[__name__] = TemplateExtractor(
     __name__,
     doc="""
-wikiclass.extractors.enwiki
+articlequality.extractors.enwiki
 +++++++++++++++++++++++++++
 
 This extractor looks for instances of templates that contain

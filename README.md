@@ -5,18 +5,18 @@ This library provides a set of utilities for performing automatic detection of a
 **Compatible with Python 3.x only.**  Sorry.
 
 * **Install:** ``pip install wikiclass``
-* **Models:** https://github.com/wiki-ai/wikiclass/tree/master/models
+* **Models:** https://github.com/wiki-ai/articlequality/tree/master/models
 * **Documentation:** http://pythonhosted.org/wikiclass
 
 ## Basic usage
 
-    >>> import wikiclass
+    >>> import articlequality
     >>> from revscoring import Model
     >>>
     >>> scorer_model = Model.load(open("models/enwiki.nettrom_wp10.gradient_boosting.model", "rb"))
     >>>
     >>> text = "I am the text of a page.  I have a <ref>word</ref>"
-    >>> wikiclass.score(scorer_model, text)
+    >>> articlequality.score(scorer_model, text)
     {'prediction': 'stub',
      'probability': {'stub': 0.27156163795807853,
                      'b': 0.14707452309674252,

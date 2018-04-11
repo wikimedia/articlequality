@@ -1,5 +1,5 @@
 """
-``$ wikclass extract_text -h``
+``$ articlequality extract_text -h``
 ::
 
     Extracts text & metadata for labelings using XML dumps.
