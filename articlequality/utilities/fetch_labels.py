@@ -1,6 +1,6 @@
 """
-Extracts 'damaging' and 'goodfaith' labels from campaign on a Wikilabels
-server.  Assumes the general schema of the Edit quality campaign.
+Extracts labels from campaign on a Wikilabels server
+Assumes the general schema of the article quality campaign.
 
 Usage:
     fetch_labels <campaign-url>
@@ -83,10 +83,14 @@ def aggregate_labels(label_docs):
             auto_labeled = False
         else:
             auto_labeled = True
-
-        return {'item_quality': label_docs[0]['data']['item_quality'],
-                'auto_labeled': auto_labeled,
+        data = {'auto_labeled': auto_labeled,
                 'timestamp': str(label_docs[0]['timestamp'])}
+
+        if 'item_quality' in label_docs[0]['data']:
+            data['item_quality'] = label_docs[0]['data']['item_quality']
+        elif 'wp10' in label_docs[0]['data']:
+            data['wp10'] = label_docs[0]['data']['wp10']
+        return data
 
 
 OPERATORS = {"=": lambda field, value: field == value,
