@@ -1,6 +1,6 @@
 # Model tuning report
 - Revscoring version: 1.2.6
-- Features: wikiclass.feature_lists.ruwiki.wp10
+- Features: articlequality.feature_lists.ruwiki.wp10
 - Date: 2016-06-07T17:10:13.130504
 - Observations: 7961
 - Labels: ["ga", "sa", "I", "III", "II", "IV", "fa"]

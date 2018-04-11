@@ -4,9 +4,9 @@ Wikipedia article quality classification
 A library for performing automatic detection of assessment classes of Wikipedia
 articles.
 
-* **Install:** ``pip install wikiclass``
-* **Models:** `<https://github.com/wiki-ai/wikiclass/tree/master/models>`_
-* **Repo:** `<https://github.com/wiki-ai/wikiclass>`_
+* **Install:** ``pip install articlequality``
+* **Models:** `<https://github.com/wiki-ai/articlequality/tree/master/models>`_
+* **Repo:** `<https://github.com/wiki-ai/articlequality>`_
 * **License:** MIT License
 
 Contents
@@ -21,13 +21,13 @@ Contents
 Basic usage
 -----------
 
-    >>> import wikiclass
+    >>> import articlequality
     >>> from revscoring import Model
     >>>
     >>> scorer_model = Model.load(open("models/enwiki.wp10.rf.model", "rb"))
     >>>
     >>> text = "I am the text of a page.  I have a <ref>word</ref>"
-    >>> wikiclass.score(scorer_model, text)
+    >>> articlequality.score(scorer_model, text)
     {'prediction': 'stub',
      'probability': {'stub': 0.27156163795807853,
                      'b': 0.14707452309674252,

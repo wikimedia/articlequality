@@ -22,7 +22,7 @@ install:
 
 script:
   - flake8 . --ignore=E722 --exclude=.svn,CVS,.bzr,.hg,.git,__pycache__,.tox,.eggs,*.egg,doc,examples
-  - coverage run --source wikiclass -m pytest wikiclass -m "not nottravis"
+  - coverage run --source articlequality -m pytest articlequality -m "not nottravis"
 
 after_success:
   - coverage report
