@@ -135,6 +135,18 @@ datasets/euwiki.human_labeled.w_cache.300_balanced.json: \
 	  --host https://en.wikipedia.org \
 	  --verbose > $@
 
+tuning_reports/euwiki.wp10.md: \
+		datasets/euwiki.human_labeled.w_cache.300_balanced.json
+	cat $< | \
+	revscoring tune \
+	  config/classifiers.params.yaml \
+	  articlequality.feature_lists.euwiki.wp10 \
+	  wp10 \
+	  accuracy.macro \
+		--labels '"Stub","Start","C","B","GA","FA"' \
+	  --cv-timeout=60 \
+	  --debug > $@
+
 ########################## French Wikipedia ###################################
 #datasets/frwiki.observations.first_labelings.20150602.json:
 #	./utility extract_labelings \
