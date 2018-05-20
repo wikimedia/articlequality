@@ -93,10 +93,10 @@ models/enwiki.nettrom_wp10.gradient_boosting.model: \
 	  articlequality.feature_lists.enwiki.wp10 \
 	  wp10 \
 	  --version $(wp10_major_minor).1 \
-	  -p 'n_estimators=700' \
+	  -p 'n_estimators=100' \
 	  -p 'learning_rate=0.01' \
 	  -p 'max_features="log2"' \
-	  -p 'max_depth=7' \
+	  -p 'max_depth=3' \
 	  --pop-rate '"Stub"=0.5762822268640726' \
 	  --pop-rate '"Start"=0.322262286213325' \
 	  --pop-rate '"C"=0.054466425789533986' \
@@ -132,7 +132,7 @@ datasets/euwiki.human_labeled.w_cache.300_balanced.json: \
 	cat $< | \
 	revscoring extract \
 	  articlequality.feature_lists.euwiki.wp10 \
-	  --host https://en.wikipedia.org \
+	  --host https://eu.wikipedia.org \
 	  --verbose > $@
 
 tuning_reports/euwiki.wp10.md: \
