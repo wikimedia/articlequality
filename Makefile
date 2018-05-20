@@ -112,6 +112,29 @@ enwiki_tuning_reports: \
 	tuning_reports/enwiki.wp10.md \
 	tuning_reports/enwiki.nettrom_wp10.md
 
+########################## Basque Wikipedia ####################################
+
+datasets/euwiki.human_labeled.400.json:
+	./utility fetch_labels \
+                https://labels.wmflabs.org/campaigns/euwiki/79/ > $@
+
+datasets/euwiki.human_labeled.300_balanced.json: \
+		datasets/euwiki.human_labeled.400.json
+	(cat $< | grep '"wp10": "Stub"' | shuf -n 50; \
+	 cat $< | grep '"wp10": "Start"' | shuf -n 50; \
+ 	 cat $< | grep '"wp10": "C"' | shuf -n 50; \
+ 	 cat $< | grep '"wp10": "B"' | shuf -n 50; \
+ 	 cat $< | grep '"wp10": "GA"' | shuf -n 50; \
+ 	 cat $< | grep '"wp10": "FA"' | shuf -n 50) > $@
+
+datasets/euwiki.human_labeled.w_cache.300_balanced.json: \
+		datasets/euwiki.human_labeled.300_balanced.json
+	cat $< | \
+	revscoring extract \
+	  articlequality.feature_lists.euwiki.wp10 \
+	  --host https://en.wikipedia.org \
+	  --verbose > $@
+
 ########################## French Wikipedia ###################################
 #datasets/frwiki.observations.first_labelings.20150602.json:
 #	./utility extract_labelings \
