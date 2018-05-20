@@ -143,9 +143,25 @@ tuning_reports/euwiki.wp10.md: \
 	  articlequality.feature_lists.euwiki.wp10 \
 	  wp10 \
 	  accuracy.macro \
-		--labels '"Stub","Start","C","B","GA","FA"' \
+	  --labels '"Stub","Start","C","B","GA","FA"' \
 	  --cv-timeout=60 \
 	  --debug > $@
+
+models/euwiki.wp10.gradient_boosting.model: \
+		datasets/euwiki.human_labeled.w_cache.300_balanced.json
+	cat $< | \
+	revscoring cv_train \
+	  revscoring.scoring.models.GradientBoosting \
+	  articlequality.feature_lists.euwiki.wp10 \
+	  wp10 \
+	  --version $(wp10_major_minor).0 \
+	  -p 'n_estimators=300' \
+	  -p 'learning_rate=0.01' \
+	  -p 'max_features="log2"' \
+	  -p 'max_depth=1' \
+		--labels '"Stub","Start","C","B","GA","FA"' \
+	  --center --scale > $@
+
 
 ########################## French Wikipedia ###################################
 #datasets/frwiki.observations.first_labelings.20150602.json:
