@@ -6,8 +6,6 @@ from .. import euwiki
 revision_text = revision.text
 
 
-
-
 def test_infobox_templates():
     text = """
     {{Biografia_infotaula_automatikoa|hats=2|pajams=23}}

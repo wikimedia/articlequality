@@ -6,7 +6,7 @@ Basque Wikipedia
 from revscoring.datasources.meta import filters, mappers
 from revscoring.features import wikitext
 from revscoring.features.meta import aggregators
-from revscoring.features.modifiers import log, max, sub
+from revscoring.features.modifiers import log, max
 from revscoring.features.wikitext.datasources import Revision
 
 from . import wikipedia
