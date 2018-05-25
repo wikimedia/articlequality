@@ -93,10 +93,10 @@ models/enwiki.nettrom_wp10.gradient_boosting.model: \
 	  articlequality.feature_lists.enwiki.wp10 \
 	  wp10 \
 	  --version $(wp10_major_minor).1 \
-	  -p 'n_estimators=700' \
+	  -p 'n_estimators=100' \
 	  -p 'learning_rate=0.01' \
 	  -p 'max_features="log2"' \
-	  -p 'max_depth=7' \
+	  -p 'max_depth=3' \
 	  --pop-rate '"Stub"=0.5762822268640726' \
 	  --pop-rate '"Start"=0.322262286213325' \
 	  --pop-rate '"C"=0.054466425789533986' \
@@ -111,6 +111,57 @@ enwiki_models: \
 enwiki_tuning_reports: \
 	tuning_reports/enwiki.wp10.md \
 	tuning_reports/enwiki.nettrom_wp10.md
+
+########################## Basque Wikipedia ####################################
+
+datasets/euwiki.human_labeled.400.json:
+	./utility fetch_labels \
+                https://labels.wmflabs.org/campaigns/euwiki/79/ > $@
+
+datasets/euwiki.human_labeled.300_balanced.json: \
+		datasets/euwiki.human_labeled.400.json
+	(cat $< | grep '"wp10": "Stub"' | shuf -n 50; \
+	 cat $< | grep '"wp10": "Start"' | shuf -n 50; \
+ 	 cat $< | grep '"wp10": "C"' | shuf -n 50; \
+ 	 cat $< | grep '"wp10": "B"' | shuf -n 50; \
+ 	 cat $< | grep '"wp10": "GA"' | shuf -n 50; \
+ 	 cat $< | grep '"wp10": "FA"' | shuf -n 50) > $@
+
+datasets/euwiki.human_labeled.w_cache.300_balanced.json: \
+		datasets/euwiki.human_labeled.300_balanced.json
+	cat $< | \
+	revscoring extract \
+	  articlequality.feature_lists.euwiki.wp10 \
+	  --host https://eu.wikipedia.org \
+	  --verbose > $@
+
+tuning_reports/euwiki.wp10.md: \
+		datasets/euwiki.human_labeled.w_cache.300_balanced.json
+	cat $< | \
+	revscoring tune \
+	  config/classifiers.params.yaml \
+	  articlequality.feature_lists.euwiki.wp10 \
+	  wp10 \
+	  accuracy.macro \
+	  --labels '"Stub","Start","C","B","GA","FA"' \
+	  --cv-timeout=60 \
+	  --debug > $@
+
+models/euwiki.wp10.gradient_boosting.model: \
+		datasets/euwiki.human_labeled.w_cache.300_balanced.json
+	cat $< | \
+	revscoring cv_train \
+	  revscoring.scoring.models.GradientBoosting \
+	  articlequality.feature_lists.euwiki.wp10 \
+	  wp10 \
+	  --version $(wp10_major_minor).0 \
+	  -p 'n_estimators=300' \
+	  -p 'learning_rate=0.01' \
+	  -p 'max_features="log2"' \
+	  -p 'max_depth=1' \
+		--labels '"Stub","Start","C","B","GA","FA"' \
+	  --center --scale > $@
+
 
 ########################## French Wikipedia ###################################
 #datasets/frwiki.observations.first_labelings.20150602.json:
