@@ -269,13 +269,13 @@ datasets/frwikisource.labeled_revisions.with_text.20k_balanced_2017.json: \
 		datasets/frwikisource.sampled_revisions.with_text.200k_2017.json
 	( \
 	  cat $< | \
-	  grep 'level=\\"4\\"' | shuf -n 5000 | sed -r 's/"rev_id"/"page_level": "4", "rev_id"/'; \
+	  grep 'level=\\"4\\"' | shuf -n 5000 | sed -r 's/"rev_id"/"page_level": "validated", "rev_id"/'; \
           cat $< | \
-          grep 'level=\\"3\\"' | shuf -n 5000 | sed -r 's/"rev_id"/"page_level": "3", "rev_id"/'; \
+          grep 'level=\\"3\\"' | shuf -n 5000 | sed -r 's/"rev_id"/"page_level": "proofread", "rev_id"/'; \
           cat $< | \
-          grep 'level=\\"1\\"' | shuf -n 5000 | sed -r 's/"rev_id"/"page_level": "1", "rev_id"/'; \
+          grep 'level=\\"1\\"' | shuf -n 5000 | sed -r 's/"rev_id"/"page_level": "not_proofread", "rev_id"/'; \
           cat $< | \
-          grep 'level=\\"0\\"' | shuf -n 5000 | sed -r 's/"rev_id"/"page_level": "0", "rev_id"/' \
+          grep 'level=\\"0\\"' | shuf -n 5000 | sed -r 's/"rev_id"/"page_level": "without_text", "rev_id"/' \
 	) > $@
 
 datasets/frwikisource.labeled_revisions.w_cache.20k_balanced_2017.json: \
@@ -293,10 +293,10 @@ tuning_reports/frwikisource.page_level.md: \
 	  articlequality.feature_lists.frwikisource.pagelevel \
 	  page_level \
 	  accuracy.macro \
-	  --pop-rate '"4"=0.17270922526244023' \
-	  --pop-rate '"3"=0.499288127776051' \
-	  --pop-rate '"1"=0.2962992670724004' \
-	  --pop-rate '"0"=0.03170337988910835' \
+	  --pop-rate '"validated"=0.17270922526244023' \
+	  --pop-rate '"proofread"=0.499288127776051' \
+	  --pop-rate '"not_proofread"=0.2962992670724004' \
+	  --pop-rate '"without_text"=0.03170337988910835' \
 	  --center --scale \
 	  --cv-timeout=60 \
 	  --debug > $@
@@ -313,10 +313,10 @@ models/frwikisource.page_level.gradient_boosting.model: \
 	  -p 'learning_rate=0.01' \
 	  -p 'max_features="log2"' \
 	  -p 'max_depth=7' \
-	  --pop-rate '"4"=0.17270922526244023' \
-	  --pop-rate '"3"=0.499288127776051' \
-	  --pop-rate '"1"=0.2962992670724004' \
-	  --pop-rate '"0"=0.03170337988910835' \
+	  --pop-rate '"validated"=0.17270922526244023' \
+	  --pop-rate '"not_proofread"=0.499288127776051' \
+	  --pop-rate '"proofread"=0.2962992670724004' \
+	  --pop-rate '"without_text"=0.03170337988910835' \
 	  --center --scale > $@
 
 frwikisource_models: \
