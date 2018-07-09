@@ -178,21 +178,26 @@ datasets/fawiki.human_labeled.300.json:
 	./utility fetch_labels \
 		https://labels.wmflabs.org/campaigns/fawiki/71/ > $@
 
-datasets/fawiki.labeled_revisions.700.json: \
+datasets/fawiki.human_labeled.600.json:
+	./utility fetch_labels \
+		https://labels.wmflabs.org/campaigns/fawiki/77/ > $@
+
+datasets/fawiki.labeled_revisions.1k.json: \
 		datasets/fawiki.sampled_revisions.300.json \
+		datasets/fawiki.human_labeled.600.json \
 		datasets/fawiki.human_labeled.300.json \
 		datasets/fawiki.human_labeled.100.json
 	cat $^ > $@
 
-datasets/fawiki.labeling_revisions.w_text.700.json: \
-		datasets/fawiki.labeled_revisions.700.json
+datasets/fawiki.labeling_revisions.w_text.1k.json: \
+		datasets/fawiki.labeled_revisions.1k.json
 	cat $< | \
 	revscoring fetch_text \
 	  --host=https://fa.wikipedia.org \
 	  --verbose > $@
 
-datasets/fawiki.labeling_revisions.w_cache.700.json: \
-		datasets/fawiki.labeling_revisions.w_text.700.json
+datasets/fawiki.labeling_revisions.w_cache.1k.json: \
+		datasets/fawiki.labeling_revisions.w_text.1k.json
 	cat $< | \
 	./utility extract_from_text \
 	  articlequality.feature_lists.fawiki.wp10 \
@@ -207,12 +212,12 @@ tuning_reports/fawiki.wp10.md: \
 	  articlequality.feature_lists.fawiki.wp10 \
 	  wp10 \
 	  accuracy.macro \
-	  --pop-rate '"Stub"=0.03609022556390978' \
-	  --pop-rate '"Start"=0.03308270676691729' \
-	  --pop-rate '"C"=0.039097744360902256' \
-	  --pop-rate '"B"=0.09924812030075188' \
-	  --pop-rate '"GA"=0.4105263157894737' \
-	  --pop-rate '"FA"=0.3819548872180451' \
+	  --pop-rate '"Stub"=0.09289176090468497' \
+	  --pop-rate '"Start"=0.07592891760904685' \
+	  --pop-rate '"C"=0.12277867528271405' \
+	  --pop-rate '"B"=0.16155088852988692' \
+	  --pop-rate '"GA"=0.24232633279483037' \
+	  --pop-rate '"FA"=0.21243941841680128' \
 	  --center --scale \
 	  --cv-timeout=60 \
 	  --debug > $@
@@ -225,16 +230,16 @@ models/fawiki.wp10.gradient_boosting.model: \
 	  wikiclass.feature_lists.fawiki.wp10 \
 	  wp10 \
 	  --version $(wp10_major_minor).0 \
-	  -p 'learning_rate=0.01' \
+	  -p 'learning_rate=0.5' \
 	  -p 'max_features="log2"' \
-	  -p 'n_estimators=700' \
-	  -p 'max_depth=7' \
-	  --pop-rate '"Stub"=0.03609022556390978' \
-	  --pop-rate '"Start"=0.03308270676691729' \
-	  --pop-rate '"C"=0.039097744360902256' \
-	  --pop-rate '"B"=0.09924812030075188' \
-	  --pop-rate '"GA"=0.4105263157894737' \
-	  --pop-rate '"FA"=0.3819548872180451' \
+	  -p 'n_estimators=300' \
+	  -p 'max_depth=5' \
+	  --pop-rate '"Stub"=0.09289176090468497' \
+	  --pop-rate '"Start"=0.07592891760904685' \
+	  --pop-rate '"C"=0.12277867528271405' \
+	  --pop-rate '"B"=0.16155088852988692' \
+	  --pop-rate '"GA"=0.24232633279483037' \
+	  --pop-rate '"FA"=0.21243941841680128' \
 	  --center --scale > $@
 
 fawiki_models: \
