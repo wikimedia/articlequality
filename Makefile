@@ -3,6 +3,7 @@
 
 models: \
 	enwiki_models \
+	fawiki_models \
 	frwiki_models \
 	frwikisource_models \
 	ruwiki_models \
@@ -11,6 +12,7 @@ models: \
 
 tuning_reports: \
 	enwiki_tuning_reports \
+	fawiki_tuning_reports \
 	frwiki_tuning_reports \
 	frwikisource_tuning_reports \
 	ruwiki_tuning_reports \
@@ -162,6 +164,89 @@ models/euwiki.wp10.gradient_boosting.model: \
 		--labels '"Stub","Start","C","B","GA","FA"' \
 	  --center --scale > $@
 
+########################## Persian Wikipedia ###################################
+
+# https://quarry.wmflabs.org/query/26452
+datasets/fawiki.sampled_revisions.300.json:
+	wget https://quarry.wmflabs.org/run/255116/output/0/json-lines?download=true -qO- > $@
+
+datasets/fawiki.human_labeled.100.json:
+	./utility fetch_labels \
+                https://labels.wmflabs.org/campaigns/fawiki/70/ > $@
+
+datasets/fawiki.human_labeled.300.json:
+	./utility fetch_labels \
+		https://labels.wmflabs.org/campaigns/fawiki/71/ > $@
+
+datasets/fawiki.human_labeled.600.json:
+	./utility fetch_labels \
+		https://labels.wmflabs.org/campaigns/fawiki/77/ > $@
+
+datasets/fawiki.labeled_revisions.1k.json: \
+		datasets/fawiki.sampled_revisions.300.json \
+		datasets/fawiki.human_labeled.600.json \
+		datasets/fawiki.human_labeled.300.json \
+		datasets/fawiki.human_labeled.100.json
+	cat $^ > $@
+
+datasets/fawiki.labeling_revisions.w_text.1k.json: \
+		datasets/fawiki.labeled_revisions.1k.json
+	cat $< | \
+	revscoring fetch_text \
+	  --host=https://fa.wikipedia.org \
+	  --verbose > $@
+
+datasets/fawiki.labeling_revisions.w_cache.1k.json: \
+		datasets/fawiki.labeling_revisions.w_text.1k.json
+	cat $< | \
+	./utility extract_from_text \
+	  articlequality.feature_lists.fawiki.wp10 \
+	  --verbose > $@
+
+
+tuning_reports/fawiki.wp10.md: \
+		datasets/fawiki.labeling_revisions.w_cache.700.json
+	grep -v '"wp10": null' $< | \
+	revscoring tune \
+	  config/classifiers.params.yaml \
+	  articlequality.feature_lists.fawiki.wp10 \
+	  wp10 \
+	  accuracy.macro \
+	  --pop-rate '"Stub"=0.18174474959612277' \
+	  --pop-rate '"Start"=0.07592891760904685' \
+	  --pop-rate '"C"=0.12277867528271405' \
+	  --pop-rate '"B"=0.16155088852988692' \
+	  --pop-rate '"GA"=0.24232633279483037' \
+	  --pop-rate '"FA"=0.21243941841680128' \
+	  --center --scale \
+	  --cv-timeout=60 \
+	  --debug > $@
+
+models/fawiki.wp10.gradient_boosting.model: \
+		datasets/fawiki.labeling_revisions.w_cache.700.json
+	grep -v '"wp10": null' $< | \
+	revscoring cv_train \
+	  revscoring.scoring.models.GradientBoosting \
+	  wikiclass.feature_lists.fawiki.wp10 \
+	  wp10 \
+	  --version $(wp10_major_minor).0 \
+	  -p 'learning_rate=0.5' \
+	  -p 'max_features="log2"' \
+	  -p 'n_estimators=100' \
+	  -p 'max_depth=7' \
+	  --pop-rate '"Stub"=0.18174474959612277' \
+	  --pop-rate '"Start"=0.07592891760904685' \
+	  --pop-rate '"C"=0.12277867528271405' \
+	  --pop-rate '"B"=0.16155088852988692' \
+	  --pop-rate '"GA"=0.24232633279483037' \
+	  --pop-rate '"FA"=0.21243941841680128' \
+	  --center --scale > $@
+
+fawiki_models: \
+	models/fawiki.wp10.gradient_boosting.model
+
+fawiki_tuning_reports: \
+	tuning_reports/fawiki.wp10.md
 
 ########################## French Wikipedia ###################################
 #datasets/frwiki.observations.first_labelings.20150602.json:
