@@ -5,8 +5,8 @@ A library for performing automatic detection of assessment classes of Wikipedia
 articles.
 
 * **Install:** ``pip install articlequality``
-* **Models:** `<https://github.com/wiki-ai/articlequality/tree/master/models>`_
-* **Repo:** `<https://github.com/wiki-ai/articlequality>`_
+* **Models:** `<https://github.com/wikimedia/articlequality/tree/master/models>`_
+* **Repo:** `<https://github.com/wikimedia/articlequality>`_
 * **License:** MIT License
 
 Contents

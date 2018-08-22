@@ -5,7 +5,7 @@ This library provides a set of utilities for performing automatic detection of a
 **Compatible with Python 3.x only.**  Sorry.
 
 * **Install:** ``pip install wikiclass``
-* **Models:** https://github.com/wiki-ai/articlequality/tree/master/models
+* **Models:** https://github.com/wikimedia/articlequality/tree/master/models
 * **Documentation:** http://pythonhosted.org/wikiclass
 
 ## Basic usage
