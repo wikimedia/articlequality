@@ -164,6 +164,64 @@ models/euwiki.wp10.gradient_boosting.model: \
 		--labels '"Stub","Start","C","B","GA","FA"' \
 	  --center --scale > $@
 
+########################## Galician Wikipedia ##################################
+
+datasets/glwiki.ga_and_fa_labeled.233.json:
+	wget https://quarry.wmflabs.org/run/290027/output/0/json-lines -qO- > $@
+
+datasets/glwiki.human_labeled.400.json:
+	./utility fetch_labels \
+		https://labels.wmflabs.org/campaigns/glwiki/85 > $@
+
+datasets/glwiki.merged_labeled.633.json: \
+		datasets/glwiki.human_labeled.400.json \
+		datasets/glwiki.ga_and_fa_labeled.233.json
+	cat $^ > $@
+
+datasets/glwiki.human_labeled.400_balanced.json: \
+		datasets/glwiki.merged_labeled.633.json
+	(cat $< | grep '"wp10": "Stub"' | shuf -n 67; \
+	 cat $< | grep '"wp10": "Start"' | shuf -n 67; \
+ 	 cat $< | grep '"wp10": "C"' | shuf -n 67; \
+ 	 cat $< | grep '"wp10": "B"' | shuf -n 67; \
+ 	 cat $< | grep '"wp10": "GA"' | shuf -n 67; \
+ 	 cat $< | grep '"wp10": "FA"' | shuf -n 67) > $@
+
+datasets/glwiki.human_labeled.w_cache.400_balanced.json: \
+		datasets/glwiki.human_labeled.400_balanced.json
+	cat $< | \
+	revscoring extract \
+	  articlequality.feature_lists.glwiki.wp10 \
+	  --host https://gl.wikipedia.org \
+	  --verbose > $@
+
+tuning_reports/glwiki.wp10.md: \
+		datasets/glwiki.human_labeled.w_cache.400_balanced.json
+	cat $< | \
+	revscoring tune \
+	  config/classifiers.params.yaml \
+	  articlequality.feature_lists.glwiki.wp10 \
+	  wp10 \
+	  accuracy.macro \
+	  --labels '"Stub","Start","C","B","GA","FA"' \
+	  --cv-timeout=60 \
+	  --debug > $@
+
+models/glwiki.wp10.gradient_boosting.model: \
+		datasets/glwiki.human_labeled.w_cache.400_balanced.json
+	cat $< | \
+	revscoring cv_train \
+	  revscoring.scoring.models.GradientBoosting \
+	  articlequality.feature_lists.glwiki.wp10 \
+	  wp10 \
+	  --version $(wp10_major_minor).0 \
+	  -p 'n_estimators=300' \
+	  -p 'learning_rate=0.01' \
+	  -p 'max_features="log2"' \
+	  -p 'max_depth=1' \
+		--labels '"Stub","Start","C","B","GA","FA"' \
+	  --center --scale > $@
+
 ########################## Persian Wikipedia ###################################
 
 # https://quarry.wmflabs.org/query/26452
