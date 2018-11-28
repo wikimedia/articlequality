@@ -54,7 +54,7 @@ local_wiki = [
     cn_templates / max(wikitext.revision.content_chars, 1),
     log(paragraphs_without_refs_total_length + 1),
     paragraphs_without_refs_total_length /
-        max(wikitext.revision.content_chars, 1),
+    max(wikitext.revision.content_chars, 1),
 ]
 
 wp10 = wikipedia.article + local_wiki

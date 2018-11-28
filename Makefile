@@ -215,11 +215,11 @@ models/glwiki.wp10.gradient_boosting.model: \
 	  articlequality.feature_lists.glwiki.wp10 \
 	  wp10 \
 	  --version $(wp10_major_minor).0 \
-	  -p 'n_estimators=300' \
+	  -p 'n_estimators=500' \
 	  -p 'learning_rate=0.01' \
 	  -p 'max_features="log2"' \
-	  -p 'max_depth=1' \
-		--labels '"Stub","Start","C","B","GA","FA"' \
+	  -p 'max_depth=3' \
+	  --labels '"Stub","Start","C","B","GA","FA"' \
 	  --center --scale > $@
 
 ########################## Persian Wikipedia ###################################
