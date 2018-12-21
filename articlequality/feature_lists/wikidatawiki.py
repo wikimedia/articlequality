@@ -1,4 +1,3 @@
-import pywikibase
 from revscoring.datasources.datasource import Datasource
 from revscoring.features import wikibase as wikibase_
 from revscoring.features import modifiers
@@ -49,8 +48,8 @@ references = Datasource(
 def _process_wikimedia_references(references):
     return [reference
             for reference in references
-            if reference.datatype == 'wikibase-entityid' and
-               reference.datavalue.id in wikimedia.PROJECT_QIDS]
+            if (reference.datatype == 'wikibase-entityid' and
+                reference.datavalue.id in wikimedia.PROJECT_QIDS)]
 
 
 wikimedia_references = Datasource(
