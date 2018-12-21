@@ -3,25 +3,29 @@
 
 models: \
 	enwiki_models \
+	euwiki_models \
 	fawiki_models \
 	frwiki_models \
 	frwikisource_models \
+	glwiki_models \
 	ruwiki_models \
 	trwiki_models \
 	wikidatawiki_models
 
 tuning_reports: \
 	enwiki_tuning_reports \
+	euwiki_tuning_reports \
 	fawiki_tuning_reports \
 	frwiki_tuning_reports \
 	frwikisource_tuning_reports \
+	glwiki_tuning_reports \
 	ruwiki_tuning_reports \
 	trwiki_tuning_reports \
 	wikidatawiki_tuning_reports
 
-wp10_major_minor = 0.6
-page_level_major_minor = 0.1
-item_quality_major_minor = 0.2
+wp10_major_minor = 0.8
+page_level_major_minor = 0.3
+item_quality_major_minor = 0.4
 
 ########################## English Wikipedia ###################################
 datasets/enwiki.labelings.20150602.json:
@@ -106,6 +110,8 @@ models/enwiki.nettrom_wp10.gradient_boosting.model: \
 	  --pop-rate '"GA"=0.009809850215598185' \
 	  --pop-rate '"FA"=0.002646891675853838' \
 	  --center --scale > $@
+	
+	revscoring model_info $@ > model_info/enwiki.nettrom_wp10.md
 
 enwiki_models: \
 	models/enwiki.nettrom_wp10.gradient_boosting.model
@@ -163,6 +169,14 @@ models/euwiki.wp10.gradient_boosting.model: \
 	  -p 'max_depth=1' \
 		--labels '"Stub","Start","C","B","GA","FA"' \
 	  --center --scale > $@
+	
+	revscoring model_info $@ > model_info/euwiki.wp10.md
+
+euwiki_models: \
+	models/euwiki.wp10.gradient_boosting.model
+
+euwiki_tuning_reports: \
+	tuning_reports/euwiki.wp10.md
 
 ########################## Galician Wikipedia ##################################
 
@@ -221,6 +235,15 @@ models/glwiki.wp10.gradient_boosting.model: \
 	  -p 'max_depth=3' \
 	  --labels '"Stub","Start","C","B","GA","FA"' \
 	  --center --scale > $@
+	
+	revscoring model_info $@ > model_info/glwiki.wp10.md
+
+glwiki_models: \
+	models/glwiki.wp10.gradient_boosting.model
+
+glwiki_tuning_reports: \
+	tuning_reports/glwiki.wp10.md
+
 
 ########################## Persian Wikipedia ###################################
 
@@ -263,7 +286,7 @@ datasets/fawiki.labeling_revisions.w_cache.1k.json: \
 
 
 tuning_reports/fawiki.wp10.md: \
-		datasets/fawiki.labeling_revisions.w_cache.700.json
+		datasets/fawiki.labeling_revisions.w_cache.1k.json
 	grep -v '"wp10": null' $< | \
 	revscoring tune \
 	  config/classifiers.params.yaml \
@@ -281,11 +304,11 @@ tuning_reports/fawiki.wp10.md: \
 	  --debug > $@
 
 models/fawiki.wp10.gradient_boosting.model: \
-		datasets/fawiki.labeling_revisions.w_cache.700.json
+		datasets/fawiki.labeling_revisions.w_cache.1k.json
 	grep -v '"wp10": null' $< | \
 	revscoring cv_train \
 	  revscoring.scoring.models.GradientBoosting \
-	  wikiclass.feature_lists.fawiki.wp10 \
+	  articlequality.feature_lists.fawiki.wp10 \
 	  wp10 \
 	  --version $(wp10_major_minor).0 \
 	  -p 'learning_rate=0.5' \
@@ -299,6 +322,8 @@ models/fawiki.wp10.gradient_boosting.model: \
 	  --pop-rate '"GA"=0.24232633279483037' \
 	  --pop-rate '"FA"=0.21243941841680128' \
 	  --center --scale > $@
+	
+	revscoring model_info $@ > model_info/fawiki.wp10.md
 
 fawiki_models: \
 	models/fawiki.wp10.gradient_boosting.model
@@ -311,13 +336,17 @@ fawiki_tuning_reports: \
 #	./utility extract_labelings \
 #		/mnt/data/xmldatadumps/public/frwiki/20150602/frwiki-20150602-pages-meta-history*.xml*.bz2 > $@
 
-datasets/frwiki.labelings.20151202.json:
+#datasets/frwiki.labelings.20151202.json:
+#	./utility extract_labelings \
+#	  /mnt/data/xmldatadumps/public/frwiki/20151202/frwiki-20151202-pages-meta-history*.xml*.bz2 > $@
+
+datasets/frwiki.labelings.20181201.json:
 	./utility extract_labelings \
-	  /mnt/data/xmldatadumps/public/frwiki/20151202/frwiki-20151202-pages-meta-history*.xml*.bz2 > $@
+	  /mnt/data/xmldatadumps/public/frwiki/20181201/frwiki-20181201-pages-meta-history*.xml*.bz2 > $@
 
 
 datasets/frwiki.labelings.9k.json: \
-		datasets/frwiki.labelings.20151202.json
+		datasets/frwiki.labelings.20181201.json
 	( \
 	  grep -P '"wp10": "e"' $< | \
 	  shuf -n 1500; \
@@ -338,7 +367,7 @@ datasets/frwiki.labeling_revisions.w_text.9k.json: \
 		datasets/frwiki.labelings.9k.json
 	cat $< | \
 	./utility fetch_text \
-	  --api-host=https://fr.wikipedia.org --threads 4 \
+	  --api-host=https://fr.wikipedia.org \
 	  --verbose > $@
 
 datasets/frwiki.labeling_revisions.w_cache.9k.json: \
@@ -386,6 +415,8 @@ models/frwiki.wp10.gradient_boosting.model: \
 	  --pop-rate '"ba"=0.002439090897978488' \
 	  --pop-rate '"adq"=0.00143486997313615' \
 	  --center --scale > $@
+	
+	revscoring model_info $@ > model_info/frwiki.wp10.md
 
 frwiki_models: \
 	models/frwiki.wp10.gradient_boosting.model
@@ -461,6 +492,8 @@ models/frwikisource.page_level.gradient_boosting.model: \
 	  --pop-rate '"proofread"=0.2962992670724004' \
 	  --pop-rate '"without_text"=0.03170337988910835' \
 	  --center --scale > $@
+	
+	revscoring model_info $@ > model_info/frwikisource.page_level.md
 
 frwikisource_models: \
 	models/frwikisource.page_level.gradient_boosting.model
@@ -469,46 +502,46 @@ frwikisource_tuning_reports: \
 	tuning_reports/frwikisource.page_level.md
 
 ########################## Russian Wikipedia ###################################
-datasets/ruwiki.labelings.20160501.json:
+datasets/ruwiki.labelings.20181201.json:
 	./utility extract_labelings \
-		/mnt/data/xmldatadumps/public/ruwiki/20160501/ruwiki-20160501-pages-meta-history*.xml*.bz2 > $@
+		/mnt/data/xmldatadumps/public/ruwiki/20181201/ruwiki-20181201-pages-meta-history*.xml*.bz2 > $@
 
-datasets/ruwiki.labelings.8k.json: \
-	datasets/ruwiki.labelings.20160501.json
+datasets/ruwiki.labelings.10k.json: \
+	datasets/ruwiki.labelings.20181201.json
 	( \
 	  grep -P '"wp10": "I"' $< | \
-	  shuf -n 1155; \
+	  shuf -n 1500; \
 	  grep -P '"wp10": "II"' $< | \
-	  shuf -n 1155; \
+	  shuf -n 1500; \
 	  grep -P '"wp10": "III"' $< | \
-	  shuf -n 1155; \
+	  shuf -n 1500; \
 	  grep -P '"wp10": "IV"' $< | \
-	  shuf -n 1155; \
-	  grep -P '"wp10": "ДС"' $< | \
-	  shuf -n 1155; \
-	  grep -P '"wp10": "ХС"' $< | \
-	  shuf -n 1155; \
-	  grep -P '"wp10": "ИС"' $< | \
-	  shuf -n 1155 \
+	  shuf -n 1500; \
+	  grep -P '"wp10": "\\u0425\\u0421"' $< | \
+	  shuf -n 1500; \
+	  grep -P '"wp10": "\\u0414\\u0421"' $< | \
+	  shuf -n 1500; \
+	  grep -P '"wp10": "\\u0418\\u0421"' $< | \
+	  shuf -n 1500 \
 	) | \
 	shuf > $@
 
-datasets/ruwiki.labeling_revisions.w_text.8k.json: \
-		datasets/ruwiki.labelings.8k.json
+datasets/ruwiki.labeling_revisions.w_text.10k.json: \
+		datasets/ruwiki.labelings.10k.json
 	cat $< | \
 	./utility fetch_text \
-	  --api-host=https://ru.wikipedia.org --threads 4 \
+	  --api-host=https://ru.wikipedia.org \
 	  --verbose > $@
 
-datasets/ruwiki.labeling_revisions.w_cache.8k.json: \
-		datasets/ruwiki.labeling_revisions.w_text.8k.json
+datasets/ruwiki.labeling_revisions.w_cache.10k.json: \
+		datasets/ruwiki.labeling_revisions.w_text.10k.json
 	cat $< | \
 	./utility extract_from_text \
 	  articlequality.feature_lists.ruwiki.wp10 \
 	  --verbose > $@
 
 tuning_reports/ruwiki.wp10.md: \
-		datasets/ruwiki.labeling_revisions.w_cache.8k.json
+		datasets/ruwiki.labeling_revisions.w_cache.10k.json
 	cat $< | \
 	revscoring tune \
 	  config/classifiers.params.yaml \
@@ -527,7 +560,7 @@ tuning_reports/ruwiki.wp10.md: \
 	  --debug > $@
 
 models/ruwiki.wp10.gradient_boosting.model: \
-		datasets/ruwiki.labeling_revisions.w_cache.8k.json
+		datasets/ruwiki.labeling_revisions.w_cache.10k.json
 	cat $< | \
 	revscoring cv_train \
 	  revscoring.scoring.models.GradientBoosting \
@@ -546,6 +579,8 @@ models/ruwiki.wp10.gradient_boosting.model: \
 	  --pop-rate '"ДС"=0.009265010351966873' \
 	  --pop-rate '"ИС"=0.007472826086956522' \
 	  --center --scale > $@
+	
+	revscoring model_info $@ > model_info/ruwiki.wp10.md
 
 ruwiki_models: \
 	models/ruwiki.wp10.gradient_boosting.model
@@ -555,13 +590,12 @@ riwiki_tuning_reports: \
 
 
 ############################ Turkish Wikipedia #############################
-datasets/trwiki.labelings.20170501.json:
+datasets/trwiki.labelings.20181201.json:
 	./utility extract_labelings \
-		/mnt/data/xmldatadumps/public/trwiki/20170501/trwiki-20170501-pages-meta-history.xml.bz2 > \
-	datasets/trwiki.labelings.20170501.json
+		/mnt/data/xmldatadumps/public/trwiki/20181201/trwiki-20181201-pages-meta-history.xml.bz2 > $@
 
 datasets/trwiki.labelings.2k.json: \
-		datasets/trwiki.labelings.20170501.json
+		datasets/trwiki.labelings.20181201.json
 	(cat $< | grep '"wp10": "taslak"' | shuf -n 272; \
 	 cat $< | grep '"wp10": "baslag\\u0131\\u00e7"' | shuf -n 272; \
 	 cat $< | grep '"wp10": "c"' | shuf -n 272; \
@@ -573,7 +607,7 @@ datasets/trwiki.labeling_revisions.w_text.2k.json: \
 		datasets/trwiki.labelings.2k.json
 	cat $< | \
 	./utility fetch_text \
-	  --api-host=https://tr.wikipedia.org --threads 4 \
+	  --api-host=https://tr.wikipedia.org \
 	  --verbose > $@
 
 datasets/trwiki.labeling_revisions.w_cache.2k.json: \
@@ -620,6 +654,8 @@ models/trwiki.wp10.gradient_boosting.model: \
 	  --pop-rate '"km"=0.016959944431581383' \
 	  --pop-rate '"sm"=0.015744385274369065' \
 	  --center --scale > $@
+	
+	revscoring model_info $@ > model_info/trwiki.wp10.md
 
 trwiki_models: \
 	models/trwiki.wp10.gradient_boosting.model
@@ -701,6 +737,8 @@ models/wikidatawiki.item_quality.rf.model: \
 	  -p 'max_features="log2"' \
 	  --labels '"A","B","C","D","E"' \
 	  --center --scale > $@
+	
+	revscoring model_info $@ > model_info/wikidatawiki.item_quality.md
 
 wikidatawiki_models: \
 	models/wikidatawiki.item_quality.rf.model

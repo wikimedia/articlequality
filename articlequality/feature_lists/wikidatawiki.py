@@ -1,4 +1,3 @@
-import pywikibase
 from revscoring.datasources.datasource import Datasource
 from revscoring.features import wikibase as wikibase_
 from revscoring.features import modifiers
@@ -32,57 +31,40 @@ class items:
     HUMAN = 'Q5'
 
 
-def _process_source_claims(item):
-    return [source_claim
-            for pid, claims in item.claims.items()
-            for claim in claims
-            for source in claim.sources
-            for source_pid, source_claims in source.items()
-            for source_claim in source_claims]
+def _process_references(entity):
+    return [reference
+            for pid, statements in entity.properties.items()
+            for statement in statements
+            for pid, references in statement.references.items()
+            for reference in references]
 
 
-source_claims = Datasource(
-    name + ".revision.source_claims",
-    _process_source_claims,
-    depends_on=[wikibase_.revision.datasources.item])
+references = Datasource(
+    name + ".revision.references",
+    _process_references,
+    depends_on=[wikibase_.revision.datasources.entity])
 
 
-def _process_wikimedia_sources(source_claims):
-    return [source_claim
-            for source_claim in source_claims
-            if isinstance(source_claim.target, pywikibase.ItemPage) and
-            source_claim.target.id in wikimedia.PROJECT_QIDS]
+def _process_wikimedia_references(references):
+    return [reference
+            for reference in references
+            if (reference.datatype == 'wikibase-entityid' and
+                reference.datavalue.id in wikimedia.PROJECT_QIDS)]
 
 
-wikimedia_sources = Datasource(
-    name + ".revision.wikimedia_sources",
-    _process_wikimedia_sources, depends_on=[source_claims])
+wikimedia_references = Datasource(
+    name + ".revision.wikimedia_references",
+    _process_wikimedia_references, depends_on=[references])
 
 
-def _process_unique_sources(source_claims):
-    return {(source_claim.id, simplify_target(source_claim.target))
-            for source_claim in source_claims}
+def _process_unique_references(references):
+    return {(reference.property, str(reference.datavalue))
+            for reference in references}
 
 
-unique_sources = Datasource(
-    name + ".revision.unique_sources",
-    _process_unique_sources, depends_on=[source_claims])
-
-
-def simplify_target(target):
-    if hasattr(target, "id"):
-        return target.id
-    elif hasattr(target, "lstrip"):
-        return target
-    elif hasattr(target, "toTimestr"):
-        return target.toTimestr()
-    elif isinstance(target, dict) and 'text' in target:
-        return target['text']
-    elif target is None:
-        return None
-    else:
-        raise RuntimeError("Could not simplify target {0}"
-                           .format(target))
+unique_references = Datasource(
+    name + ".revision.unique_references",
+    _process_unique_references, depends_on=[references])
 
 
 def _process_complete_translations(item_labels, item_descriptions):
@@ -126,25 +108,25 @@ important_description_translations = Datasource(
     depends_on=[wikibase_.revision.datasources.descriptions])
 
 
-source_claims_count = aggregators.len(source_claims)
+references_count = aggregators.len(references)
 "`int` : A count of all sources in the revision"
 
-wikimedia_sources_count = aggregators.len(wikimedia_sources)
+wikimedia_references_count = aggregators.len(wikimedia_references)
 "`int` : A count of all sources which come from Wikimedia projects"
 
-external_sources_count = source_claims_count - wikimedia_sources_count
+external_references_count = references_count - wikimedia_references_count
 "`int` : A count of all sources which do not come from Wikimedia projects"
 
-unique_sources_count = aggregators.len(unique_sources)
+unique_references_count = aggregators.len(unique_references)
 "`int` : A count of unique sources in the revision"
 
 # Status
 is_human = wikibase_.revision.has_property_value(
-    properties.INSTANCE_OF, items.HUMAN, name=name + '.is_human')
+    properties.INSTANCE_OF, items.HUMAN, name=name + '.revision.is_human')
 has_birthday = wikibase_.revision.has_property(
-    properties.DATE_OF_BIRTH, name='revision.has_birthday')
+    properties.DATE_OF_BIRTH, name=name + '.revision.has_birthday')
 dead = wikibase_.revision.has_property(
-    properties.DATE_OF_DEATH, name='revision.dead')
+    properties.DATE_OF_DEATH, name=name + '.revision.dead')
 is_blp = has_birthday.and_(not_(dead))
 
 local_wiki = [
@@ -154,13 +136,13 @@ local_wiki = [
     aggregators.len(important_label_translations),
     aggregators.len(important_description_translations),
     aggregators.len(important_complete_translations),
-    source_claims_count,
-    wikimedia_sources_count,
-    wikimedia_sources_count / modifiers.max(source_claims_count, 1),
-    external_sources_count,
-    external_sources_count / modifiers.max(source_claims_count, 1),
-    unique_sources_count,
-    unique_sources_count / modifiers.max(source_claims_count, 1)
+    references_count,
+    wikimedia_references_count,
+    wikimedia_references_count / modifiers.max(references_count, 1),
+    external_references_count,
+    external_references_count / modifiers.max(references_count, 1),
+    unique_references_count,
+    unique_references_count / modifiers.max(references_count, 1)
 ]
 
 item_quality = wikibase.item + local_wiki
