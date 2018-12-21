@@ -110,6 +110,8 @@ models/enwiki.nettrom_wp10.gradient_boosting.model: \
 	  --pop-rate '"GA"=0.009809850215598185' \
 	  --pop-rate '"FA"=0.002646891675853838' \
 	  --center --scale > $@
+	
+	revscoring model_info $@ > model_info/enwiki.nettrom_wp10.md
 
 enwiki_models: \
 	models/enwiki.nettrom_wp10.gradient_boosting.model
@@ -167,6 +169,8 @@ models/euwiki.wp10.gradient_boosting.model: \
 	  -p 'max_depth=1' \
 		--labels '"Stub","Start","C","B","GA","FA"' \
 	  --center --scale > $@
+	
+	revscoring model_info $@ > model_info/euwiki.wp10.md
 
 euwiki_models: \
 	models/euwiki.wp10.gradient_boosting.model
@@ -231,6 +235,8 @@ models/glwiki.wp10.gradient_boosting.model: \
 	  -p 'max_depth=3' \
 	  --labels '"Stub","Start","C","B","GA","FA"' \
 	  --center --scale > $@
+	
+	revscoring model_info $@ > model_info/glwiki.wp10.md
 
 glwiki_models: \
 	models/glwiki.wp10.gradient_boosting.model
@@ -316,6 +322,8 @@ models/fawiki.wp10.gradient_boosting.model: \
 	  --pop-rate '"GA"=0.24232633279483037' \
 	  --pop-rate '"FA"=0.21243941841680128' \
 	  --center --scale > $@
+	
+	revscoring model_info $@ > model_info/fawiki.wp10.md
 
 fawiki_models: \
 	models/fawiki.wp10.gradient_boosting.model
@@ -407,6 +415,8 @@ models/frwiki.wp10.gradient_boosting.model: \
 	  --pop-rate '"ba"=0.002439090897978488' \
 	  --pop-rate '"adq"=0.00143486997313615' \
 	  --center --scale > $@
+	
+	revscoring model_info $@ > model_info/frwiki.wp10.md
 
 frwiki_models: \
 	models/frwiki.wp10.gradient_boosting.model
@@ -482,6 +492,8 @@ models/frwikisource.page_level.gradient_boosting.model: \
 	  --pop-rate '"proofread"=0.2962992670724004' \
 	  --pop-rate '"without_text"=0.03170337988910835' \
 	  --center --scale > $@
+	
+	revscoring model_info $@ > model_info/frwikisource.page_level.md
 
 frwikisource_models: \
 	models/frwikisource.page_level.gradient_boosting.model
@@ -567,6 +579,8 @@ models/ruwiki.wp10.gradient_boosting.model: \
 	  --pop-rate '"ДС"=0.009265010351966873' \
 	  --pop-rate '"ИС"=0.007472826086956522' \
 	  --center --scale > $@
+	
+	revscoring model_info $@ > model_info/ruwiki.wp10.md
 
 ruwiki_models: \
 	models/ruwiki.wp10.gradient_boosting.model
@@ -640,6 +654,8 @@ models/trwiki.wp10.gradient_boosting.model: \
 	  --pop-rate '"km"=0.016959944431581383' \
 	  --pop-rate '"sm"=0.015744385274369065' \
 	  --center --scale > $@
+	
+	revscoring model_info $@ > model_info/trwiki.wp10.md
 
 trwiki_models: \
 	models/trwiki.wp10.gradient_boosting.model
@@ -721,6 +737,8 @@ models/wikidatawiki.item_quality.rf.model: \
 	  -p 'max_features="log2"' \
 	  --labels '"A","B","C","D","E"' \
 	  --center --scale > $@
+	
+	revscoring model_info $@ > model_info/wikidatawiki.item_quality.md
 
 wikidatawiki_models: \
 	models/wikidatawiki.item_quality.rf.model
