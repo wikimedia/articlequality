@@ -1,3 +1,6 @@
+from revscoring import Feature
+from revscoring.datasources import \
+    revision_oriented as revision_oriented_datasources
 from revscoring.datasources.datasource import Datasource
 from revscoring.features import wikibase as wikibase_
 from revscoring.features import modifiers
@@ -129,6 +132,28 @@ dead = wikibase_.revision.has_property(
     properties.DATE_OF_DEATH, name=name + '.revision.dead')
 is_blp = has_birthday.and_(not_(dead))
 
+
+def proc_item_completeness(current_properties, properties_suggested):
+    current_properties = set(current_properties.keys())
+
+    all_prob = 0.0
+    present_prob = 0.0
+    for statement in properties_suggested:
+        all_prob += float(statement['rating'])
+        if statement['id'] in current_properties:
+            present_prob += float(statement['rating'])
+
+    return present_prob / all_prob if all_prob else 0.0
+
+
+item_completeness = Feature(
+    name + '.revision.page.item_completeness',
+    proc_item_completeness,
+    returns=float,
+    depends_on=[
+        wikibase_.revision.datasources.properties,
+        revision_oriented_datasources.revision.page.suggested.properties])
+
 local_wiki = [
     is_human,
     is_blp,
@@ -142,7 +167,8 @@ local_wiki = [
     external_references_count,
     external_references_count / modifiers.max(references_count, 1),
     unique_references_count,
-    unique_references_count / modifiers.max(references_count, 1)
+    unique_references_count / modifiers.max(references_count, 1),
+    item_completeness
 ]
 
 item_quality = wikibase.item + local_wiki
