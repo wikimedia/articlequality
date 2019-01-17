@@ -697,18 +697,13 @@ datasets/wikidatawiki.labelings.5k.json:
 	./utility fetch_labels \
 		https://labels.wmflabs.org/campaigns/wikidatawiki/53/ > $@
 
-datasets/wikidatawiki.labeling_revisions.w_text.5k.json: \
+datasets/wikidatawiki.labeling_revisions.w_cache.5k.json: \
 		datasets/wikidatawiki.labelings.5k.json
 	cat $< | \
-	revscoring fetch_text \
-	  --host=https://www.wikidata.org --threads 4 \
-	  --verbose > $@
-
-datasets/wikidatawiki.labeling_revisions.w_cache.5k.json: \
-		datasets/wikidatawiki.labeling_revisions.w_text.5k.json
-	cat $< | \
-	./utility extract_from_text \
+	revscoring extract \
 	  articlequality.feature_lists.wikidatawiki.item_quality \
+	  --host https://www.wikidata.org \
+	  --batch-size 10 \
 	  --verbose > $@
 
 tuning_reports/wikidatawiki.item_quality.md: \
@@ -723,25 +718,25 @@ tuning_reports/wikidatawiki.item_quality.md: \
 	  --cv-timeout=60 \
 	  --debug > $@
 
-models/wikidatawiki.item_quality.rf.model: \
+models/wikidatawiki.item_quality.gradient_boosting.model: \
 		datasets/wikidatawiki.labeling_revisions.w_cache.5k.json
 	cat $< | \
 	revscoring cv_train \
-	  revscoring.scoring.models.RandomForest \
+	  revscoring.scoring.models.GradientBoosting \
 	  articlequality.feature_lists.wikidatawiki.item_quality \
 	  item_quality \
 	  --version $(item_quality_major_minor).0 \
-	  -p 'n_estimators=20' \
-	  -p 'criterion="gini"' \
-	  -p 'min_samples_leaf=13' \
+	  -p 'learning_rate=0.01' \
+	  -p 'n_estimators=500' \
 	  -p 'max_features="log2"' \
+	  -p 'max_depth=5' \
 	  --labels '"A","B","C","D","E"' \
 	  --center --scale > $@
 	
 	revscoring model_info $@ > model_info/wikidatawiki.item_quality.md
 
 wikidatawiki_models: \
-	models/wikidatawiki.item_quality.rf.model
+	models/wikidatawiki.item_quality.gradient_boosting.model
 
 wikidatawiki_tuning_reports: \
 	tuning_reports/wikidatawiki.item_quality.md
