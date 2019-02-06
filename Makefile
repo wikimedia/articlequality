@@ -99,10 +99,10 @@ models/enwiki.nettrom_wp10.gradient_boosting.model: \
 	  articlequality.feature_lists.enwiki.wp10 \
 	  wp10 \
 	  --version $(wp10_major_minor).1 \
-	  -p 'n_estimators=100' \
+	  -p 'n_estimators=500' \
 	  -p 'learning_rate=0.01' \
 	  -p 'max_features="log2"' \
-	  -p 'max_depth=3' \
+	  -p 'max_depth=7' \
 	  --pop-rate '"Stub"=0.5762822268640726' \
 	  --pop-rate '"Start"=0.322262286213325' \
 	  --pop-rate '"C"=0.054466425789533986' \
