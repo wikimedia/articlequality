@@ -1,9 +1,9 @@
 Model Information:
 	 - type: GradientBoosting
 	 - version: 0.8.0
-	 - params: {'label_weights': None, 'scale': True, 'presort': 'auto', 'subsample': 1.0, 'min_samples_split': 2, 'max_depth': 7, 'labels': ['e', 'bd', 'b', 'a', 'ba', 'adq'], 'min_samples_leaf': 1, 'init': None, 'learning_rate': 0.01, 'min_impurity_split': None, 'n_estimators': 100, 'random_state': None, 'max_leaf_nodes': None, 'min_weight_fraction_leaf': 0.0, 'population_rates': None, 'warm_start': False, 'criterion': 'friedman_mse', 'loss': 'deviance', 'min_impurity_decrease': 0.0, 'multilabel': False, 'verbose': 0, 'max_features': 'log2', 'center': True}
+	 - params: {'warm_start': False, 'min_impurity_split': None, 'random_state': None, 'scale': True, 'min_samples_leaf': 1, 'verbose': 0, 'min_samples_split': 2, 'criterion': 'friedman_mse', 'labels': ['e', 'bd', 'b', 'a', 'ba', 'adq'], 'n_estimators': 100, 'subsample': 1.0, 'min_impurity_decrease': 0.0, 'label_weights': None, 'presort': 'auto', 'init': None, 'min_weight_fraction_leaf': 0.0, 'multilabel': False, 'center': True, 'max_features': 'log2', 'loss': 'deviance', 'population_rates': None, 'max_depth': 7, 'max_leaf_nodes': None, 'learning_rate': 0.01}
 	Environment:
-	 - revscoring_version: '2.3.0'
+	 - revscoring_version: '2.3.3'
 	 - platform: 'Linux-4.9.0-8-amd64-x86_64-with-debian-9.5'
 	 - machine: 'x86_64'
 	 - version: '#1 SMP Debian 4.9.110-3+deb9u6 (2018-10-08)'
@@ -18,68 +18,68 @@ Model Information:
 	 - release: '4.9.0-8-amd64'
 	
 	Statistics:
-	counts (n=8930):
+	counts (n=8926):
 		label       n         ~e    ~bd    ~b    ~a    ~ba    ~adq
 		-------  ----  ---  ----  -----  ----  ----  -----  ------
-		'e'      1491  -->  1084    361    42     4      0       0
-		'bd'     1477  -->   254    878   309    16     16       4
-		'b'      1487  -->    63    283   743   120    185      93
-		'a'      1494  -->    37    102   267   236    474     378
-		'ba'     1490  -->    10     14    96   126    840     404
-		'adq'    1491  -->     0      1    55    83    347    1005
+		'e'      1487  -->  1075    359    49     2      2       0
+		'bd'     1479  -->   268    873   297    17     19       5
+		'b'      1488  -->    48    263   815   111    168      83
+		'a'      1491  -->    23     89   277   208    474     420
+		'ba'     1491  -->     9     26   116   129    758     453
+		'adq'    1490  -->     2      1    56    70    316    1045
 	rates:
 		              'e'    'bd'    'b'    'a'    'ba'    'adq'
 		----------  -----  ------  -----  -----  ------  -------
-		sample      0.167   0.165  0.167  0.167   0.167    0.167
+		sample      0.167   0.166  0.167  0.167   0.167    0.167
 		population  0.731   0.231  0.03   0.003   0.002    0.001
-	match_rate (micro=0.453, macro=0.197):
-		    e     bd    adq      b     ba      a
+	match_rate (micro=0.45, macro=0.197):
+		   b    adq     bd      a      e     ba
+		----  -----  -----  -----  -----  -----
+		0.12   0.13  0.213  0.045  0.541  0.133
+	filter_rate (micro=0.55, macro=0.803):
+		   b    adq     bd      a      e     ba
+		----  -----  -----  -----  -----  -----
+		0.88   0.87  0.787  0.955  0.459  0.867
+	recall (micro=0.685, macro=0.535):
+		    b    adq    bd     a      e     ba
+		-----  -----  ----  ----  -----  -----
+		0.548  0.701  0.59  0.14  0.723  0.508
+	!recall (micro=0.939, macro=0.907):
+		    b    adq     bd      a      e     ba
 		-----  -----  -----  -----  -----  -----
-		0.545  0.216  0.119  0.115  0.138  0.047
-	filter_rate (micro=0.547, macro=0.803):
-		    e     bd    adq      b     ba      a
+		0.893  0.871  0.901  0.956  0.953  0.868
+	precision (micro=0.867, macro=0.297):
+		    b    adq     bd      a      e     ba
 		-----  -----  -----  -----  -----  -----
-		0.455  0.784  0.881  0.885  0.862  0.953
-	recall (micro=0.687, macro=0.536):
-		    e     bd    adq    b     ba      a
-		-----  -----  -----  ---  -----  -----
-		0.727  0.594  0.674  0.5  0.564  0.158
-	!recall (micro=0.937, macro=0.907):
-		    e     bd    adq      b     ba      a
+		0.138  0.008  0.642  0.009  0.977  0.009
+	!precision (micro=0.648, macro=0.903):
+		    b    adq    bd      a      e     ba
+		-----  -----  ----  -----  -----  -----
+		0.984      1  0.88  0.997  0.558  0.999
+	f1 (micro=0.757, macro=0.286):
+		   b    adq     bd      a      e     ba
+		----  -----  -----  -----  -----  -----
+		0.22  0.015  0.615  0.017  0.831  0.018
+	!f1 (micro=0.756, macro=0.894):
+		    b    adq    bd      a      e     ba
+		-----  -----  ----  -----  -----  -----
+		0.937  0.931  0.89  0.976  0.704  0.929
+	accuracy (micro=0.799, macro=0.865):
+		    b    adq     bd      a      e     ba
 		-----  -----  -----  -----  -----  -----
-		0.951  0.898  0.882  0.897  0.863  0.953
-	precision (micro=0.865, macro=0.295):
-		    e     bd    adq      b    ba     a
-		-----  -----  -----  -----  ----  ----
-		0.976  0.637  0.008  0.131  0.01  0.01
-	!precision (micro=0.651, macro=0.903):
-		    e    bd    adq      b     ba      a
-		-----  ----  -----  -----  -----  -----
-		0.561  0.88  0.999  0.983  0.999  0.997
-	f1 (micro=0.758, macro=0.285):
-		    e     bd    adq      b    ba      a
-		-----  -----  -----  -----  ----  -----
-		0.833  0.615  0.016  0.208  0.02  0.018
-	!f1 (micro=0.757, macro=0.895):
-		    e     bd    adq      b     ba      a
+		0.883  0.871  0.829  0.953  0.785  0.867
+	fpr (micro=0.061, macro=0.093):
+		    b    adq     bd      a      e     ba
 		-----  -----  -----  -----  -----  -----
-		0.706  0.889  0.937  0.938  0.926  0.975
-	accuracy (micro=0.8, macro=0.866):
-		    e     bd    adq      b     ba      a
+		0.107  0.129  0.099  0.044  0.047  0.132
+	roc_auc (micro=0.935, macro=0.86):
+		    b    adq     bd      a      e     ba
 		-----  -----  -----  -----  -----  -----
-		0.787  0.828  0.882  0.885  0.862  0.951
-	fpr (micro=0.063, macro=0.093):
-		    e     bd    adq      b     ba      a
-		-----  -----  -----  -----  -----  -----
-		0.049  0.102  0.118  0.103  0.137  0.047
-	roc_auc (micro=0.935, macro=0.862):
-		    e    bd    adq      b     ba      a
-		-----  ----  -----  -----  -----  -----
-		0.955  0.89  0.903  0.823  0.844  0.758
-	pr_auc (micro=0.88, macro=0.309):
-		    e     bd    adq      b    ba      a
-		-----  -----  -----  -----  ----  -----
-		0.979  0.687  0.021  0.139  0.01  0.018
+		0.841  0.896  0.889  0.748  0.954  0.831
+	pr_auc (micro=0.88, macro=0.312):
+		    b    adq    bd      a      e     ba
+		-----  -----  ----  -----  -----  -----
+		0.159  0.021  0.69  0.017  0.978  0.009
 	
-	 - score_schema: {'title': 'Scikit learn-based classifier score with probability', 'type': 'object', 'properties': {'probability': {'description': 'A mapping of probabilities onto each of the potential output labels', 'type': 'object', 'properties': {'bd': {'type': 'number'}, 'adq': {'type': 'number'}, 'e': {'type': 'number'}, 'ba': {'type': 'number'}, 'a': {'type': 'number'}, 'b': {'type': 'number'}}}, 'prediction': {'description': 'The most likely label predicted by the estimator', 'type': 'string'}}}
+	 - score_schema: {'type': 'object', 'properties': {'prediction': {'description': 'The most likely label predicted by the estimator', 'type': 'string'}, 'probability': {'description': 'A mapping of probabilities onto each of the potential output labels', 'type': 'object', 'properties': {'b': {'type': 'number'}, 'adq': {'type': 'number'}, 'bd': {'type': 'number'}, 'a': {'type': 'number'}, 'e': {'type': 'number'}, 'ba': {'type': 'number'}}}}, 'title': 'Scikit learn-based classifier score with probability'}
 
