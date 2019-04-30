@@ -90,7 +90,7 @@ def fetch_text(session, labelings, verbose=False):
 
             labeling['page_id'] = rev_doc['page'].get("pageid")
             labeling['rev_id'] = rev_doc.get("revid")
-            text = rev_doc.get("*")
+            text = rev_doc['slots'].get("main")
             if not_an_article(text):
                 labeling['text'] = None
             else:
@@ -106,10 +106,11 @@ def fetch_text(session, labelings, verbose=False):
 def get_last_rev_before(session, page_title, timestamp):
     doc = session.get(action="query", prop="revisions", titles=page_title,
                       rvstart=timestamp, rvlimit=1, rvdir="older",
-                      rvprop=["ids", "content"], redirects=True)
+                      rvprop=["ids", "content"], rvslots=["main"],
+                      redirects=True, formatversion=2)
 
     try:
-        page_doc = list(doc['query']['pages'].values())[0]
+        page_doc = doc['query']['pages'][0]
     except (KeyError, IndexError):
         # No pages found
         return None
