@@ -1,5 +1,5 @@
 """
-Russian Wikipedia
+Swedish Wikipedia
 +++++++++++++++++
 """
 
