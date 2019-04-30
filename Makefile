@@ -110,7 +110,7 @@ models/enwiki.nettrom_wp10.gradient_boosting.model: \
 	  --pop-rate '"GA"=0.009809850215598185' \
 	  --pop-rate '"FA"=0.002646891675853838' \
 	  --center --scale > $@
-	
+
 	revscoring model_info $@ > model_info/enwiki.nettrom_wp10.md
 
 enwiki_models: \
@@ -169,7 +169,7 @@ models/euwiki.wp10.gradient_boosting.model: \
 	  -p 'max_depth=1' \
 		--labels '"Stub","Start","C","B","GA","FA"' \
 	  --center --scale > $@
-	
+
 	revscoring model_info $@ > model_info/euwiki.wp10.md
 
 euwiki_models: \
@@ -235,7 +235,7 @@ models/glwiki.wp10.gradient_boosting.model: \
 	  -p 'max_depth=3' \
 	  --labels '"Stub","Start","C","B","GA","FA"' \
 	  --center --scale > $@
-	
+
 	revscoring model_info $@ > model_info/glwiki.wp10.md
 
 glwiki_models: \
@@ -322,7 +322,7 @@ models/fawiki.wp10.gradient_boosting.model: \
 	  --pop-rate '"GA"=0.24232633279483037' \
 	  --pop-rate '"FA"=0.21243941841680128' \
 	  --center --scale > $@
-	
+
 	revscoring model_info $@ > model_info/fawiki.wp10.md
 
 fawiki_models: \
@@ -415,7 +415,7 @@ models/frwiki.wp10.gradient_boosting.model: \
 	  --pop-rate '"ba"=0.002439090897978488' \
 	  --pop-rate '"adq"=0.00143486997313615' \
 	  --center --scale > $@
-	
+
 	revscoring model_info $@ > model_info/frwiki.wp10.md
 
 frwiki_models: \
@@ -492,7 +492,7 @@ models/frwikisource.page_level.gradient_boosting.model: \
 	  --pop-rate '"proofread"=0.2962992670724004' \
 	  --pop-rate '"without_text"=0.03170337988910835' \
 	  --center --scale > $@
-	
+
 	revscoring model_info $@ > model_info/frwikisource.page_level.md
 
 frwikisource_models: \
@@ -579,7 +579,7 @@ models/ruwiki.wp10.gradient_boosting.model: \
 	  --pop-rate '"ДС"=0.009265010351966873' \
 	  --pop-rate '"ИС"=0.007472826086956522' \
 	  --center --scale > $@
-	
+
 	revscoring model_info $@ > model_info/ruwiki.wp10.md
 
 ruwiki_models: \
@@ -587,6 +587,77 @@ ruwiki_models: \
 
 riwiki_tuning_reports: \
 	tuning_reports/ruwiki.wp10.md
+
+
+########################## Swedish Wikipedia ###################################
+datasets/svwiki.labelings.20190301.json: \
+		/mnt/data/xmldatadumps/public/svwiki/20190301/svwiki-20190301-pages-meta-history.xml.bz2
+	./utility extract_labelings $< > $@
+
+datasets/svwiki.labelings.2k.json: \
+		datasets/svwiki.labelings.20190301.json
+	(cat $< | grep '"wp10": "u"' | shuf -n 500; \
+	 cat $< | grep '"wp10": "b"' | shuf -n 500; \
+	 cat $< | grep '"wp10": "r"' | shuf -n 500; \
+   cat $< | grep '"wp10": "s"' | shuf -n 500) > $@
+
+datasets/svwiki.labeling_revisions.w_text.2k.json: \
+		datasets/svwiki.labelings.2k.json
+	cat $< | \
+	./utility fetch_text \
+	  --api-host=https://sv.wikipedia.org \
+	  --verbose > $@
+
+datasets/svwiki.labeling_revisions.w_cache.2k.json: \
+		datasets/svwiki.labeling_revisions.w_text.2k.json
+	cat $< | \
+	./utility extract_from_text \
+	  articlequality.feature_lists.svwiki.wp10 \
+	  --verbose > $@
+
+
+
+tuning_reports/svwiki.wp10.md: \
+		datasets/svwiki.labeling_revisions.w_cache.2k.json
+	cat $< | \
+	revscoring tune \
+	  config/classifiers.params.yaml \
+	  articlequality.feature_lists.svwiki.wp10 \
+	  wp10 \
+	  accuracy.macro \
+	  --pop-rate '"u"=0.019' \
+	  --pop-rate '"b"=0.060' \
+	  --pop-rate '"r"=0.042' \
+	  --pop-rate '"s"=0.879' \
+	  --center --scale \
+	  --cv-timeout=60 \
+	  --debug > $@
+
+models/svwiki.wp10.gradient_boosting.model: \
+		datasets/svwiki.labeling_revisions.w_cache.2k.json
+	cat $< | \
+	revscoring cv_train \
+	  revscoring.scoring.models.GradientBoosting \
+	  articlequality.feature_lists.svwiki.wp10 \
+	  wp10 \
+	  --version $(wp10_major_minor).0 \
+	  -p 'learning_rate=0.01' \
+	  -p 'max_features="log2"' \
+	  -p 'n_estimators=100' \
+	  -p 'max_depth=7' \
+	  --pop-rate '"u"=0.019' \
+	  --pop-rate '"b"=0.060' \
+	  --pop-rate '"r"=0.042' \
+	  --pop-rate '"s"=0.879' \
+	  --center --scale > $@
+
+	revscoring model_info $@ > model_info/svwiki.wp10.md
+
+svwiki_models: \
+	models/svwiki.wp10.gradient_boosting.model
+
+svwiki_tuning_reports: \
+	tuning_reports/svwiki.wp10.md
 
 
 ############################ Turkish Wikipedia #############################
@@ -654,7 +725,7 @@ models/trwiki.wp10.gradient_boosting.model: \
 	  --pop-rate '"km"=0.016959944431581383' \
 	  --pop-rate '"sm"=0.015744385274369065' \
 	  --center --scale > $@
-	
+
 	revscoring model_info $@ > model_info/trwiki.wp10.md
 
 trwiki_models: \
@@ -732,7 +803,7 @@ models/wikidatawiki.item_quality.gradient_boosting.model: \
 	  -p 'max_depth=5' \
 	  --labels '"A","B","C","D","E"' \
 	  --center --scale > $@
-	
+
 	revscoring model_info $@ > model_info/wikidatawiki.item_quality.md
 
 wikidatawiki_models: \
