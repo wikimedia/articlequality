@@ -147,6 +147,10 @@ class TemplateExtractor(Extractor):
     def __init__(self, *args, from_template, **kwargs):
         self.from_template = from_template
 
+        if 'filter_text' in kwargs:
+            self.filter_text = kwargs.get('filter_text')
+            kwargs.pop('filter_text', None)
+
         super().__init__(*args, **kwargs)
 
     def extract_labels(self, text):
@@ -160,6 +164,13 @@ class TemplateExtractor(Extractor):
         :Returns:
             An iterator over (project, label) pairs
         """
+        # filter_text is an initial fast pass to weed out wikitext that
+        # can't contain the template (eg. because the template name
+        # never appears)
+        if hasattr(self, 'filter_text'):
+            if not self.filter_text(text):
+                return
+
         parsed_text = mwp.parse(text)
         templates = parsed_text.filter_templates()
         for template in templates:
