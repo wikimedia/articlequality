@@ -615,8 +615,6 @@ datasets/svwiki.labeling_revisions.w_cache.2k.json: \
 	  articlequality.feature_lists.svwiki.wp10 \
 	  --verbose > $@
 
-
-
 tuning_reports/svwiki.wp10.md: \
 		datasets/svwiki.labeling_revisions.w_cache.2k.json
 	cat $< | \
