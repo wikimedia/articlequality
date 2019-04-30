@@ -90,7 +90,7 @@ def fetch_text(session, labelings, verbose=False):
 
             labeling['page_id'] = rev_doc['page'].get("pageid")
             labeling['rev_id'] = rev_doc.get("revid")
-            text = rev_doc['slots'].get("main")
+            text = rev_doc['slots']["main"].get("content")
             if not_an_article(text):
                 labeling['text'] = None
             else:

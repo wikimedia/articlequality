@@ -599,7 +599,7 @@ datasets/svwiki.labelings.2k.json: \
 	(cat $< | grep '"wp10": "u"' | shuf -n 500; \
 	 cat $< | grep '"wp10": "b"' | shuf -n 500; \
 	 cat $< | grep '"wp10": "r"' | shuf -n 500; \
-   cat $< | grep '"wp10": "s"' | shuf -n 500) > $@
+	 cat $< | grep '"wp10": "s"' | shuf -n 500) > $@
 
 datasets/svwiki.labeling_revisions.w_text.2k.json: \
 		datasets/svwiki.labelings.2k.json
@@ -641,7 +641,7 @@ models/svwiki.wp10.gradient_boosting.model: \
 	  --version $(wp10_major_minor).0 \
 	  -p 'learning_rate=0.01' \
 	  -p 'max_features="log2"' \
-	  -p 'n_estimators=100' \
+	  -p 'n_estimators=300' \
 	  -p 'max_depth=7' \
 	  --pop-rate '"u"=0.019' \
 	  --pop-rate '"b"=0.060' \
