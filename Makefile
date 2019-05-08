@@ -622,7 +622,7 @@ tuning_reports/svwiki.wp10.md: \
 	  config/classifiers.params.yaml \
 	  articlequality.feature_lists.svwiki.wp10 \
 	  wp10 \
-	  accuracy.macro \
+	  roc_auc.macro \
 	  --pop-rate '"u"=0.019' \
 	  --pop-rate '"b"=0.060' \
 	  --pop-rate '"r"=0.042' \
@@ -641,8 +641,8 @@ models/svwiki.wp10.gradient_boosting.model: \
 	  --version $(wp10_major_minor).0 \
 	  -p 'learning_rate=0.01' \
 	  -p 'max_features="log2"' \
-	  -p 'n_estimators=300' \
-	  -p 'max_depth=7' \
+	  -p 'n_estimators=500' \
+	  -p 'max_depth=3' \
 	  --pop-rate '"u"=0.019' \
 	  --pop-rate '"b"=0.060' \
 	  --pop-rate '"r"=0.042' \
