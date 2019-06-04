@@ -124,21 +124,35 @@ enwiki_tuning_reports: \
 
 ########################## Basque Wikipedia ####################################
 
+
+datasets/euwiki.sampled_revisions.172_balanced.json:
+	# from https://quarry.wmflabs.org/query/36633
+	wget https://quarry.wmflabs.org/run/379904/output/0/json-lines -qO- > $@
+
 datasets/euwiki.human_labeled.400.json:
 	./utility fetch_labels \
-                https://labels.wmflabs.org/campaigns/euwiki/79/ > $@
+	 https://labels.wmflabs.org/campaigns/euwiki/79/ > $@
+
+datasets/euwiki.human_labeled.v2.172_balanced.json:
+	./utility fetch_labels \
+	 https://labels.wmflabs.org/campaigns/euwiki/91/ > $@
 
 datasets/euwiki.human_labeled.300_balanced.json: \
 		datasets/euwiki.human_labeled.400.json
 	(cat $< | grep '"wp10": "Stub"' | shuf -n 50; \
 	 cat $< | grep '"wp10": "Start"' | shuf -n 50; \
- 	 cat $< | grep '"wp10": "C"' | shuf -n 50; \
- 	 cat $< | grep '"wp10": "B"' | shuf -n 50; \
- 	 cat $< | grep '"wp10": "GA"' | shuf -n 50; \
- 	 cat $< | grep '"wp10": "FA"' | shuf -n 50) > $@
+	 cat $< | grep '"wp10": "C"' | shuf -n 50; \
+	 cat $< | grep '"wp10": "B"' | shuf -n 50; \
+	 cat $< | grep '"wp10": "GA"' | shuf -n 50; \
+	 cat $< | grep '"wp10": "FA"' | shuf -n 50) > $@
 
-datasets/euwiki.human_labeled.w_cache.300_balanced.json: \
-		datasets/euwiki.human_labeled.300_balanced.json
+datasets/euwiki.human_labeled.472_balanced.json: \
+		datasets/euwiki.human_labeled.300_balanced.json \
+		datasets/euwiki.human_labeled.v2.172_balanced.json
+	cat $^ > $@
+
+datasets/euwiki.human_labeled.w_cache.472_balanced.json: \
+		datasets/euwiki.human_labeled.472_balanced.json
 	cat $< | \
 	revscoring extract \
 	  articlequality.feature_lists.euwiki.wp10 \
@@ -146,7 +160,7 @@ datasets/euwiki.human_labeled.w_cache.300_balanced.json: \
 	  --verbose > $@
 
 tuning_reports/euwiki.wp10.md: \
-		datasets/euwiki.human_labeled.w_cache.300_balanced.json
+		datasets/euwiki.human_labeled.w_cache.472_balanced.json
 	cat $< | \
 	revscoring tune \
 	  config/classifiers.params.yaml \
@@ -158,7 +172,7 @@ tuning_reports/euwiki.wp10.md: \
 	  --debug > $@
 
 models/euwiki.wp10.gradient_boosting.model: \
-		datasets/euwiki.human_labeled.w_cache.300_balanced.json
+		datasets/euwiki.human_labeled.w_cache.472_balanced.json
 	cat $< | \
 	revscoring cv_train \
 	  revscoring.scoring.models.GradientBoosting \
