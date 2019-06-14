@@ -97,7 +97,7 @@ def main(argv=None):
         logger.info("Reading in past scores from {0}".format(args['--extend']))
         skip_scores_before = {}
         rows = mysqltsv.read(
-            mwtypes.files.read(args['--extend']),
+            mwtypes.files.reader(args['--extend']),
             types=[int, str, int, mwtypes.Timestamp, str, float])
         for row in rows:
             skip_scores_before[row.page_id] = row.timestamp
@@ -118,7 +118,8 @@ def main(argv=None):
         logger.info("Using an offline extraction strategy")
         extractor = None
     else:
-        logger.info("Using an online extractor connected to {0}".format(args['--host']))
+        logger.info("Using an online extractor connected to {0}"
+                    .format(args['--host']))
         extractor = api.Extractor(mwapi.Session(
             args['--host'],
             user_agent="Article quality scoring <ahalfaker@wikimedia.org>"))
