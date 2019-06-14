@@ -10,6 +10,8 @@ Usage:
                                  [--rev-scores=<path>]
                                  [--extend=<path>]
                                  [--processes=<num>]
+                                 [--class-weight=<pair>]...
+                                 [--host=<url>]
                                  [--verbose]
                                  [--debug]
 
@@ -27,47 +29,34 @@ Options:
                           not be duplicated
     --processes=<num>     The number of parallel processes to start
                           [default: <cpu count>]
+    --class-weight=<pair> A pair of JSON values representing how each predicted
+                          class probability should be weighted in the weighed
+                          sum calculation
+    --host=<url>          The base hostname of a MediaWiki instance to use
+                          when extracting features for scoring.
+                          [default: <offline>]
     --verbose             Prints dots and stuff to stderr
     --debug               Print debug logging
 """
+import json
 import logging
 import sys
 from itertools import chain
 from multiprocessing import cpu_count
 
 import docopt
+import mwapi
 import mwtypes
 import mwtypes.files
 import mwxml
 import mysqltsv
-from revscoring import ScorerModel
+from revscoring import Model
 from revscoring.datasources import revision_oriented
 from revscoring.dependencies import solve
+from revscoring.extractors import api
 
 logger = logging.getLogger(__name__)
 r_text = revision_oriented.revision.text
-
-CLASS_WEIGHTS = {
-    'Stub': 0,
-    'Start': 1,
-    'C': 2,
-    'B': 3,
-    'GA': 4,
-    'FA': 5,
-    'e': 0,
-    'bd': 1,
-    'b': 2,
-    'a': 3,
-    'ba': 4,
-    'adq': 5,
-    'ИС': 6,
-    'ХС': 5,
-    'ДС': 4,
-    'I': 3,
-    'II': 2,
-    'III': 1,
-    'IV': 0
-}
 
 START_YEAR = 2001
 HEADERS = ["page_id", "title", "rev_id", "timestamp", "prediction",
@@ -86,7 +75,7 @@ def main(argv=None):
 
     paths = args['<dump-file>']
     with open(args['--model']) as f:
-        model = ScorerModel.load(f)
+        model = Model.load(f)
 
     sunset = mwtypes.Timestamp(args['--sunset'])
 
@@ -108,7 +97,7 @@ def main(argv=None):
         logger.info("Reading in past scores from {0}".format(args['--extend']))
         skip_scores_before = {}
         rows = mysqltsv.read(
-            open(args['--extend']),
+            mwtypes.files.read(args['--extend']),
             types=[int, str, int, mwtypes.Timestamp, str, float])
         for row in rows:
             skip_scores_before[row.page_id] = row.timestamp
@@ -119,18 +108,35 @@ def main(argv=None):
     else:
         processes = int(args['--processes'])
 
+    class_weights = {}
+    for pair_str in args['--class-weight']:
+        cls_json, weight_json = pair_str.split("=")
+        cls, weight = json.loads(cls_json), json.loads(weight_json)
+        class_weights[cls] = weight
+
+    if args['--host'] == '<offline>':
+        logger.info("Using an offline extraction strategy")
+        extractor = None
+    else:
+        logger.info("Using an online extractor connected to {0}".format(args['--host']))
+        extractor = api.Extractor(mwapi.Session(
+            args['--host'],
+            user_agent="Article quality scoring <ahalfaker@wikimedia.org>"))
+
     verbose = args['--verbose']
-    run(paths, model, sunset, score_at, rev_scores, skip_scores_before,
-        processes, verbose=verbose)
+    run(paths, model, sunset, score_at, rev_scores, class_weights, extractor,
+        skip_scores_before, processes, verbose=verbose)
 
 
-def run(paths, model, sunset, score_at, rev_scores, skip_scores_before,
-        processes, verbose=False):
+def run(paths, model, sunset, score_at, rev_scores, class_weights, extractor,
+        skip_scores_before, processes, verbose=False):
 
     if score_at == "revision":
-        process_dump = revision_scores(model, sunset, skip_scores_before)
+        process_dump = revision_scores(
+            model, extractor, sunset, skip_scores_before)
     elif score_at == "latest":
-        process_dump = latest_scores(model, sunset, skip_scores_before)
+        process_dump = latest_scores(
+            model, extractor, sunset, skip_scores_before)
     else:
         sunset_year = int(sunset.strftime("%Y"))
         if score_at == "monthly":
@@ -150,7 +156,7 @@ def run(paths, model, sunset, score_at, rev_scores, skip_scores_before,
             raise RuntimeError("{0} is not a valid 'score_at' value"
                                .format(score_at))
         process_dump = threshold_scores(
-            model, sunset, skip_scores_before, thresholds)
+            model, extractor, sunset, skip_scores_before, thresholds)
 
     results = mwxml.map(process_dump, paths, threads=processes)
     for page_id, title, rev_id, timestamp, (e, score) in results:
@@ -159,7 +165,7 @@ def run(paths, model, sunset, score_at, rev_scores, skip_scores_before,
                          .format(title, page_id, rev_id, e))
             continue
 
-        weighted_sum = sum(CLASS_WEIGHTS[cls] * score['probability'][cls]
+        weighted_sum = sum(class_weights[cls] * score['probability'][cls]
                            for cls in score['probability'])
         rev_scores.write(
             [page_id, title, rev_id, timestamp.short_format(),
@@ -173,15 +179,20 @@ def run(paths, model, sunset, score_at, rev_scores, skip_scores_before,
         sys.stderr.write("\n")
 
 
-def score_text(model, text):
+def score(model, revision, extractor):
     try:
-        feature_values = list(solve(model.features, cache={r_text: text}))
+        if extractor is None:
+            feature_values = list(solve(
+                model.features, cache={r_text: revision.text}))
+        else:
+            feature_values = list(extractor.extract(
+                revision.id, model.features, cache={r_text: revision.text}))
         return None, model.score(feature_values)
     except Exception as e:
         return e, None
 
 
-def revision_scores(model, sunset, skip_scores_before):
+def revision_scores(model, extractor, sunset, skip_scores_before):
 
     def _revision_scores(dump, path):
 
@@ -193,14 +204,14 @@ def revision_scores(model, sunset, skip_scores_before):
                 if page.id in skip_scores_before and \
                    skip_scores_before[page.id] >= revision.timestamp:
                     continue
-                error_score = score_text(model, revision.text)
+                error_score = score(model, revision, extractor)
                 yield (page.id, page.title, revision.id, revision.timestamp,
                        error_score)
 
     return _revision_scores
 
 
-def latest_scores(model, sunset, skip_scores_before):
+def latest_scores(model, extractor, sunset, skip_scores_before):
 
     def _latest_scores(dump, path):
 
@@ -215,13 +226,13 @@ def latest_scores(model, sunset, skip_scores_before):
             if page.id in skip_scores_before and \
                skip_scores_before[page.id] >= sunset:
                 continue
-            error_score = score_text(model, last_revision.text)
+            error_score = score(model, last_revision, extractor)
             yield (page.id, page.title, last_revision.id, sunset, error_score)
 
     return _latest_scores
 
 
-def threshold_scores(model, sunset, skip_scores_before, thresholds):
+def threshold_scores(model, extractor, sunset, skip_scores_before, thresholds):
 
     def _threshold_scores(dump, path):
 
@@ -242,7 +253,7 @@ def threshold_scores(model, sunset, skip_scores_before, thresholds):
 
                 if len(page_ts) > 0 and revision.timestamp > page_ts[0] and \
                    last_revision is not None:
-                    error_score = score_text(model, last_revision.text)
+                    error_score = score(model, last_revision, extractor)
                     while len(page_ts) > 0 and revision.timestamp > page_ts[0]:
                         threshold_ts = page_ts.pop(0)
                         yield (page.id, page.title, last_revision.id,
@@ -251,7 +262,7 @@ def threshold_scores(model, sunset, skip_scores_before, thresholds):
                 last_revision = revision
 
             if len(page_ts) > 0:
-                error_score = score_text(model, last_revision.text)
+                error_score = score(model, last_revision, extractor)
                 for threshold_ts in page_ts:
                     yield (page.id, page.title, last_revision.id, threshold_ts,
                            error_score)
