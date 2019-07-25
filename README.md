@@ -27,6 +27,11 @@ documentation at http://pythonhosted.org/wikiclass.
                      'ga': 0.21617801281707663,
                      'start': 0.13906813268582238}}
 
+## Releases
+
+To cut a new release, update `articlequality/about.py` with a new version number and 
+run `python setup.py sdist bdist_wheel && twine upload dist/* --skip-existing`.
+
 ## Authors
 * Aaron Halfaker -- https://github.com/halfak
 * Morten Warncke-Wang -- http://www-users.cs.umn.edu/~morten
