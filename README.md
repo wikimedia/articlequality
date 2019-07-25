@@ -1,6 +1,8 @@
 # Wikipedia article quality classification
 
-This library provides a set of utilities for performing automatic detection of assessment classes of Wikipedia articles.  For more information, see the full documentation at http://pythonhosted.org/wikiclass.
+This library provides a set of utilities for performing automatic detection of
+assessment classes of Wikipedia articles.  For more information, see the full
+documentation at http://pythonhosted.org/wikiclass.
 
 **Compatible with Python 3.x only.**  Sorry.
 
@@ -24,7 +26,6 @@ This library provides a set of utilities for performing automatic detection of a
                      'c': 0.057668704007171959,
                      'ga': 0.21617801281707663,
                      'start': 0.13906813268582238}}
-
 
 ## Authors
 * Aaron Halfaker -- https://github.com/halfak
