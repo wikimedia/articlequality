@@ -3,4 +3,4 @@ mwbase >= 0.1.0, < 0.1.999
 mwreverts
 mwtypes
 mwxml >= 0.3.3
-revscoring >= 2.3.0, < 2.3.999
+revscoring >= 2.4.0, < 2.4.999
