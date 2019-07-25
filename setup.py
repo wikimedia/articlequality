@@ -30,6 +30,7 @@ setup(
         ],
     },
     long_description=read('README.md'),
+    long_description_content_type="text/markdown",
     install_requires=list(requirements('requirements.txt')),
     classifiers=[
         "Development Status :: 4 - Beta",
