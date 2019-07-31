@@ -1,83 +1,83 @@
 Model Information:
 	 - type: GradientBoosting
 	 - version: 0.4.0
-	 - params: {'max_depth': 5, 'verbose': 0, 'multilabel': False, 'labels': ['A', 'B', 'C', 'D', 'E'], 'center': True, 'min_impurity_decrease': 0.0, 'population_rates': None, 'max_leaf_nodes': None, 'max_features': 'log2', 'warm_start': False, 'init': None, 'min_impurity_split': None, 'label_weights': None, 'scale': True, 'subsample': 1.0, 'learning_rate': 0.01, 'min_samples_split': 2, 'loss': 'deviance', 'min_samples_leaf': 1, 'random_state': None, 'min_weight_fraction_leaf': 0.0, 'n_estimators': 500, 'criterion': 'friedman_mse', 'presort': 'auto'}
+	 - params: {'max_depth': 5, 'max_features': 'log2', 'loss': 'deviance', 'scale': True, 'min_samples_leaf': 1, 'labels': ['A', 'B', 'C', 'D', 'E'], 'criterion': 'friedman_mse', 'warm_start': False, 'min_impurity_decrease': 0.0, 'min_samples_split': 2, 'min_impurity_split': None, 'init': None, 'max_leaf_nodes': None, 'min_weight_fraction_leaf': 0.0, 'subsample': 1.0, 'tol': 0.0001, 'label_weights': None, 'learning_rate': 0.01, 'verbose': 0, 'n_estimators': 500, 'multilabel': False, 'population_rates': None, 'random_state': None, 'n_iter_no_change': None, 'center': True, 'validation_fraction': 0.1, 'presort': 'auto'}
 	Environment:
-	 - revscoring_version: '2.3.3'
-	 - platform: 'Linux-4.9.0-8-amd64-x86_64-with-debian-9.5'
+	 - revscoring_version: '2.5.1'
+	 - platform: 'Linux-4.9.0-9-amd64-x86_64-with-debian-9.9'
 	 - machine: 'x86_64'
-	 - version: '#1 SMP Debian 4.9.110-3+deb9u6 (2018-10-08)'
+	 - version: '#1 SMP Debian 4.9.168-1+deb9u2 (2019-05-13)'
 	 - system: 'Linux'
 	 - processor: ''
-	 - python_build: ('default', 'Jan 19 2017 14:11:04')
-	 - python_compiler: 'GCC 6.3.0 20170118'
+	 - python_build: ('default', 'Sep 27 2018 17:25:39')
+	 - python_compiler: 'GCC 6.3.0 20170516'
 	 - python_branch: ''
 	 - python_implementation: 'CPython'
 	 - python_revision: ''
 	 - python_version: '3.5.3'
-	 - release: '4.9.0-8-amd64'
+	 - release: '4.9.0-9-amd64'
 	
 	Statistics:
-	counts (n=4964):
+	counts (n=4959):
 		label       n         ~A    ~B    ~C    ~D    ~E
 		-------  ----  ---  ----  ----  ----  ----  ----
-		'A'       322  -->   258    32    32     0     0
-		'B'       438  -->    24   263   147     4     0
-		'C'      1756  -->    35    49  1615    50     7
-		'D'       996  -->     0     1    33   834   128
-		'E'      1452  -->     0     0     4    15  1433
+		'A'       322  -->   257    26    39     0     0
+		'B'       438  -->    16   263   156     3     0
+		'C'      1756  -->    26    47  1631    48     4
+		'D'       996  -->     0     0   212   671   113
+		'E'      1447  -->     0     0     2   101  1344
 	rates:
 		          'A'    'B'    'C'    'D'    'E'
 		------  -----  -----  -----  -----  -----
-		sample  0.065  0.088  0.354  0.201  0.293
-	match_rate (micro=0.27, macro=0.2):
-		    C      E     B      D      A
+		sample  0.065  0.088  0.354  0.201  0.292
+	match_rate (micro=0.275, macro=0.2):
+		   A      E      B      D      C
+		----  -----  -----  -----  -----
+		0.06  0.295  0.068  0.166  0.411
+	filter_rate (micro=0.725, macro=0.8):
+		   A      E      B      D      C
+		----  -----  -----  -----  -----
+		0.94  0.705  0.932  0.834  0.589
+	recall (micro=0.84, macro=0.786):
+		    A      E    B      D      C
+		-----  -----  ---  -----  -----
+		0.798  0.929  0.6  0.674  0.929
+	!recall (micro=0.935, macro=0.955):
+		    A      E      B      D      C
+		-----  -----  -----  -----  -----
+		0.991  0.967  0.984  0.962  0.872
+	precision (micro=0.84, macro=0.835):
+		   A     E      B      D    C
+		----  ----  -----  -----  ---
+		0.86  0.92  0.783  0.815  0.8
+	!precision (micro=0.956, macro=0.959):
+		    A      E      B      D      C
+		-----  -----  -----  -----  -----
+		0.986  0.971  0.962  0.921  0.957
+	f1 (micro=0.836, macro=0.806):
+		    A      E     B      D      C
 		-----  -----  ----  -----  -----
-		0.369  0.316  0.07  0.182  0.064
-	filter_rate (micro=0.73, macro=0.8):
-		    C      E     B      D      A
+		0.828  0.924  0.68  0.738  0.859
+	!f1 (micro=0.945, macro=0.957):
+		    A      E      B      D      C
+		-----  -----  -----  -----  -----
+		0.988  0.969  0.973  0.941  0.913
+	accuracy (micro=0.924, macro=0.936):
+		    A      E     B      D      C
 		-----  -----  ----  -----  -----
-		0.631  0.684  0.93  0.818  0.936
-	recall (micro=0.887, macro=0.829):
-		   C      E    B      D      A
-		----  -----  ---  -----  -----
-		0.92  0.987  0.6  0.837  0.801
-	!recall (micro=0.959, macro=0.969):
-		    C      E      B      D      A
+		0.978  0.956  0.95  0.904  0.892
+	fpr (micro=0.065, macro=0.045):
+		    A      E      B      D      C
 		-----  -----  -----  -----  -----
-		0.933  0.962  0.982  0.983  0.987
-	precision (micro=0.885, macro=0.859):
-		    C      E      B      D      A
+		0.009  0.033  0.016  0.038  0.128
+	roc_auc (micro=0.964, macro=0.965):
+		    A      E      B      D      C
 		-----  -----  -----  -----  -----
-		0.882  0.914  0.762  0.924  0.814
-	!precision (micro=0.97, macro=0.972):
-		    C      E      B     D      A
-		-----  -----  -----  ----  -----
-		0.955  0.994  0.962  0.96  0.986
-	f1 (micro=0.884, macro=0.841):
-		  C      E      B      D      A
-		---  -----  -----  -----  -----
-		0.9  0.949  0.672  0.878  0.808
-	!f1 (micro=0.964, macro=0.97):
-		    C      E      B      D      A
-		-----  -----  -----  -----  -----
-		0.944  0.978  0.972  0.971  0.987
-	accuracy (micro=0.95, macro=0.955):
-		    C      E      B      D      A
-		-----  -----  -----  -----  -----
-		0.928  0.969  0.948  0.953  0.975
-	fpr (micro=0.041, macro=0.031):
-		    C      E      B      D      A
-		-----  -----  -----  -----  -----
-		0.067  0.038  0.018  0.017  0.013
-	roc_auc (micro=0.972, macro=0.97):
-		    C      E     B      D      A
-		-----  -----  ----  -----  -----
-		0.966  0.988  0.95  0.964  0.984
-	pr_auc (micro=0.915, macro=0.884):
-		    C      E      B      D      A
-		-----  -----  -----  -----  -----
-		0.928  0.972  0.734  0.898  0.886
+		0.985  0.986  0.952  0.949  0.954
+	pr_auc (micro=0.89, macro=0.864):
+		    A     E      B     D      C
+		-----  ----  -----  ----  -----
+		0.894  0.97  0.744  0.81  0.905
 	
-	 - score_schema: {'title': 'Scikit learn-based classifier score with probability', 'type': 'object', 'properties': {'probability': {'description': 'A mapping of probabilities onto each of the potential output labels', 'type': 'object', 'properties': {'D': {'type': 'number'}, 'C': {'type': 'number'}, 'A': {'type': 'number'}, 'B': {'type': 'number'}, 'E': {'type': 'number'}}}, 'prediction': {'description': 'The most likely label predicted by the estimator', 'type': 'string'}}}
+	 - score_schema: {'title': 'Scikit learn-based classifier score with probability', 'type': 'object', 'properties': {'prediction': {'type': 'string', 'description': 'The most likely label predicted by the estimator'}, 'probability': {'type': 'object', 'description': 'A mapping of probabilities onto each of the potential output labels', 'properties': {'A': {'type': 'number'}, 'E': {'type': 'number'}, 'B': {'type': 'number'}, 'D': {'type': 'number'}, 'C': {'type': 'number'}}}}}
 

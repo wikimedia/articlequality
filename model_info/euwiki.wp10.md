@@ -1,84 +1,84 @@
 Model Information:
 	 - type: GradientBoosting
 	 - version: 0.8.0
-	 - params: {'min_impurity_split': None, 'max_leaf_nodes': None, 'warm_start': False, 'subsample': 1.0, 'random_state': None, 'scale': True, 'learning_rate': 0.01, 'presort': 'auto', 'criterion': 'friedman_mse', 'multilabel': False, 'label_weights': None, 'min_weight_fraction_leaf': 0.0, 'max_features': 'log2', 'verbose': 0, 'labels': ['Stub', 'Start', 'C', 'B', 'GA', 'FA'], 'n_estimators': 300, 'loss': 'deviance', 'population_rates': None, 'min_samples_leaf': 1, 'min_samples_split': 2, 'init': None, 'max_depth': 1, 'min_impurity_decrease': 0.0, 'center': True}
+	 - params: {'n_estimators': 300, 'random_state': None, 'labels': ['Stub', 'Start', 'C', 'B', 'GA', 'FA'], 'min_samples_split': 2, 'warm_start': False, 'scale': True, 'subsample': 1.0, 'population_rates': None, 'label_weights': None, 'criterion': 'friedman_mse', 'min_impurity_split': None, 'max_features': 'log2', 'verbose': 0, 'presort': 'auto', 'center': True, 'min_samples_leaf': 1, 'validation_fraction': 0.1, 'min_weight_fraction_leaf': 0.0, 'tol': 0.0001, 'loss': 'deviance', 'min_impurity_decrease': 0.0, 'multilabel': False, 'max_leaf_nodes': None, 'max_depth': 1, 'init': None, 'n_iter_no_change': None, 'learning_rate': 0.01}
 	Environment:
-	 - revscoring_version: '2.3.3'
-	 - platform: 'Linux-4.9.0-8-amd64-x86_64-with-debian-9.5'
+	 - revscoring_version: '2.5.1'
+	 - platform: 'Linux-4.9.0-9-amd64-x86_64-with-debian-9.9'
 	 - machine: 'x86_64'
-	 - version: '#1 SMP Debian 4.9.110-3+deb9u6 (2018-10-08)'
+	 - version: '#1 SMP Debian 4.9.168-1+deb9u2 (2019-05-13)'
 	 - system: 'Linux'
 	 - processor: ''
-	 - python_build: ('default', 'Jan 19 2017 14:11:04')
-	 - python_compiler: 'GCC 6.3.0 20170118'
+	 - python_build: ('default', 'Sep 27 2018 17:25:39')
+	 - python_compiler: 'GCC 6.3.0 20170516'
 	 - python_branch: ''
 	 - python_implementation: 'CPython'
 	 - python_revision: ''
 	 - python_version: '3.5.3'
-	 - release: '4.9.0-8-amd64'
+	 - release: '4.9.0-9-amd64'
 	
 	Statistics:
 	counts (n=282):
 		label      n         ~Stub    ~Start    ~C    ~B    ~GA    ~FA
 		-------  ---  ---  -------  --------  ----  ----  -----  -----
-		'Stub'    50  -->       27        21     2     0      0      0
-		'Start'   49  -->        8        26     9     4      2      0
-		'C'       50  -->        2         3    33     7      4      1
-		'B'       44  -->        0         2    11    16     13      2
-		'GA'      50  -->        0         0     9    13     15     13
-		'FA'      39  -->        0         0     1     0     10     28
+		'Stub'    50  -->       26        18     6     0      0      0
+		'Start'   49  -->       11        25     9     4      0      0
+		'C'       50  -->        3         6    30    10      1      0
+		'B'       44  -->        1         1     7    17     15      3
+		'GA'      50  -->        0         1     6    15     14     14
+		'FA'      39  -->        0         0     0     1     12     26
 	rates:
 		          'Stub'    'Start'    'C'    'B'    'GA'    'FA'
 		------  --------  ---------  -----  -----  ------  ------
 		sample     0.177      0.174  0.177  0.156   0.177   0.138
-	match_rate (micro=0.168, macro=0.167):
-		  Stub      B     C    Start     GA     FA
-		------  -----  ----  -------  -----  -----
-		 0.131  0.142  0.23    0.184  0.156  0.156
-	filter_rate (micro=0.832, macro=0.833):
-		  Stub      B     C    Start     GA     FA
-		------  -----  ----  -------  -----  -----
-		 0.869  0.858  0.77    0.816  0.844  0.844
-	recall (micro=0.514, macro=0.519):
-		  Stub      B     C    Start    GA     FA
-		------  -----  ----  -------  ----  -----
-		  0.54  0.364  0.66    0.531   0.3  0.718
-	!recall (micro=0.902, macro=0.903):
-		  Stub      B      C    Start     GA     FA
-		------  -----  -----  -------  -----  -----
-		 0.957  0.899  0.862    0.888  0.875  0.934
-	precision (micro=0.517, macro=0.519):
-		  Stub    B      C    Start     GA     FA
-		------  ---  -----  -------  -----  -----
-		  0.73  0.4  0.508      0.5  0.341  0.636
-	!precision (micro=0.902, macro=0.903):
-		  Stub      B      C    Start     GA     FA
-		------  -----  -----  -------  -----  -----
-		 0.906  0.884  0.922      0.9  0.853  0.954
-	f1 (micro=0.511, macro=0.514):
-		  Stub      B      C    Start     GA     FA
-		------  -----  -----  -------  -----  -----
-		 0.621  0.381  0.574    0.515  0.319  0.675
-	!f1 (micro=0.901, macro=0.903):
-		  Stub      B      C    Start     GA     FA
-		------  -----  -----  -------  -----  -----
-		 0.931  0.892  0.891    0.894  0.864  0.944
-	accuracy (micro=0.836, macro=0.838):
-		  Stub      B      C    Start     GA     FA
-		------  -----  -----  -------  -----  -----
-		 0.883  0.816  0.826    0.826  0.773  0.904
-	fpr (micro=0.098, macro=0.097):
-		  Stub      B      C    Start     GA     FA
-		------  -----  -----  -------  -----  -----
-		 0.043  0.101  0.138    0.112  0.125  0.066
-	roc_auc (micro=0.85, macro=0.851):
-		  Stub     B      C    Start     GA     FA
-		------  ----  -----  -------  -----  -----
-		 0.935  0.78  0.848     0.85  0.781  0.913
-	pr_auc (micro=0.529, macro=0.53):
-		  Stub      B      C    Start     GA     FA
-		------  -----  -----  -------  -----  -----
-		 0.725  0.324  0.707    0.411  0.321  0.694
+	match_rate (micro=0.167, macro=0.167):
+		    B     FA    Start      C     GA    Stub
+		-----  -----  -------  -----  -----  ------
+		0.167  0.152    0.181  0.206  0.149   0.145
+	filter_rate (micro=0.833, macro=0.833):
+		    B     FA    Start      C     GA    Stub
+		-----  -----  -------  -----  -----  ------
+		0.833  0.848    0.819  0.794  0.851   0.855
+	recall (micro=0.489, macro=0.494):
+		    B     FA    Start    C    GA    Stub
+		-----  -----  -------  ---  ----  ------
+		0.386  0.667     0.51  0.6  0.28    0.52
+	!recall (micro=0.897, macro=0.898):
+		    B    FA    Start      C     GA    Stub
+		-----  ----  -------  -----  -----  ------
+		0.874  0.93    0.888  0.879  0.879   0.935
+	precision (micro=0.488, macro=0.49):
+		    B     FA    Start      C     GA    Stub
+		-----  -----  -------  -----  -----  ------
+		0.362  0.605     0.49  0.517  0.333   0.634
+	!precision (micro=0.896, macro=0.898):
+		    B     FA    Start      C    GA    Stub
+		-----  -----  -------  -----  ----  ------
+		0.885  0.946    0.896  0.911  0.85     0.9
+	f1 (micro=0.487, macro=0.49):
+		    B     FA    Start      C     GA    Stub
+		-----  -----  -------  -----  -----  ------
+		0.374  0.634      0.5  0.556  0.304   0.571
+	!f1 (micro=0.897, macro=0.898):
+		    B     FA    Start      C     GA    Stub
+		-----  -----  -------  -----  -----  ------
+		0.879  0.938    0.892  0.895  0.864   0.918
+	accuracy (micro=0.828, macro=0.83):
+		    B     FA    Start     C     GA    Stub
+		-----  -----  -------  ----  -----  ------
+		0.798  0.894    0.823  0.83  0.773   0.862
+	fpr (micro=0.103, macro=0.102):
+		    B    FA    Start      C     GA    Stub
+		-----  ----  -------  -----  -----  ------
+		0.126  0.07    0.112  0.121  0.121   0.065
+	roc_auc (micro=0.852, macro=0.854):
+		    B     FA    Start      C     GA    Stub
+		-----  -----  -------  -----  -----  ------
+		0.791  0.939    0.847  0.843  0.783   0.919
+	pr_auc (micro=0.53, macro=0.532):
+		    B     FA    Start      C     GA    Stub
+		-----  -----  -------  -----  -----  ------
+		0.344  0.671    0.466  0.631  0.324   0.754
 	
-	 - score_schema: {'title': 'Scikit learn-based classifier score with probability', 'properties': {'probability': {'properties': {'Stub': {'type': 'number'}, 'B': {'type': 'number'}, 'C': {'type': 'number'}, 'Start': {'type': 'number'}, 'GA': {'type': 'number'}, 'FA': {'type': 'number'}}, 'type': 'object', 'description': 'A mapping of probabilities onto each of the potential output labels'}, 'prediction': {'type': 'string', 'description': 'The most likely label predicted by the estimator'}}, 'type': 'object'}
+	 - score_schema: {'type': 'object', 'title': 'Scikit learn-based classifier score with probability', 'properties': {'probability': {'description': 'A mapping of probabilities onto each of the potential output labels', 'type': 'object', 'properties': {'B': {'type': 'number'}, 'FA': {'type': 'number'}, 'Start': {'type': 'number'}, 'Stub': {'type': 'number'}, 'GA': {'type': 'number'}, 'C': {'type': 'number'}}}, 'prediction': {'description': 'The most likely label predicted by the estimator', 'type': 'string'}}}
 
