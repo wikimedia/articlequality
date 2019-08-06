@@ -9,6 +9,7 @@ models: \
 	frwikisource_models \
 	glwiki_models \
 	ruwiki_models \
+	svwiki_models \
 	trwiki_models \
 	wikidatawiki_models
 
@@ -20,6 +21,7 @@ tuning_reports: \
 	frwikisource_tuning_reports \
 	glwiki_tuning_reports \
 	ruwiki_tuning_reports \
+	svwiki_tuning_reports \
 	trwiki_tuning_reports \
 	wikidatawiki_tuning_reports
 
@@ -590,9 +592,9 @@ riwiki_tuning_reports: \
 
 
 ########################## Swedish Wikipedia ###################################
-datasets/svwiki.labelings.20190301.json: \
-		/mnt/data/xmldatadumps/public/svwiki/20190301/svwiki-20190301-pages-meta-history.xml.bz2
-	./utility extract_labelings $< > $@
+# datasets/svwiki.labelings.20190301.json: \
+#		/mnt/data/xmldatadumps/public/svwiki/20190301/svwiki-20190301-pages-meta-history.xml.bz2
+#	./utility extract_labelings $< > $@
 
 datasets/svwiki.labelings.2k.json: \
 		datasets/svwiki.labelings.20190301.json
