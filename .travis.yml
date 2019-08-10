@@ -13,11 +13,12 @@ addons:
     - myspell-fr
 
 # command to install dependencies
-install: 
+install:
   - pip install -r requirements.txt
   - python setup.py install
   - pip install codecov
   - pip install flake8
+  - pip install twine
   - python -m nltk.downloader stopwords
 
 script:
@@ -36,3 +37,9 @@ notifications:
     on_failure: change
     template:
       - "%{repository_slug}#%{build_number} (%{branch} - %{commit} : %{author}): %{message} %{build_url}"
+
+deploy:
+  provider: script
+  script: bash scripts/deploy.sh
+  on:
+    branch: master
