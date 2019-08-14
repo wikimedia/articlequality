@@ -8,7 +8,7 @@ documentation at http://pythonhosted.org/wikiclass.
 
 * **Install:** ``pip install wikiclass``
 * **Models:** https://github.com/wikimedia/articlequality/tree/master/models
-* **Documentation:** http://pythonhosted.org/wikiclass
+* **Documentation:** https://articlequality.readthedocs.io
 
 ## Basic usage
 
