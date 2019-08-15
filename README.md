@@ -6,7 +6,7 @@ documentation at http://pythonhosted.org/wikiclass.
 
 **Compatible with Python 3.x only.**  Sorry.
 
-* **Install:** ``pip install wikiclass``
+* **Install:** ``pip install articlequality``
 * **Models:** https://github.com/wikimedia/articlequality/tree/master/models
 * **Documentation:** https://articlequality.readthedocs.io
 
