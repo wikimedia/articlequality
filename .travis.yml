@@ -15,6 +15,7 @@ addons:
 # command to install dependencies
 install:
   - pip install -r requirements.txt
+  - pip install -r doc/requirements.txt
   - python setup.py install
   - pip install codecov
   - pip install flake8
@@ -24,6 +25,8 @@ install:
 script:
   - flake8 . --ignore=E722 --exclude=.svn,CVS,.bzr,.hg,.git,__pycache__,.tox,.eggs,*.egg,doc,examples
   - coverage run --source articlequality -m pytest articlequality -m "not nottravis"
+  - sphinx-build -b html doc dist/docs
+  - sphinx-build -b linkcheck doc dist/docs
 
 after_success:
   - coverage report
