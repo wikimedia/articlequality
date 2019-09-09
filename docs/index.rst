@@ -14,7 +14,6 @@ Contents
 .. toctree::
     :maxdepth: 2
 
-    functions
     utilities
     extractors
 

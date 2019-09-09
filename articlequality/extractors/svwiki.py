@@ -1,6 +1,5 @@
 import logging
 import re
-import sys
 
 from .extractor import TemplateExtractor
 
@@ -27,11 +26,11 @@ def from_template(template):
             return PROJECT_NAME, label
 
 
-sys.modules[__name__] = TemplateExtractor(
+svwiki = TemplateExtractor(
     __name__,
     doc="""
 articlequality.extractors.svwiki
-+++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++
 
 This extractor looks for instances of templates on article pages
 (namespace =0 ) with names "Utmärkt", "Bra", "Rekommenderad",
