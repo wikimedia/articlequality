@@ -40,7 +40,7 @@ Basic usage
 Authors
 -------
 * Aaron Halfaker -- https://github.com/halfak
-* Morten Warncke-Wang -- http://www-users.cs.umn.edu/~morten
+* Morten Warncke-Wang -- https://github.com/nettrom
 
 .. code::
 
