@@ -1,6 +1,5 @@
 import logging
 import re
-import sys
 import traceback
 
 from .extractor import TemplateExtractor
@@ -48,11 +47,11 @@ def normalize_label(value):
     return None
 
 
-sys.modules[__name__] = TemplateExtractor(
+frwiki = TemplateExtractor(
     __name__,
     doc="""
 articlequality.extractors.frwiki
-+++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++
 
 This extractor looks for instances of the "wikiprojet" template on article talk
 pages (namespace = 1) with a parameter called "avancement".  All `project` s

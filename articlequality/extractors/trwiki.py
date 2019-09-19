@@ -1,6 +1,5 @@
 import logging
 import re
-import sys
 import traceback
 
 from .extractor import TemplateExtractor
@@ -60,11 +59,11 @@ def normalize_label(value):
     return None
 
 
-sys.modules[__name__] = TemplateExtractor(
+trwiki = TemplateExtractor(
     __name__,
     doc="""
 articlequality.extractors.trwiki
-+++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++
 
 This extractor looks for instances of the "VikiProje" template on article talk
 pages (namespace = 1) with a parameter called "Sınıf".  All `project` s are

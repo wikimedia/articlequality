@@ -1,6 +1,5 @@
 import logging
 import re
-import sys
 import traceback
 
 from .extractor import TemplateExtractor
@@ -49,11 +48,11 @@ def normalize_project_name(template_name):
     return WP_PREFIX.sub('', template_name.lower().replace("_", " ")).strip()
 
 
-sys.modules[__name__] = TemplateExtractor(
+enwiki = TemplateExtractor(
     __name__,
     doc="""
 articlequality.extractors.enwiki
-+++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++
 
 This extractor looks for instances of templates that contain
 "class=<some class>" on article talk pages (namespace = 1) and parses the

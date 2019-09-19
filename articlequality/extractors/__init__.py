@@ -10,7 +10,20 @@ Supported wikis
 
 .. automodule:: articlequality.extractors.frwiki
 
+.. automodule:: articlequality.extractors.ruwiki
+
+.. automodule:: articlequality.extractors.svwiki
+
+.. automodule:: articlequality.extractors.trwiki
+
 Base classes
 ------------
 .. automodule:: articlequality.extractors.extractor
 """
+from .enwiki import enwiki
+from .frwiki import frwiki
+from .ruwiki import ruwiki
+from .svwiki import svwiki
+from .trwiki import trwiki
+
+__all__ = [enwiki, frwiki, ruwiki, svwiki, trwiki]

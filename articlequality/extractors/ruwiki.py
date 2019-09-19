@@ -1,6 +1,5 @@
 import logging
 import re
-import sys
 import traceback
 
 from .extractor import TemplateExtractor
@@ -50,11 +49,11 @@ def normalize_label(value):
     return None
 
 
-sys.modules[__name__] = TemplateExtractor(
+ruwiki = TemplateExtractor(
     __name__,
     doc="""
 articlequality.extractors.ruwiki
-+++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++
 
 This extractor looks for instances of templates on article talk pages
 (namespace =1 ) with a name that starts with "Статья проекта" and

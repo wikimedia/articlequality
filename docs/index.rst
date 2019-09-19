@@ -14,7 +14,6 @@ Contents
 .. toctree::
     :maxdepth: 2
 
-    functions
     utilities
     extractors
 
@@ -41,7 +40,7 @@ Basic usage
 Authors
 -------
 * Aaron Halfaker -- https://github.com/halfak
-* Morten Warncke-Wang -- http://www-users.cs.umn.edu/~morten
+* Morten Warncke-Wang -- https://github.com/nettrom
 
 .. code::
 
