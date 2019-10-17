@@ -8,6 +8,7 @@ from revscoring.features import wikitext
 from revscoring.features.meta import aggregators
 from revscoring.features.modifiers import log, max
 from revscoring.features.wikitext.datasources import Revision
+from revscoring.languages import basque, english, spanish
 
 from . import wikipedia
 
@@ -52,6 +53,12 @@ local_wiki = [
     cn_templates + 1,
     cn_templates / max(wikitext.revision.content_chars, 1),
     log(paragraphs_without_refs_total_length + 1),
+    basque.dictionary.revision.dict_words,
+    basque.dictionary.revision.dict_words / max(wikitext.revision.words, 1),
+    english.dictionary.revision.dict_words,
+    english.dictionary.revision.dict_words / max(wikitext.revision.words, 1),
+    spanish.dictionary.revision.dict_words,
+    spanish.dictionary.revision.dict_words / max(wikitext.revision.words, 1),
 ]
 
 wp10 = wikipedia.article + local_wiki
