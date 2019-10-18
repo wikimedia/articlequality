@@ -6,10 +6,12 @@ addons:
   apt:
     packages:
     - enchant
+    - hunspell-eu
     - myspell-en-au
     - myspell-en-gb
     - myspell-en-us
     - myspell-en-za
+    - myspell-es
     - myspell-fr
 
 # command to install dependencies
