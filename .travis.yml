@@ -1,15 +1,17 @@
 language: python
-dist: trusty
+dist: xenial
 python:
   - "3.5"
 addons:
   apt:
     packages:
     - enchant
+    - hunspell-eu
     - myspell-en-au
     - myspell-en-gb
     - myspell-en-us
     - myspell-en-za
+    - myspell-es
     - myspell-fr
 
 # command to install dependencies
