@@ -171,25 +171,26 @@ tuning_reports/euwiki.wp10.md: \
 	  --cv-timeout=60 \
 	  --debug > $@
 
-models/euwiki.wp10.gradient_boosting.model: \
+models/euwiki.wp10.random_forest.model: \
 		datasets/euwiki.human_labeled.w_cache.472_balanced.json
 	cat $< | \
 	revscoring cv_train \
-	  revscoring.scoring.models.GradientBoosting \
+	  revscoring.scoring.models.RandomForest \
 	  articlequality.feature_lists.euwiki.wp10 \
 	  wp10 \
-	  --version $(wp10_major_minor).0 \
-	  -p 'n_estimators=300' \
-	  -p 'learning_rate=0.01' \
+	  --folds 5 \
+	  --version $(wp10_major_minor).1 \
+	  -p 'min_samples_leaf=3' \
 	  -p 'max_features="log2"' \
-	  -p 'max_depth=1' \
-		--labels '"Stub","Start","C","B","GA","FA"' \
+	  -p 'n_estimators=320' \
+	  -p 'criterion="gini"' \
+	  --labels '"Stub","Start","C","B","GA","FA"' \
 	  --center --scale > $@
 
 	revscoring model_info $@ > model_info/euwiki.wp10.md
 
 euwiki_models: \
-	models/euwiki.wp10.gradient_boosting.model
+	models/euwiki.wp10.random_forest.model
 
 euwiki_tuning_reports: \
 	tuning_reports/euwiki.wp10.md
