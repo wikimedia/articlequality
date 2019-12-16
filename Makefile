@@ -100,7 +100,7 @@ models/enwiki.nettrom_wp10.gradient_boosting.model: \
 	  revscoring.scoring.models.GradientBoosting \
 	  articlequality.feature_lists.enwiki.wp10 \
 	  wp10 \
-	  --version $(wp10_major_minor).1 \
+	  --version $(wp10_major_minor).2 \
 	  -p 'n_estimators=500' \
 	  -p 'learning_rate=0.01' \
 	  -p 'max_features="log2"' \
