@@ -20,8 +20,9 @@ cn_templates = wikitext.revision.template_names_matching(
     r"erref[ _]behar", name="euwiki.revision.cn_templates")
 
 # Links
-category_links = wikitext.revision.wikilink_titles_matching(
-    r"(Kategoria|Category)\:", name="euwiki.revision.category_links")
+# Excluding category_links based on https://phabricator.wikimedia.org/T240467
+# category_links = wikitext.revision.wikilink_titles_matching(
+#    r"(Kategoria|Category)\:", name="euwiki.revision.category_links")
 image_links = wikitext.revision.wikilink_titles_matching(
     r"(File|Image|Fitxategi)\:", name="euwiki.revision.image_links")
 
@@ -47,8 +48,8 @@ paragraphs_without_refs_total_length = aggregators.sum(
 local_wiki = [
     image_links,
     image_links / max(wikitext.revision.content_chars, 1),
-    category_links,
-    category_links / max(wikitext.revision.content_chars, 1),
+    # category_links,
+    # category_links / max(wikitext.revision.content_chars, 1),
     infobox_templates,
     cn_templates + 1,
     cn_templates / max(wikitext.revision.content_chars, 1),
