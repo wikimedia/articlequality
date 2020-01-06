@@ -2,7 +2,7 @@
 
 This library provides a set of utilities for performing automatic detection of
 assessment classes of Wikipedia articles.  For more information, see the full
-documentation at http://pythonhosted.org/wikiclass.
+documentation at https://articlequality.readthedocs.io .
 
 **Compatible with Python 3.x only.**  Sorry.
 
