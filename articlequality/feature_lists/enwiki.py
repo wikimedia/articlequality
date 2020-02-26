@@ -2,9 +2,11 @@
 English Wikipedia
 +++++++++++++++++
 """
+import re
 
 from revscoring.datasources.meta import filters, mappers
 from revscoring.features import wikitext
+from revscoring import Feature
 from revscoring.features.meta import aggregators
 from revscoring.features.modifiers import log, max, sub
 from revscoring.languages import english
@@ -60,8 +62,62 @@ non_cite_templates = sub(
 # Links
 category_links = wikitext.revision.wikilink_titles_matching(
     r"Category\:", name="enwiki.revision.category_links")
+
 image_links = wikitext.revision.wikilink_titles_matching(
     r"File|Image\:", name="enwiki.revision.image_links")
+
+image_templates = wikitext.revision.template_names_matching(
+    r"((Wide|Tall|scalable) image)|Panorama|Panorama 2",
+    name='enwiki.revision.image_template')
+
+
+def get_images(strs):
+    """
+    Parses a list of strings, expected to be tags or templates
+    to get matching image patterns and returns a count of the matches.
+    """
+    matches = re.findall(
+        r"image[1-9]{1,2}|File:|Image:|photo[1-9][a-z]",
+        "".join(strs), re.I)
+    return len(matches)
+
+
+image_templates_str = wikitext.revision.datasources.templates_str_matching(
+    r"{{(multiple image|image array|gallery|photomontage)",
+    name='enwiki.revision.image_templates_str')
+
+images_in_templates = Feature("enwiki.revision.images_in_templates",
+                              get_images,
+                              depends_on=[image_templates_str],
+                              returns=int)
+
+image_tags_str = wikitext.revision.datasources.tags_str_matching(
+    r"<(gallery|imagemap)",
+    name='enwiki.revision.image_tags_str')
+
+images_in_tags = Feature("enwiki.revision.images_in_tags",
+                         get_images,
+                         depends_on=[image_tags_str],
+                         returns=int)
+
+
+def get_infobox_images(strs):
+    matches = re.findall(
+        r"\.(jpg|jpeg|png|gif|svg|tiff|pdf|ogg|djvu)", "".join(strs), re.I)
+    return len(matches)
+
+
+infobox_templates_str = wikitext.revision.datasources.templates_str_matching(
+    r"{{Infobox",
+    name='enwiki.revision.infobox_templates_str')
+
+infobox_images = Feature("enwiki.infobox_images",
+                         get_infobox_images,
+                         depends_on=[infobox_templates_str],
+                         returns=int)
+
+all_images = image_links + image_templates +\
+    images_in_templates + images_in_tags + infobox_images
 
 # References
 paragraphs = mappers.map(
@@ -82,8 +138,8 @@ paragraphs_without_refs_total_length = aggregators.sum(
 words_to_watch_count = english.words_to_watch.revision.matches
 
 local_wiki = [
-    image_links,
-    image_links / max(wikitext.revision.content_chars, 1),
+    all_images,
+    all_images / max(wikitext.revision.content_chars, 1),
     category_links,
     category_links / max(wikitext.revision.content_chars, 1),
     all_ref_tags,
