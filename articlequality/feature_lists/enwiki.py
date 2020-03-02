@@ -7,7 +7,6 @@ from revscoring.datasources.meta import filters, mappers
 from revscoring.features import wikitext
 from revscoring.features.meta import aggregators
 from revscoring.features.modifiers import log, max, sub
-from revscoring.features.wikitext.datasources import Revision
 from revscoring.languages import english
 
 from . import wikipedia
@@ -65,12 +64,8 @@ image_links = wikitext.revision.wikilink_titles_matching(
     r"File|Image\:", name="enwiki.revision.image_links")
 
 # References
-revision = Revision(
-    "enwiki.revision.revision",
-    wikitext.revision.datasources,
-)
 paragraphs = mappers.map(
-    str, revision.paragraphs_sentences_and_whitespace,
+    str, wikitext.revision.datasources.paragraphs_sentences_and_whitespace,
     name="enwiki.revision.paragraphs"
 )
 paragraphs_without_refs = filters.regex_matching(
