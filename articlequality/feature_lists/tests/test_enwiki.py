@@ -90,3 +90,102 @@ def test_paragraphs_without_refs_total_length():
     """
     assert solve(enwiki.paragraphs_without_refs_total_length,
                  cache={revision_text: text}) == 114
+
+
+def test_image_links():
+    text = """
+            [[File:image.jpg|options|caption]]
+            [[File:sound.ogg|options|a sound]]
+            [[File:display.svg|options|caption]]
+            """
+    assert solve(enwiki.image_links, cache={revision_text: text}) == 3
+
+
+def test_image_templates():
+    text = """
+            {{wide image|Helsinki z00.jpg|400px|
+            |alt=Panorama of city with mixture of story buildings}}
+
+            {{Panorama
+            |image   = File:Ushuaia_panorama_from_seaside_big.jpg}}
+
+            {{tall image|Polarisation_(Circular).svg}}
+
+            {{scalable image|Dew on grass Luc Viatour.jpg}}
+
+            {{Panorama 2
+            | Image = image file name (don't need Files:)}}
+            """
+    assert solve(enwiki.image_templates, cache={revision_text: text}) == 5
+
+
+def test_image_in_tags():
+    text = """
+            <gallery widths="125px" heights="154px">
+            File:Alexander Andrejewitsch Iwanow 003.jpg|Study of head of John
+            File:Ivanov Head4 gtg 17647.jpg|Ivanov head of Christ
+            </gallery>
+            <imagemap>
+            Image:PolierMartinWombwellZoffany.jpg|thumb|200px|Colonel Antoine
+            Polier
+            rect 269 140 344 305 [[Claude Martin]]
+            rect 124 147 181 298 [[Antoine Polier|Antoine-Louis Polier]]
+            desc none
+            </imagemap>
+            """
+    assert solve(enwiki.images_in_tags, cache={revision_text: text}) == 3
+
+
+def test_image_in_templates():
+    text = """
+            {{multiple image
+             | align = left
+             | image1 = Frecklesmule.jpg
+             | width1 = 143
+             | alt1 = A mule
+             | link1 = Mule
+             | caption1 = A mule<br />(骡子 ''luózi'')}}
+            {{Image array
+            | perrow = 2
+            | width = 140
+            | height = 140
+            | border-width = 2
+            | image1 = On The Streets of Vilnius (5984257911).jpg
+            | alt1 = alt1 | text1 = text1 | link1 = Vilnius}}
+            {{Gallery
+            |title=Cultural depictions of George Washington
+            |width=160 | height=170
+            |align=center
+            |footer=Example 1
+            |File:Federal Hall NYC 27.JPG
+            |alt1=Statue facing a city building with Greek columns
+            and huge U.S. flag
+            |Statue of Washington [[Federal Hall]] in [[New York City]]}}
+            {{image frame|content={{Photomontage
+            | photo1a = Perú PZ.jpg{{!}}Freedom Monument, in Main Square
+            of Trujillo city
+            | photo2a = Húsares.jpg{{!}}"Húsares de Junín" avenue}}
+
+            """
+    assert solve(enwiki.images_in_templates, cache={revision_text: text}) == 5
+
+
+def test_infobox_images():
+    text = """
+            {{Infobox artwork
+            | image_file = (Явление Мессии) - Google Art Project.jpg
+            | painting_alignment = Front
+            | image_size         = 300px
+            | title              = The Appearance of Christ Before the People
+            | artist             = [[Alexander Andreyevich Ivanov]]
+            | year               = 1837–1857
+            | medium             = [[Oil painting|Oil]] on [[canvas]]
+            | height_metric      = 540
+            | width_metric       = 750
+            | image_map          = Image map.svg
+            | cover              = Artbook.pdf
+            | metric_unit        = cm
+            | imperial_unit      = in
+            }}
+            """
+    assert solve(enwiki.infobox_images, cache={revision_text: text}) == 3
