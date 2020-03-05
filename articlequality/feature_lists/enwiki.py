@@ -137,6 +137,9 @@ paragraphs_without_refs_total_length = aggregators.sum(
 # Wikipedia:Manual of Style/Words to watch
 words_to_watch_count = english.words_to_watch.revision.matches
 
+# Idioms
+idioms_count = english.idioms.revision.matches
+
 local_wiki = [
     all_images,
     all_images / max(wikitext.revision.content_chars, 1),
@@ -163,6 +166,10 @@ local_wiki = [
     log(paragraphs_without_refs_total_length + 1),
     words_to_watch_count,
     words_to_watch_count / max(wikitext.revision.words, 1),
+    idioms_count,
+    idioms_count / max(wikitext.revision.words, 1),
+    words_to_watch_count + idioms_count,
+    (words_to_watch_count + idioms_count) / max(wikitext.revision.words, 1)
 ]
 
 wp10 = wikipedia.article + local_wiki
