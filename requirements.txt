@@ -3,4 +3,5 @@ mwbase >= 0.1.0, < 0.1.999
 mwreverts
 mwtypes
 mwxml >= 0.3.3
-revscoring >= 2.6.2, < 2.6.999
+revscoring >= 2.6.8, < 2.6.999
+textstat >= 0.5.7
