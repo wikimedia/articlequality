@@ -19,7 +19,7 @@ def from_template(template):
             label = label.strip().lower()
 
             if label in POSSIBLE_LABELS:
-                return project_name, label
+                yield (project_name, label)
             else:
                 logger.debug("Class '{0}' not in possible classes."
                              .format(label))
