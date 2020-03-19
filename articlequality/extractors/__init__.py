@@ -22,8 +22,9 @@ Base classes
 """
 from .enwiki import enwiki
 from .frwiki import frwiki
+from .ptwiki import ptwiki
 from .ruwiki import ruwiki
 from .svwiki import svwiki
 from .trwiki import trwiki
 
-__all__ = [enwiki, frwiki, ruwiki, svwiki, trwiki]
+__all__ = [enwiki, frwiki, ptwiki, ruwiki, svwiki, trwiki]

@@ -28,7 +28,7 @@ def from_template(template):
             project_name = project_name or PROJECT_NAME
 
             if label is not None:
-                return project_name, label
+                yield (project_name, label)
             else:
                 logger.debug("Class '{0}' not in possible classes."
                              .format(label))
