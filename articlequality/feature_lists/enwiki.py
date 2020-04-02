@@ -10,7 +10,6 @@ from revscoring import Feature
 from revscoring.datasources import revision_oriented as ro
 from revscoring.datasources.meta import filters, mappers
 from revscoring.features import wikitext
-from revscoring import Feature
 from revscoring.features.meta import aggregators
 from revscoring.features.modifiers import log, max, sub
 from revscoring.languages import english
