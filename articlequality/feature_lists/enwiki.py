@@ -4,9 +4,12 @@ English Wikipedia
 """
 import re
 
+import textstat
+
+from revscoring import Feature
+from revscoring.datasources import revision_oriented as ro
 from revscoring.datasources.meta import filters, mappers
 from revscoring.features import wikitext
-from revscoring import Feature
 from revscoring.features.meta import aggregators
 from revscoring.features.modifiers import log, max, sub
 from revscoring.languages import english
@@ -172,7 +175,47 @@ local_wiki = [
     (words_to_watch_count + idioms_count) / max(wikitext.revision.words, 1)
 ]
 
-wp10 = wikipedia.article + local_wiki
+
+def process_flesch(text):
+    if text is not None and len(text) >= 100:
+        return textstat.flesch_reading_ease(text)
+    else:
+        return None
+
+
+def clean_section(section):
+    return str(section.strip_code())
+
+
+section_strs = mappers.map(clean_section,
+                           wikitext.revision.datasources.sections)
+section_flesches = filters.not_none(mappers.map(process_flesch, section_strs))
+
+text_flesch = Feature("wikitext.revision.text.flesch",
+                       process_flesch,
+                       depends_on=[ro.revision.text], returns=float)
+min_section_flesch = aggregators.min(
+        section_flesches,
+        name="wikitext.revisions.sections.min_flesch")
+max_section_flesch = aggregators.max(
+        section_flesches,
+        name="wikitext.revisions.sections.max_flesch")
+mean_section_flesch = aggregators.mean(
+        section_flesches,
+        name="wikitext.revisions.sections.mean_flesch")
+
+text_complexity = [
+        text_flesch,
+        min_section_flesch,
+        max_section_flesch,
+        mean_section_flesch,
+        min_section_flesch - text_flesch,
+        max_section_flesch - text_flesch,
+        mean_section_flesch - text_flesch
+]
+
+wp10 = wikipedia.article + local_wiki + text_complexity
+
 """
 Based largely on work by Morten Warncke-Wang et al.[1] and with a few
 improvements and extensions that Morten identified after publication.
