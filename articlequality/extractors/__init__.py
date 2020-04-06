@@ -10,6 +10,8 @@ Supported wikis
 
 .. automodule:: articlequality.extractors.frwiki
 
+.. automodule:: articlequality.extractors.ptwiki
+
 .. automodule:: articlequality.extractors.ruwiki
 
 .. automodule:: articlequality.extractors.svwiki

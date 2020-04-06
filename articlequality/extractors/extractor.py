@@ -174,5 +174,9 @@ class TemplateExtractor(Extractor):
         parsed_text = mwp.parse(text)
         templates = parsed_text.filter_templates()
         for template in templates:
+<<<<<<< HEAD
 
             yield from self.from_template(template)
+=======
+            yield self.from_template(template)
+>>>>>>> origin/ptwiki_features
