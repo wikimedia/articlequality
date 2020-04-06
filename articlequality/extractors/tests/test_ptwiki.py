@@ -26,7 +26,7 @@ def test_extractor():
         ),
         Revision(
             2, Timestamp(2), "bbb",
-            "{{Marca de projeto|3|Biografias|4|rev=20170714}}"
+            "{{Marca de projeto|4|Biografias|4|rev=20170714}}"
         )
     ]
     page = Page("Foobar", 1, revisions)
@@ -35,8 +35,8 @@ def test_extractor():
     project_labels = {(ob['project'], ob['wp10']): ob
                       for ob in observations}
 
-    expected = [("brasil", "3", Timestamp(1)),
-                ("biografias", "4", Timestamp(2))]
+    expected = [("marca de projeto", "3", Timestamp(1)),
+                ("marca de projeto", "4", Timestamp(2))]
 
     print(project_labels)
     for proj, lab, timestamp in expected:
