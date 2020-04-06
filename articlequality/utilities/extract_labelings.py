@@ -7,7 +7,8 @@
 
     Usage:
         extract_labelings <dump-file>... [--extractor=<name>] [--threads=<num>]
-                                         [--output=<path>] [--verbose] [--debug]
+                                         [--output=<path>] [--verbose]
+                                         [--debug]
         extract_labelings -h | --help
 
     Options:
@@ -67,7 +68,8 @@ def main(argv=None):
 
 def load_extractor(extractor_name):
     try:
-        extractor_module = import_module("articlequality.extractors." + extractor_name)
+        extractor_module = import_module(
+            "articlequality.extractors." + extractor_name)
         return getattr(extractor_module, extractor_name)
     except ImportError:
         raise RuntimeError("Could not load extractor for '{0}'"
