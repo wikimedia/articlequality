@@ -10,12 +10,12 @@ def from_template(template):
     project_name = normalize_project_name(template.name)
     if project_name == "marca de projeto":
         labels = extract_labels(template)
-        if len(labels) >= 1:
-            for project, label in labels[1:]:
-                yield (normalize_project_name(project), label)
+        if len(labels) > 0:
+            project, label = labels[0]
+            yield (normalize_project_name(project), label)
 
 
-PROJECT_LABEL = re.compile(r"([^\|\{\{\}\}]+)\|([0-5\*])", re.I)
+PROJECT_LABEL = re.compile(r"([^\|\{\{\}\}]+)\|([0-6])", re.I)
 
 
 def extract_labels(template):

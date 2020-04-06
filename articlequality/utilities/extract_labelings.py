@@ -7,7 +7,7 @@
 
     Usage:
         extract_labelings <dump-file>... [--extractor=<name>] [--threads=<num>]
-                                         [--output=<path>] [--verbose]
+                                         [--output=<path>] [--verbose] [--debug]
         extract_labelings -h | --help
 
     Options:
@@ -21,6 +21,7 @@
         --output=<path>     The path to a file to dump observations to
                             [default: <stdout>]
         --verbose           Prints dots to <stderr>
+        --debug           Print debug level logging
 """
 import logging
 import os.path
@@ -54,23 +55,26 @@ def main(argv=None):
         output = open(os.path.expanduser(args['--output']), "w")
 
     verbose = args['--verbose']
+    debug = args['--debug']
+
+    logging.basicConfig(
+        level=logging.DEBUG if debug else logging.WARNING,
+        format='%(asctime)s %(levelname)s:%(name)s -- %(message)s'
+    )
 
     run(dump_paths, threads, output, verbose=verbose, extractor=extractor)
 
 
 def load_extractor(extractor_name):
     try:
-        return import_module("articlequality.extractors." + extractor_name)
+        extractor_module = import_module("articlequality.extractors." + extractor_name)
+        return getattr(extractor_module, extractor_name)
     except ImportError:
         raise RuntimeError("Could not load extractor for '{0}'"
                            .format(extractor_name))
 
 
 def run(dump_paths, threads, output, verbose=False, extractor=None):
-    logging.basicConfig(
-        level=logging.DEBUG if verbose else logging.WARNING,
-        format='%(asctime)s %(levelname)s:%(name)s -- %(message)s'
-    )
 
     if len(dump_paths) == 0:
         label_events = extract_labelings(mwxml.Dump.from_file(sys.stdin),
