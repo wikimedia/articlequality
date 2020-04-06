@@ -174,8 +174,4 @@ class TemplateExtractor(Extractor):
         parsed_text = mwp.parse(text)
         templates = parsed_text.filter_templates()
         for template in templates:
-
-            project_label = self.from_template(template)
-
-            if project_label is not None:
-                yield project_label
+            yield self.from_template(template)

@@ -17,7 +17,7 @@ def from_template(template):
         try:
             label = normalize_label(template.get("уровень").value)
             if label is not None:
-                return PROJECT_NAME, label
+                yield (PROJECT_NAME, label)
             else:
                 logger.debug("Class '{0}' not in possible classes."
                              .format(template.get("уровень").value))

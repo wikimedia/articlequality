@@ -23,7 +23,7 @@ def from_template(template):
 
     for label, regex in TEMPLATE_MATCHES:
         if regex.match(template_name):
-            return PROJECT_NAME, label
+            yield (PROJECT_NAME, label)
 
 
 svwiki = TemplateExtractor(
