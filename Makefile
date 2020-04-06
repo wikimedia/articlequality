@@ -583,7 +583,7 @@ models/ptwiki.wp10.gradient_boosting.model: \
 	  articlequality.feature_lists.ptwiki.wp10 \
 	  wp10 \
 	  --version $(wp10_major_minor).0 \
-	  -p 'max_depth=5' \
+	  -p 'max_depth=7' \
 	  -p 'learning_rate=0.01' \
 	  -p 'max_features="log2"' \
 	  -p 'n_estimators=300' \
