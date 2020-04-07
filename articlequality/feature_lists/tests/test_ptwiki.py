@@ -67,17 +67,19 @@ def test_paragraphs_without_refs_total_length():
     Here is third paragraph.
     It has two lines, but no references.
 
-
     Here is fourth paragraph.
-    It has two lines <ref>reference</ref>.
+    It has two lines <ref name="foobar" />
     One of which has a reference.
 
-    Here is fifth paragraph. One line, no references.
+    This paragraph is too short to count.
 
     Short line.<ref>last</ref><ref>One more reference</ref>
     """
+
+    for paragraph in solve(ptwiki.paragraphs_without_refs, cache={revision_text: text}):
+        print(len(str(paragraph)), repr(str(paragraph)))
     assert solve(ptwiki.paragraphs_without_refs_total_length,
-                 cache={revision_text: text}) == 114
+                 cache={revision_text: text}) == 65
 
 
 def test_image_links():
