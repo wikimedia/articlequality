@@ -24,8 +24,6 @@ def from_template(template):
         label = extract_label(template)
         if label is not None:
             yield ("marca de projeto", label)
-        else:
-            logger.warn("Could not extract label from {0}".format(str(template)))
 
 
 def extract_label(template):
@@ -36,7 +34,13 @@ def extract_label(template):
             label = template.get(1).value
         except ValueError:
             label = None
-    return normalize_label(label)
+    if label != "?":
+        label = normalize_label(label)
+        if label is None:
+            logger.warn("Could not extract label from {0}".format(str(template)))
+        else:
+            return label
+
 
 
 def normalize_label(label):
