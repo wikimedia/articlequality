@@ -26,7 +26,7 @@ def test_extractor():
         ),
         Revision(
             2, Timestamp(2), "bbb",
-            "{{Marca de projeto|4|Biografias|4|rev=20170714}}"
+            "{{Marca de projeto|qualidade=AB|Biografias|4|rev=20170714}}"
         )
     ]
     page = Page("Foobar", 1, revisions)
@@ -36,9 +36,11 @@ def test_extractor():
                       for ob in observations}
 
     expected = [("marca de projeto", "3", Timestamp(1)),
-                ("marca de projeto", "4", Timestamp(2))]
+                ("marca de projeto", "5", Timestamp(2))]
 
     print(project_labels)
     for proj, lab, timestamp in expected:
         ob = project_labels[(proj, lab)]
         assert ob['timestamp'] == timestamp
+
+

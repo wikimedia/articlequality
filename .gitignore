@@ -3,9 +3,15 @@ datasets/*.tsv
 datasets/*.bz2
 datasets/*.json
 
+# Demo scripts
+demo_*
+
 # Old model files!
 *.model.*
 *.pkl
+
+# Temporary saves
+*.py.swp
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

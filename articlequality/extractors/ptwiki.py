@@ -6,24 +6,48 @@ from .extractor import TemplateExtractor
 logger = logging.getLogger(__name__)
 
 
+POSSIBLE_LABELS = {
+    "1": "1",
+    "2": "2",
+    "3": "3",
+    "4": "4",
+    "5": "5",
+    "6": "6",
+    "ab": "5",
+    "ad": "6"
+}
+
+
 def from_template(template):
-    project_name = normalize_project_name(template.name)
-    if project_name == "marca de projeto":
-        labels = extract_labels(template)
-        if len(labels) > 0:
-            project, label = labels[0]
-            yield (normalize_project_name(project), label)
+    template_name = normalize_template_name(template.name)
+    if template_name == "marca de projeto":
+        label = extract_label(template)
+        if label is not None:
+            yield ("marca de projeto", label)
+        else:
+            logger.warn("Could not extract label from {0}".format(str(template)))
 
 
-PROJECT_LABEL = re.compile(r"([^\|\{\{\}\}]+)\|([0-6])", re.I)
+def extract_label(template):
+    try:
+        label = template.get("qualidade").value
+    except ValueError:
+        try:
+            label = template.get(1).value
+        except ValueError:
+            label = None
+    return normalize_label(label)
 
 
-def extract_labels(template):
-    return [(label.group(1), label.group(2))
-            for label in re.finditer(PROJECT_LABEL, str(template))]
+def normalize_label(label):
+    label = label.lower()
+    if label in POSSIBLE_LABELS:
+        return POSSIBLE_LABELS[label]
+    else:
+        return None
 
 
-def normalize_project_name(template_name):
+def normalize_template_name(template_name):
     return template_name.lower().replace("_", " ")
 
 
