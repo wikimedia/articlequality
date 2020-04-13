@@ -27,19 +27,23 @@ def from_template(template):
 
 
 def extract_label(template):
+    # Try to get the label from {{{1}}}
     try:
-        label = template.get("qualidade").value
+        label = normalize_label(template.get(1).value)
     except ValueError:
+        label = None
+    if label is None or label == "?":
+        # Try to get the label from {{{qualidade}}}
         try:
-            label = template.get(1).value
+            label = normalize_label(template.get("qualidade").value)
         except ValueError:
-            label = None
-    if label != "?":
-        label = normalize_label(label)
-        if label is None:
-            logger.warn("Could not extract label from {0}".format(str(template)))
-        else:
-            return label
+            label = label or None
+    # If we failed, log a warning
+    if label is None:
+        logger.warn("Could not extract label from {0}".format(str(template)))
+        return None
+    else:
+        return label
 
 
 
@@ -47,6 +51,8 @@ def normalize_label(label):
     label = label.lower()
     if label in POSSIBLE_LABELS:
         return POSSIBLE_LABELS[label]
+    elif label == "?":
+        return label
     else:
         return None
 

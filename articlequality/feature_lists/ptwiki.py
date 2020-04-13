@@ -15,7 +15,7 @@ from . import wikipedia
 
 # Templates
 infobox_templates = wikitext.revision.template_names_matching(
-    r"Info", name="ptwiki.revision.infobox_templates")
+    r"(Info|Infobox)", name="ptwiki.revision.infobox_templates")
 CN_TEMPLATES = [
     r"Carece de fontes",
     r"Carece de fontes2",
@@ -40,11 +40,9 @@ main_article_templates = wikitext.revision.template_names_matching(
 CITE_TEMPLATES = [
     r"Cite",
     r"Citar",
-    r"Citar web",
-    r"Citar livro",
     r"Harvard[_ ]citation[_ ]no[_ ]brackets", r"harvnb",
-    r"Harvard citation", r"harv",
-    r"Harvard citation text", r"harvtxt",
+    r"Harvard[_ ]citation", r"harv",
+    r"harvtxt",
     r"Harvcoltxt",
     r"Harvcol",
     r"Harvcolnb",
@@ -74,7 +72,7 @@ image_links = wikitext.revision.wikilink_titles_matching(
     name="ptwiki.revision.image_links")
 
 image_templates = wikitext.revision.template_names_matching(
-    r"(Scalable[ _]image|Panorama|Imagem[ _]vertical)|Panorama|Panorama 2",
+    r"(Scalable[ _]image|Panorama|Imagem[ _]vertical|Panorama|Panorama 2)",
     name='ptwiki.revision.image_template')
 
 side_by_side_image_templates = wikitext.revision.template_names_matching(
@@ -96,7 +94,7 @@ def get_images(strs):
 
 image_templates_str = wikitext.revision.datasources.templates_str_matching(
     r"{{(imagem[ _]multipla|galeria|multiple[ _]image|" +
-    r"image[ _]array|gallery|montagem[ _]fotográfica|" +
+    r"gallery|montagem[ _]fotográfica|" +
     r"matriz[ _]de[ _]imagens|imagem[ _]conjunta)",
     name='ptwiki.revision.image_templates_str')
 
