@@ -1,7 +1,7 @@
 Model Information:
 	 - type: GradientBoosting
 	 - version: 0.8.0
-	 - params: {'scale': True, 'min_samples_leaf': 1, 'presort': 'auto', 'loss': 'deviance', 'min_impurity_split': None, 'labels': ['1', '2', '3', '4', '5', '6'], 'warm_start': False, 'init': None, 'min_impurity_decrease': 0.0, 'center': True, 'criterion': 'friedman_mse', 'min_samples_split': 2, 'random_state': None, 'max_leaf_nodes': None, 'learning_rate': 0.01, 'n_estimators': 300, 'population_rates': None, 'max_features': 'log2', 'subsample': 1.0, 'verbose': 0, 'multilabel': False, 'max_depth': 7, 'tol': 0.0001, 'n_iter_no_change': None, 'min_weight_fraction_leaf': 0.0, 'validation_fraction': 0.1, 'label_weights': None}
+	 - params: {'min_weight_fraction_leaf': 0.0, 'init': None, 'loss': 'deviance', 'min_samples_split': 2, 'min_impurity_split': None, 'subsample': 1.0, 'max_features': 'log2', 'max_depth': 7, 'n_iter_no_change': None, 'warm_start': False, 'labels': ['1', '2', '3', '4', '5', '6'], 'label_weights': None, 'population_rates': None, 'center': True, 'n_estimators': 300, 'scale': True, 'learning_rate': 0.01, 'min_samples_leaf': 1, 'tol': 0.0001, 'random_state': None, 'min_impurity_decrease': 0.0, 'verbose': 0, 'multilabel': False, 'criterion': 'friedman_mse', 'max_leaf_nodes': None, 'presort': 'auto', 'validation_fraction': 0.1}
 	Environment:
 	 - revscoring_version: '2.6.9'
 	 - platform: 'Linux-4.9.0-11-amd64-x86_64-with-debian-9.12'
@@ -18,68 +18,68 @@ Model Information:
 	 - release: '4.9.0-11-amd64'
 	
 	Statistics:
-	counts (n=7153):
+	counts (n=7147):
 		label       n         ~1    ~2    ~3    ~4    ~5    ~6
 		-------  ----  ---  ----  ----  ----  ----  ----  ----
-		'1'      1197  -->  1069    55    63     7     3     0
-		'2'      1198  -->    73   850   231    20    18     6
-		'3'      1195  -->    34    86   805   139    88    43
-		'4'      1193  -->    16    20   200   264   373   320
-		'5'      1187  -->     8    15    54   183   692   235
-		'6'      1183  -->    15    11    43   154   198   762
+		'1'      1197  -->  1018    95    71     7     2     4
+		'2'      1199  -->    89   875   208    12    13     2
+		'3'      1193  -->    32    70   823   131    99    38
+		'4'      1189  -->    10    18   185   274   369   333
+		'5'      1186  -->     9    11    46   197   689   234
+		'6'      1183  -->    13    14    44   161   194   757
 	rates:
 		              '1'    '2'    '3'    '4'    '5'    '6'
 		----------  -----  -----  -----  -----  -----  -----
-		sample      0.167  0.167  0.167  0.167  0.166  0.165
+		sample      0.167  0.168  0.167  0.166  0.166  0.166
 		population  0.712  0.188  0.055  0.033  0.006  0.007
-	match_rate (micro=0.499, macro=0.207):
+	match_rate (micro=0.479, macro=0.203):
+		    1      2      3     4      5      6
+		-----  -----  -----  ----  -----  -----
+		0.613  0.165  0.126  0.09  0.116  0.106
+	filter_rate (micro=0.521, macro=0.797):
+		    1      2      3     4      5      6
+		-----  -----  -----  ----  -----  -----
+		0.387  0.835  0.874  0.91  0.884  0.894
+	recall (micro=0.796, macro=0.62):
+		   1     2     3     4      5     6
+		----  ----  ----  ----  -----  ----
+		0.85  0.73  0.69  0.23  0.581  0.64
+	!recall (micro=0.966, macro=0.924):
 		    1      2      3      4      5      6
 		-----  -----  -----  -----  -----  -----
-		0.643  0.159  0.131  0.089  0.117  0.105
-	filter_rate (micro=0.501, macro=0.793):
+		0.974  0.965  0.907  0.915  0.886  0.898
+	precision (micro=0.879, macro=0.378):
+		    1      2    3      4     5      6
+		-----  -----  ---  -----  ----  -----
+		0.988  0.828  0.3  0.084  0.03  0.041
+	!precision (micro=0.791, macro=0.935):
 		    1      2      3      4      5      6
 		-----  -----  -----  -----  -----  -----
-		0.357  0.841  0.869  0.911  0.883  0.895
-	recall (micro=0.821, macro=0.621):
-		    1     2      3      4      5      6
-		-----  ----  -----  -----  -----  -----
-		0.893  0.71  0.674  0.221  0.583  0.644
-	!recall (micro=0.967, macro=0.924):
+		0.725  0.939  0.981  0.972  0.997  0.997
+	f1 (micro=0.824, macro=0.394):
 		    1      2      3      4      5      6
 		-----  -----  -----  -----  -----  -----
-		0.975  0.969  0.901  0.916  0.886  0.899
-	precision (micro=0.88, macro=0.377):
-		    1      2      3      4     5      6
-		-----  -----  -----  -----  ----  -----
-		0.989  0.839  0.282  0.082  0.03  0.042
-	!precision (micro=0.834, macro=0.945):
-		    1      2     3      4      5      6
-		-----  -----  ----  -----  -----  -----
-		0.787  0.935  0.98  0.972  0.997  0.997
-	f1 (micro=0.839, macro=0.393):
+		0.914  0.776  0.418  0.123  0.056  0.078
+	!f1 (micro=0.865, macro=0.925):
 		    1      2      3      4      5      6
 		-----  -----  -----  -----  -----  -----
-		0.939  0.769  0.397  0.119  0.056  0.079
-	!f1 (micro=0.893, macro=0.931):
+		0.831  0.952  0.942  0.943  0.939  0.945
+	accuracy (micro=0.893, macro=0.896):
 		    1      2      3      4      5      6
 		-----  -----  -----  -----  -----  -----
-		0.871  0.952  0.939  0.943  0.938  0.945
-	accuracy (micro=0.915, macro=0.9):
-		    1     2      3      4      5      6
-		-----  ----  -----  -----  -----  -----
-		0.917  0.92  0.888  0.893  0.884  0.897
-	fpr (micro=0.033, macro=0.076):
+		0.886  0.921  0.895  0.892  0.885  0.896
+	fpr (micro=0.034, macro=0.076):
 		    1      2      3      4      5      6
 		-----  -----  -----  -----  -----  -----
-		0.025  0.031  0.099  0.084  0.114  0.101
-	roc_auc (micro=0.961, macro=0.894):
+		0.026  0.035  0.093  0.085  0.114  0.102
+	roc_auc (micro=0.959, macro=0.893):
 		    1      2      3      4      5      6
 		-----  -----  -----  -----  -----  -----
-		0.979  0.949  0.901  0.765  0.878  0.894
-	pr_auc (micro=0.898, macro=0.416):
-		    1      2      3      4      5      6
-		-----  -----  -----  -----  -----  -----
-		0.992  0.878  0.432  0.087  0.057  0.051
+		0.974  0.955  0.901  0.764  0.873  0.891
+	pr_auc (micro=0.898, macro=0.415):
+		   1      2      3      4      5      6
+		----  -----  -----  -----  -----  -----
+		0.99  0.885  0.427  0.077  0.055  0.055
 	
-	 - score_schema: {'properties': {'probability': {'properties': {'3': {'type': 'number'}, '1': {'type': 'number'}, '6': {'type': 'number'}, '2': {'type': 'number'}, '5': {'type': 'number'}, '4': {'type': 'number'}}, 'description': 'A mapping of probabilities onto each of the potential output labels', 'type': 'object'}, 'prediction': {'description': 'The most likely label predicted by the estimator', 'type': 'string'}}, 'title': 'Scikit learn-based classifier score with probability', 'type': 'object'}
+	 - score_schema: {'title': 'Scikit learn-based classifier score with probability', 'properties': {'prediction': {'description': 'The most likely label predicted by the estimator', 'type': 'string'}, 'probability': {'description': 'A mapping of probabilities onto each of the potential output labels', 'properties': {'4': {'type': 'number'}, '3': {'type': 'number'}, '2': {'type': 'number'}, '5': {'type': 'number'}, '6': {'type': 'number'}, '1': {'type': 'number'}}, 'type': 'object'}}, 'type': 'object'}
 
