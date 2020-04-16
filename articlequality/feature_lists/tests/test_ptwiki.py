@@ -75,9 +75,6 @@ def test_paragraphs_without_refs_total_length():
 
     Short line.<ref>last</ref><ref>One more reference</ref>
     """
-
-    for paragraph in solve(ptwiki.paragraphs_without_refs, cache={revision_text: text}):
-        print(len(str(paragraph)), repr(str(paragraph)))
     assert solve(ptwiki.paragraphs_without_refs_total_length,
                  cache={revision_text: text}) == 65
 

@@ -133,6 +133,7 @@ all_images = \
     images_in_templates + (side_by_side_image_templates * 2) + \
     images_in_tags + infobox_images
 
+
 # References
 def filter_paragraphs_without_ref_tags(segment):
     "Check to see if we have at least 10 words and no refs"

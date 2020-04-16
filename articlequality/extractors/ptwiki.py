@@ -1,5 +1,4 @@
 import logging
-import re
 
 from .extractor import TemplateExtractor
 
@@ -44,7 +43,6 @@ def extract_label(template):
         return None
     else:
         return label
-
 
 
 def normalize_label(label):

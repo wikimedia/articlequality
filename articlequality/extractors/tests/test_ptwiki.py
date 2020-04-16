@@ -46,5 +46,3 @@ def test_extractor():
     for proj, lab, timestamp in expected:
         ob = project_labels[(proj, lab)]
         assert ob['timestamp'] == timestamp
-
-
