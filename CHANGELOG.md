@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.4.2] - 2020-04-17
+
+### Added
+- Feature list for ptwiki
+
 ### Changed
 - Bumped revscoring to v2.5.1
 
