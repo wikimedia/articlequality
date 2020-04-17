@@ -13,6 +13,7 @@ addons:
     - myspell-en-za
     - myspell-es
     - myspell-fr
+    - myspell-pt
 
 # command to install dependencies
 install:

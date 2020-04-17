@@ -91,12 +91,13 @@ class Extractor:
                     new_labels = project_labels - last_labels
 
                     # Log some verbose stuff
-                    if verbose and len(new_labels) > 0:
-                        sys.stderr.write("l")
-                        sys.stderr.flush()
-                    else:
-                        sys.stderr.write(".")
-                        sys.stderr.flush()
+                    if verbose:
+                        if len(new_labels) > 0:
+                            sys.stderr.write("l")
+                            sys.stderr.flush()
+                        else:
+                            sys.stderr.write(".")
+                            sys.stderr.flush()
 
                     # Update lookup of rev_ids that affect labelings
                     if len(new_labels) > 0:

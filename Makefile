@@ -518,6 +518,93 @@ frwikisource_models: \
 frwikisource_tuning_reports: \
 	tuning_reports/frwikisource.page_level.md
 
+########################## Portuguese Wikipedia ################################
+datasets/ptwiki.labelings.20200301.json:
+	./utility extract_labelings \
+	  /mnt/data/xmldatadumps/public/ptwiki/20200301/ptwiki-20200301-pages-meta-history*.xml*.bz2 \
+	  --debug > $@
+
+
+datasets/ptwiki.balanced_labelings.9k_2020.json: \
+		datasets/ptwiki.labelings.20200301.json
+	( \
+	  grep -P '"wp10": "1"' $< | \
+	  shuf -n 1200; \
+	  grep -P '"wp10": "2"' $< | \
+	  shuf -n 1200; \
+	  grep -P '"wp10": "3"' $< | \
+	  shuf -n 1200; \
+	  grep -P '"wp10": "4"' $< | \
+	  shuf -n 1200; \
+	  grep -P '"wp10": "5"' $< | \
+	  shuf -n 1200; \
+	  grep -P '"wp10": "6"' $< | \
+	  shuf -n 1200 \
+	) | \
+	shuf > $@
+
+datasets/ptwiki.labeled_revisions.with_text.9k_2020.json: \
+		datasets/ptwiki.balanced_labelings.9k_2020.json
+	cat $< | \
+	./utility fetch_text \
+	  --api-host=https://pt.wikipedia.org \
+	  --verbose > $@
+
+datasets/ptwiki.labeled_revisions.w_cache.9k_2020.json: \
+		datasets/ptwiki.labeled_revisions.with_text.9k_2020.json
+	cat $< | \
+	./utility extract_from_text \
+	  articlequality.feature_lists.ptwiki.wp10 \
+	  --verbose > $@
+
+tuning_reports/ptwiki.wp10.md: \
+		datasets/ptwiki.labeled_revisions.w_cache.9k_2020.json
+	cat $< | \
+	revscoring tune \
+	  config/classifiers.params.yaml \
+	  articlequality.feature_lists.ptwiki.wp10 \
+	  wp10 \
+	  accuracy.macro \
+	  --pop-rate '"1"=0.7121875681' \
+	  --pop-rate '"2"=0.187645479' \
+	  --pop-rate '"3"=0.05459120714' \
+	  --pop-rate '"4"=0.03279053449' \
+	  --pop-rate '"5"=0.005942558494' \
+	  --pop-rate '"6"=0.006842652859' \
+	  --center --scale \
+	  --cv-timeout=60 \
+	  --debug > $@
+
+models/ptwiki.wp10.gradient_boosting.model: \
+		datasets/ptwiki.labeled_revisions.w_cache.9k_2020.json
+	cat $< | \
+	revscoring cv_train \
+	  revscoring.scoring.models.GradientBoosting \
+	  articlequality.feature_lists.ptwiki.wp10 \
+	  wp10 \
+	  --version $(wp10_major_minor).0 \
+	  -p 'max_depth=7' \
+	  -p 'learning_rate=0.01' \
+	  -p 'max_features="log2"' \
+	  -p 'n_estimators=300' \
+	  --pop-rate '"1"=0.7121875681' \
+	  --pop-rate '"2"=0.187645479' \
+	  --pop-rate '"3"=0.05459120714' \
+	  --pop-rate '"4"=0.03279053449' \
+	  --pop-rate '"5"=0.005942558494' \
+	  --pop-rate '"6"=0.006842652859' \
+	  --center --scale > $@
+
+	revscoring model_info $@ > model_info/ptwiki.wp10.md
+
+ptwiki_models: \
+	models/ptwiki.wp10.gradient_boosting.model
+
+ptwiki_tuning_reports: \
+	tuning_reports/ptwiki.wp10.md
+
+
+
 ########################## Russian Wikipedia ###################################
 datasets/ruwiki.labelings.20181201.json:
 	./utility extract_labelings \
