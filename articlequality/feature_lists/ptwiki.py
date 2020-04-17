@@ -17,10 +17,10 @@ from . import wikipedia
 infobox_templates = wikitext.revision.template_names_matching(
     r"(Info|Infobox)", name="ptwiki.revision.infobox_templates")
 CN_TEMPLATES = [
-    r"Carece de fontes",
-    r"Carece de fontes2",
-    r"Carece de fontes/bloco",
-    r"Carece de fontes/bloco2"
+    r"Carece[ _]de[ _]fontes",
+    r"Carece[ _]de[ _]fontes2",
+    r"Carece[ _]de[ _]fontes/bloco",
+    r"Carece[ _]de[ _]fontes/bloco2"
 ]
 cn_templates = wikitext.revision.template_names_matching(
     "|".join(CN_TEMPLATES), name="ptwiki.revision.cn_templates")
