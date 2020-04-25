@@ -111,7 +111,7 @@ def extract_labelings(dump, extractor=None, verbose=False):
         * page_title -- The normalized title of the article
         * project -- A project (often a WikiProject) associated with the label
         * timestamp -- The timestamp the labeling was observed
-        * label -- The quality label that was extracted
+        * wp10 -- The quality label that was extracted
     """
 
     if extractor is None:
