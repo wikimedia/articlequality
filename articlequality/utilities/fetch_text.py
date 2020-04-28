@@ -41,7 +41,7 @@ def main(argv=None):
         output = open(args['--output'])
 
     session = mwapi.Session(args['--api-host'],
-                            user_agent="ArticleQaulity fetch_text utility.")
+                            user_agent="ArticleQuality fetch_text utility.")
 
     verbose = args['--verbose']
 
