@@ -1,4 +1,5 @@
 import logging
+import re
 
 from .extractor import TemplateExtractor
 
@@ -16,42 +17,52 @@ POSSIBLE_LABELS = {
     "ab": "5",
     "ad": "6"
 }
+TEMPLATE_ARGS = [
+    (re.compile(r"marca de projeto"), [1, "qualidade"]),
+    (re.compile(r"/marca$"), ["qualidade"]),
+    (re.compile(r"^classificação/"), ["qualidade"]),
+    (re.compile(r"tmbox/classificação"), ["qualidade"]),
+    (re.compile(r"álbuns"), ["qualidade"]),
+    (re.compile(r"projetos/subdivisões do brasil/artigo membro"),
+        ["qualidade"]),
+    (re.compile(r"wikiprojecto escolares e universitários"), ["qualidade"]),
+    (re.compile(r"marca-música portuguesa"), ["qualidade"]),
+    (re.compile(r"brojetobd"), ["qualidade"]),
+    (re.compile(r"canções"), ["qualidade"])
+]
 
 
 def from_template(template):
     template_name = normalize_template_name(template.name)
-    if template_name == "marca de projeto":
-        label = extract_label(template)
-        if label is not None:
-            yield (PROJECT_NAME, label)
+
+    for regex, args in TEMPLATE_ARGS:
+        if regex.search(template_name):
+            label = extract_label(template, args)
+            if label is not None:
+                yield (PROJECT_NAME, label)
+            break
 
 
-def extract_label(template):
-    # Try to get the label from {{{1}}}
-    try:
-        label = normalize_label(template.get(1).value)
-    except ValueError:
-        label = None
-    if label is None or label == "?":
-        # Try to get the label from {{{qualidade}}}
-        try:
-            label = normalize_label(template.get("qualidade").value)
-        except ValueError:
-            label = label or None
-    # If we failed, log a warning
-    if label is None:
-        logger.warn("Could not extract label from {0}".format(str(template)))
-        return None
-    else:
-        return label
+def extract_label(template, args):
+    ignored_labels = ["?", "qualidade"]
+    # Get the label from the first specified parameter which is available
+    for arg in args:
+        # Disregard missing/empty arguments
+        if template.has(arg, True):
+            label = template.get(arg).value
+            normalized_label = normalize_label(label)
+            if normalized_label is None and label not in ignored_labels:
+                logger.warning(
+                    "Could not extract label from {0}".format(str(template)))
+                return None
+            else:
+                return normalized_label
 
 
 def normalize_label(label):
     label = label.lower()
     if label in POSSIBLE_LABELS:
         return POSSIBLE_LABELS[label]
-    elif label == "?":
-        return label
     else:
         return None
 
