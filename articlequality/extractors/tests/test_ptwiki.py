@@ -22,15 +22,37 @@ def test_extractor():
     revisions = [
         Revision(
             1, Timestamp(1), "aaa",
-            "{{Marca de projeto|3|Brasil|3|rev=20170714}}"
+            "{{Brasil/Marca|qualidade=1|importância=3}}\n" +
+            "{{Geografia/Marca|qualidade=1|importância=?|rev=20110614}}"
         ),
         Revision(
             2, Timestamp(2), "bbb",
-            "{{Marca de projeto|qualidade=AB|Biografias|4|rev=20170714}}"
+            "{{marca de projeto|rev=20120715|1|Brasil|3}}"
         ),
         Revision(
             3, Timestamp(3), "ccc",
-            "{{Marca de projeto|qualidade=AB|6|Biografias|4|rev=20170714}}"
+            "{{Classificação/Anfíbios|qualidade=2|importância=1}}"
+        ),
+        Revision(
+            4, Timestamp(4), "ddd",
+            "{{Marca de projeto|qualidade=3|Biografias|4|rev=20140917}}"
+        ),
+        Revision(
+            5, Timestamp(5), "eee",
+            "{{Marca de projeto|qualidade=3||Biografias|2|rev=20151018}}"
+        ),
+        Revision(
+            6, Timestamp(6), "fff",
+            "{{Wikipedia:Projetos/Subdivisões do Brasil/Artigo membro" +
+            "|qualidade=5|importância=2}}"
+        ),
+        Revision(
+            7, Timestamp(7), "ggg",
+            "{{Marca de projeto|AB}}"
+        ),
+        Revision(
+            8, Timestamp(8), "hhh",
+            "{{Marca de projeto|AD|Biografias|4}}"
         )
     ]
     page = Page("Foobar", 1, revisions)
@@ -39,9 +61,11 @@ def test_extractor():
     project_labels = {(ob['project'], ob['wp10']): ob
                       for ob in observations}
 
-    expected = [("marca de projeto", "3", Timestamp(1)),
-                ("marca de projeto", "5", Timestamp(2)),
-                ("marca de projeto", "6", Timestamp(3))]
+    expected = [("marca de projeto", "1", Timestamp(1)),
+                ("marca de projeto", "2", Timestamp(3)),
+                ("marca de projeto", "3", Timestamp(5)),
+                ("marca de projeto", "5", Timestamp(6)),
+                ("marca de projeto", "6", Timestamp(8))]
 
     for proj, lab, timestamp in expected:
         ob = project_labels[(proj, lab)]
