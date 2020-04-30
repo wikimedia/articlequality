@@ -525,40 +525,40 @@ datasets/ptwiki.labelings.20200301.json:
 	  --debug > $@
 
 
-datasets/ptwiki.balanced_labelings.7.2k_2020.json: \
+datasets/ptwiki.balanced_labelings.9k_2020.json: \
 		datasets/ptwiki.labelings.20200301.json
 	( \
 	  grep -P '"wp10": "1"' $< | \
-	  shuf -n 1200; \
+	  shuf -n 1500; \
 	  grep -P '"wp10": "2"' $< | \
-	  shuf -n 1200; \
+	  shuf -n 1500; \
 	  grep -P '"wp10": "3"' $< | \
-	  shuf -n 1200; \
+	  shuf -n 1500; \
 	  grep -P '"wp10": "4"' $< | \
-	  shuf -n 1200; \
+	  shuf -n 1500; \
 	  grep -P '"wp10": "5"' $< | \
-	  shuf -n 1200; \
+	  shuf -n 1500; \
 	  grep -P '"wp10": "6"' $< | \
-	  shuf -n 1200 \
+	  shuf -n 1500 \
 	) | \
 	shuf > $@
 
-datasets/ptwiki.labeled_revisions.with_text.7.2k_2020.json: \
-		datasets/ptwiki.balanced_labelings.7.2k_2020.json
+datasets/ptwiki.labeled_revisions.with_text.9k_2020.json: \
+		datasets/ptwiki.balanced_labelings.9k_2020.json
 	cat $< | \
 	./utility fetch_text \
 	  --api-host=https://pt.wikipedia.org \
 	  --verbose > $@
 
-datasets/ptwiki.labeled_revisions.w_cache.7.2k_2020.json: \
-		datasets/ptwiki.labeled_revisions.with_text.7.2k_2020.json
+datasets/ptwiki.labeled_revisions.w_cache.9k_2020.json: \
+		datasets/ptwiki.labeled_revisions.with_text.9k_2020.json
 	cat $< | \
 	./utility extract_from_text \
 	  articlequality.feature_lists.ptwiki.wp10 \
 	  --verbose > $@
 
 tuning_reports/ptwiki.wp10.md: \
-		datasets/ptwiki.labeled_revisions.w_cache.7.2k_2020.json
+		datasets/ptwiki.labeled_revisions.w_cache.9k_2020.json
 	cat $< | \
 	revscoring tune \
 	  config/classifiers.params.yaml \
@@ -576,7 +576,7 @@ tuning_reports/ptwiki.wp10.md: \
 	  --debug > $@
 
 models/ptwiki.wp10.gradient_boosting.model: \
-		datasets/ptwiki.labeled_revisions.w_cache.7.2k_2020.json
+		datasets/ptwiki.labeled_revisions.w_cache.9k_2020.json
 	cat $< | \
 	revscoring cv_train \
 	  revscoring.scoring.models.GradientBoosting \
