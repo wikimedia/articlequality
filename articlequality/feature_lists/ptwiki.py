@@ -182,7 +182,8 @@ local_wiki = [
      max(wikitext.revision.content_chars, 1)),
     log(paragraphs_without_refs_total_length + 1),
     words_to_watch_count,
-    words_to_watch_count / max(wikitext.revision.words, 1)
+    words_to_watch_count / max(wikitext.revision.words, 1),
+    words_to_watch_count / max(all_cite_templates, 1)
 ]
 
 wp10 = wikipedia.article + local_wiki
