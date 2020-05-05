@@ -74,7 +74,9 @@ def fetch_text(session, labelings, verbose=False):
     """
 
     for labeling in labelings:
-        rev_doc = get_last_rev_before(session, labeling['page_title'],
+        subject_page_id = get_subject_page_id(session,
+                                              labeling['talk_page_id'])
+        rev_doc = get_last_rev_before(session, subject_page_id,
                                       labeling['timestamp'])
 
         if rev_doc is None:
@@ -103,8 +105,19 @@ def fetch_text(session, labelings, verbose=False):
         sys.stderr.flush()
 
 
-def get_last_rev_before(session, page_title, timestamp):
-    doc = session.get(action="query", prop="revisions", titles=page_title,
+def get_subject_page_id(session, talk_page_id):
+    doc = session.get(action="query", prop="info", pageids=talk_page_id,
+                      inprop="subjectid", formatversion=2)
+
+    try:
+        return doc['query']['pages'][0]['subjectid']
+    except (KeyError, IndexError):
+        # No subject page found
+        return None
+
+
+def get_last_rev_before(session, page_id, timestamp):
+    doc = session.get(action="query", prop="revisions", pageids=page_id,
                       rvstart=timestamp, rvlimit=1, rvdir="older",
                       rvprop=["ids", "content"], rvslots=["main"],
                       redirects=True, formatversion=2)

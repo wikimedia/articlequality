@@ -108,6 +108,7 @@ def extract_labelings(dump, extractor=None, verbose=False):
     :Returns:
         An iterator of dicts containing:
 
+        * talk_page_id -- The id of the article's talk page
         * page_title -- The normalized title of the article
         * project -- A project (often a WikiProject) associated with the label
         * timestamp -- The timestamp the labeling was observed
@@ -125,6 +126,7 @@ def extract_labelings(dump, extractor=None, verbose=False):
 
         for obs in extractor.extract(page, verbose=verbose):
             yield {'page_title': normalize_title(page.title, page.namespace),
+                   'talk_page_id': page.id,
                    'project': obs['project'],
                    'timestamp': obs['timestamp'].short_format(),
                    'wp10': obs['wp10']}
