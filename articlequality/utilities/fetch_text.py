@@ -74,7 +74,6 @@ def fetch_text(session, labelings, verbose=False):
     """
 
     for labeling in labelings:
-        print('labeling', labeling)
         talk_info = get_talk_page_info(session, labeling['talk_page_id'])
         try:
             rev_doc = get_last_rev_before(session, talk_info['subjectid'],
@@ -87,7 +86,7 @@ def fetch_text(session, labelings, verbose=False):
             if verbose:
                 sys.stderr.write("?")
                 sys.stderr.write(
-                    labeling['talk_page_title'] + " " + labeling['timestamp'])
+                    labeling['talk_page_id'] + " " + labeling['timestamp'])
                 sys.stderr.flush()
         else:
             if verbose:
