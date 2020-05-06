@@ -69,8 +69,8 @@ def fetch_text(session, labelings, verbose=False):
 
     :Returns:
         An `iterator` of labelings augmented with 'page_id', 'rev_id', 'text',
-        'page_title' and an updated 'talk_page_title'. Note that labelings of
-        articles that aren't found will not be included.
+        'page_title' and 'talk_page_title'. Note that labelings of articles
+        that aren't found will not be included.
     """
 
     for labeling in labelings:
