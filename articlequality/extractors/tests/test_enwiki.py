@@ -7,7 +7,9 @@ from .. import enwiki
 
 def test_extractor():
 
-    Revision = namedtuple("Revisions", ['id', 'timestamp', 'sha1', 'text'])
+    User = namedtuple("User", ['id', 'text'])
+    Revision = namedtuple("Revisions", ['id', 'timestamp', 'sha1', 'user',
+                                        'text'])
 
     class Page:
 
@@ -19,39 +21,42 @@ def test_extractor():
         def __iter__(self):
             return iter(self.revisions)
 
+    alice = User(1, 'Alice')
+    bob = User(2, 'Bob')
+
     revisions = [
         Revision(
-            1, Timestamp(0), "aaa",
+            1, Timestamp(0), "aaa", alice,
             "{{talk page}}{{WikiProject Medicine|class=Stub}}..."
         ),
         Revision(
-            2, Timestamp(1), "bbb",
+            2, Timestamp(1), "bbb", bob,
             "{{talk page}}{{WikiProject Medicine|class=B}}..."
         ),
         Revision(
-            3, Timestamp(2), "aaa",
+            3, Timestamp(2), "aaa", bob,
             "{{talk page}}{{WikiProject Medicine|class=Stub<!--" +
             " test HTML comment -->}}..."
         ),
         Revision(
-            4, Timestamp(3), "ccc",
+            4, Timestamp(3), "ccc", alice,
             "{{talk page}}{{WikiProject Medicine|class=C}}..."
         ),
         Revision(
-            5, Timestamp(4), "aaa",
+            5, Timestamp(4), "aaa", bob,
             "{{talk page}}{{WikiProject Medicine|class=Stub}}..."
         ),
         Revision(
-            6, Timestamp(4), "ccc",
+            6, Timestamp(4), "ccc", bob,
             "{{talk page}}{{WikiProject Medicine|class= C}}..."
         ),
         Revision(
-            7, Timestamp(5), "ddd",
+            7, Timestamp(5), "ddd", alice,
             "{{talk page}}{{WikiProject Medicine|class=B}}\n" +
             "{{WP_Hats|class=B}}..."
         ),
         Revision(
-            8, Timestamp(6), "eee",
+            8, Timestamp(6), "eee", alice,
             """{{talkheader}}
 {{WikiProjectBannerShell|1=
 {{WPMILHIST|class=C

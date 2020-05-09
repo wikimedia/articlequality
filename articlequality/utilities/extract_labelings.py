@@ -128,6 +128,7 @@ def extract_labelings(dump, extractor=None, verbose=False):
             yield {'dump_talk_page_title': normalize_title(page.title),
                    'talk_page_id': page.id,
                    'project': obs['project'],
+                   'user': obs['user'],
                    'timestamp': obs['timestamp'].short_format(),
                    'wp10': obs['wp10']}
 

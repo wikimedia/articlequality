@@ -524,9 +524,15 @@ datasets/ptwiki.labelings.20200301.json:
 	  /mnt/data/xmldatadumps/public/ptwiki/20200301/ptwiki-20200301-pages-meta-history*.xml*.bz2 \
 	  --debug > $@
 
+# Bots were used to set the quality of many article to 1 or 2, so we remove
+# assessments made by users whose username suggest they are robots, that is,
+# usernames containing variations of the word "bot".
+datasets/ptwiki.labelings.20200301.without_bots.json: \
+		datasets/ptwiki.labelings.20200301.json
+	grep -v -P '"user": "[^"]*[Bb][Oo][Tt][^"]*"' $< > $@
 
 datasets/ptwiki.balanced_labelings.9k_2020.json: \
-		datasets/ptwiki.labelings.20200301.json
+		datasets/ptwiki.labelings.20200301.without_bots.json
 	( \
 	  grep -P '"wp10": "1"' $< | \
 	  shuf -n 1500; \

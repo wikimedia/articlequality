@@ -74,6 +74,8 @@ class Extractor:
                 revisions[revision.id] = {
                     'id': revision.id,
                     'timestamp': revision.timestamp,
+                    'user': (revision.user.text if revision.user is not None
+                             else ''),
                     'was_reverted': False,
                     'is_a_revert': revert is not None,
                     'reverted': revert.reverteds if revert is not None else [],
@@ -111,6 +113,7 @@ class Extractor:
                 for project, label in new_labels:
                     yield {'rev_id': revision['id'],
                            'timestamp': revision['timestamp'],
+                           'user': revision['user'],
                            'project': project,
                            'wp10': label}
 

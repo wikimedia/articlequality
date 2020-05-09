@@ -7,7 +7,9 @@ from .. import ruwiki
 
 def test_extractor():
 
-    Revision = namedtuple("Revisions", ['id', 'timestamp', 'sha1', 'text'])
+    User = namedtuple("User", ['id', 'text'])
+    Revision = namedtuple("Revisions", ['id', 'timestamp', 'sha1', 'user',
+                                        'text'])
 
     class Page:
 
@@ -19,81 +21,84 @@ def test_extractor():
         def __iter__(self):
             return iter(self.revisions)
 
+    alice = User(1, 'Alice')
+    bob = User(2, 'Bob')
+
     revisions = [
         Revision(
-            1, Timestamp(0), "aaa",
+            1, Timestamp(0), "aaa", alice,
             "{{Статья проекта WikiProject\n" +
             "|важность=высшая\n" +
             "|уровень=IV\n<!-- HTML test comment -->}}"
         ),
         Revision(
-            2, Timestamp(1), "bbb",
+            2, Timestamp(1), "bbb", alice,
             "{{Статья проекта WikiProject\n" +
             "|важность=высшая\n" +
             "|уровень=III}}"
         ),
         Revision(
-            3, Timestamp(2), "aaa",
+            3, Timestamp(2), "aaa", bob,
             "{{Статья проекта WikiProject\n" +
             "|важность=высшая\n" +
             "|уровень=IV<!-- HTML test comment -->}}"
         ),
         Revision(
-            4, Timestamp(3), "bbb",
+            4, Timestamp(3), "bbb", bob,
             "{{Статья проекта WikiProject\n" +
             "|важность=высшая\n" +
             "|уровень=III}}"
         ),
         Revision(
-            5, Timestamp(4), "ccc",
+            5, Timestamp(4), "ccc", alice,
             "{{Статья проекта WikiProject\n" +
             "|важность=высшая\n" +
             "|уровень=II}}"
         ),
         Revision(
-            6, Timestamp(5), "bbb",
+            6, Timestamp(5), "bbb", bob,
             "{{Статья проекта WikiProject\n" +
             "|важность=высшая\n" +
             "|уровень=III}}"
         ),
         Revision(
-            7, Timestamp(6), "ccc",
+            7, Timestamp(6), "ccc", bob,
             "{{Статья проекта WikiProject\n" +
             "|важность=высшая\n" +
             "|уровень=II}}"
         ),
         Revision(
-            8, Timestamp(7), "ddd",
+            8, Timestamp(7), "ddd", alice,
             "{{Статья проекта WikiProject\n" +
             "|важность=высшая\n" +
             "|уровень=I}}"
         ),
         Revision(
-            9, Timestamp(8), "eee",
+            9, Timestamp(8), "eee", alice,
             "{{Статья проекта WikiProject\n" +
             "|важность=высшая\n" +
             "|уровень=ХС}}"
         ),
         Revision(
-            10, Timestamp(9), "fff",
+            10, Timestamp(9), "fff", alice,
             "{{Статья проекта WikiProject\n" +
             "|важность=высшая\n" +
             "|уровень=дс}}"
         ),
         Revision(
-            11, Timestamp(10), "eee",
+            11, Timestamp(10), "eee", bob,
             "{{Статья проекта WikiProject\n" +
             "|важность=высшая\n" +
             "|уровень=ХС}}"
         ),
         Revision(
-            12, Timestamp(11), "fff",
+            12, Timestamp(11), "fff", bob,
             "{{Статья проекта WikiProject\n" +
             "|важность=высшая\n" +
             "|уровень=дс}}"
         ),
         Revision(
-            13, Timestamp(12), "ggg",
+            13, Timestamp(12), "ggg", alice,
             "{{Статья проекта WikiProject\n" +
             "|важность=высшая\n" +
             "|уровень=ИС<!-- HTML test comment -->}}"
