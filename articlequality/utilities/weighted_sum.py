@@ -8,6 +8,7 @@
 
     Usage:
         weighted_sum <weights> [--scores=<path>] [--output=<path>]
+
     Options:
         -h --help           Show this documentation.
         <weights>           Path to a yaml file containing class weights
@@ -51,8 +52,8 @@ def run(revision_scores, weights, output):
     for rev_id, score in revision_scores:
         weighted_sum = 0
         for article_class in weights:
-            weighted_sum += weights[article_class] * score[article_class]
+            weighted_sum += weights[article_class] * score['probability'][article_class]
 
         score['weighted_sum'] = weighted_sum
 
-        output.write("{0}\t{1}".format(rev_id, json.dumps(score)))
+        output.write("{0}\t{1}\n".format(rev_id, json.dumps(score)))
