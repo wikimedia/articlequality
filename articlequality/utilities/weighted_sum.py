@@ -52,7 +52,8 @@ def run(revision_scores, weights, output):
     for rev_id, score in revision_scores:
         weighted_sum = 0
         for article_class in weights:
-            weighted_sum += weights[article_class] * score['probability'][article_class]
+            weighted_sum += (weights[article_class] *
+                             score['probability'][article_class])
 
         score['weighted_sum'] = weighted_sum
 
