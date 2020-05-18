@@ -156,6 +156,9 @@ paragraphs_without_refs_total_length = aggregators.sum(
     name="ptwiki.revision.paragraphs_without_refs_total_length"
 )
 
+# Wikipedia:Manual of style/Words to watch
+words_to_watch_count = portuguese.words_to_watch.revision.matches
+
 local_wiki = [
     all_images,
     all_images / max(wikitext.revision.content_chars, 1),
@@ -177,7 +180,10 @@ local_wiki = [
     main_article_templates / max(wikitext.revision.content_chars, 1),
     (portuguese.stemmed.revision.stem_chars /
      max(wikitext.revision.content_chars, 1)),
-    log(paragraphs_without_refs_total_length + 1)
+    log(paragraphs_without_refs_total_length + 1),
+    words_to_watch_count,
+    words_to_watch_count / max(wikitext.revision.words, 1),
+    words_to_watch_count / max(all_cite_templates, 1)
 ]
 
 wp10 = wikipedia.article + local_wiki
