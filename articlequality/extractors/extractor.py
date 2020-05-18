@@ -10,6 +10,7 @@
 import logging
 import sys
 import traceback
+from collections import OrderedDict
 
 import mwparserfromhell as mwp
 import mwreverts
@@ -54,21 +55,13 @@ class Extractor:
                 sys.stderr.write("\n{0}: ".format(page.title))
                 sys.stderr.flush()
 
-            labelings = {}
-            revisions = {}
-            last_labels = set()
+            revisions = OrderedDict()
             detector = mwreverts.Detector()
 
-            # Process all of the revisions looking for new class labels
+            # Process all of the revisions looking for reverts
             for revision in page:
 
                 revert = detector.process(revision.sha1, revision.id)
-                revisions[revision.id] = {
-                    'was_reverted': False,
-                    'is_a_revert': revert is not None,
-                    'reverted': revert.reverteds if revert is not None else []
-                }
-
                 try:
                     revision_text = revision.text or ""
                     project_labels = set(pl for pl in
@@ -78,73 +71,60 @@ class Extractor:
                     logger.warning(traceback.format_exc())
                     continue
 
+                revisions[revision.id] = {
+                    'id': revision.id,
+                    'timestamp': revision.timestamp,
+                    'was_reverted': False,
+                    'is_a_revert': revert is not None,
+                    'reverted': revert.reverteds if revert is not None else [],
+                    'project_labels': project_labels
+                }
+
                 if revert is not None:
                     # This revision is a revert.
                     self.invert_reverted_status(
                         revisions[revision.id]['reverted'],
-                        revisions, labelings)
+                        revisions)
+
+            # Re-process revisions only considering those that were not
+            # reverted
+            last_labels = set()
+            for rev_id, revision in revisions.items():
+                if revision['was_reverted']:
                     if verbose:
                         sys.stderr.write("r")
                         sys.stderr.flush()
-                else:
-                    # This revision is not a revert.  Get the new labels
-                    # FIXME: what if last_labels contains labels from one of
-                    # reverted edits?
-                    new_labels = project_labels - last_labels
+                    continue
 
-                    # Log some verbose stuff
-                    if verbose:
-                        if len(new_labels) > 0:
-                            sys.stderr.write("l")
-                            sys.stderr.flush()
-                        else:
-                            sys.stderr.write(".")
-                            sys.stderr.flush()
+                # Get the new labels
+                new_labels = revision['project_labels'] - last_labels
+                last_labels = revision['project_labels']
 
-                    # Update lookup of rev_ids that affect labelings
+                # Log some verbose stuff
+                if verbose:
                     if len(new_labels) > 0:
-                        labelings[revision.id] = [
-                            {'rev_id': revision.id,
-                             'project': project,
-                             'wp10': wp10,
-                             'timestamp': revision.timestamp,
-                             'reverted': False}
-                            for project, wp10 in new_labels
-                        ]
-
-                # Update state so we make an appropriate comparison next time
-                # FIXME: this should always point to labels from a
-                # non reverted edit
-                last_labels = project_labels
-
-            # Find first labelings and filter out reverted labelings
-            first_observations = {}
-            for observations in labelings.values():
-                for ob in observations:
-                    if ob['reverted']:
-                        continue
-                    pair = (ob['project'], ob['wp10'])
-                    if pair in first_observations:
-                        if ob['timestamp'] < \
-                           first_observations[pair]['timestamp']:
-                            first_observations[pair] = ob
+                        sys.stderr.write("l")
                     else:
-                        first_observations[pair] = ob
+                        sys.stderr.write(".")
+                    sys.stderr.flush()
 
-            # All cleaned up.  Yield what we've got.
-            for ob in first_observations.values():
-                yield ob
+                for project, label in new_labels:
+                    yield {'rev_id': revision['id'],
+                           'timestamp': revision['timestamp'],
+                           'project': project,
+                           'wp10': label}
 
-    def invert_reverted_status(self, reverteds, revisions, labelings):
+    def invert_reverted_status(self, reverteds, revisions):
+        """
+        This method recursively searches the reverted status of revisions and
+        inverts the status when reverts are themselves reverted.
+        """
         for rev_id in reverteds:
             revisions[rev_id]['was_reverted'] = \
                 not revisions[rev_id]['was_reverted']
-            if rev_id in labelings:
-                for lab in labelings[rev_id]:
-                    lab['reverted'] = not lab['reverted']
             if revisions[rev_id]['is_a_revert']:
                 self.invert_reverted_status(revisions[rev_id]['reverted'],
-                                            revisions, labelings)
+                                            revisions)
 
     def extract_labels(self, text):
         raise NotImplementedError()

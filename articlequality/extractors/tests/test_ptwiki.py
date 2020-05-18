@@ -107,6 +107,32 @@ def test_extractor():
                 7, Timestamp(7), "ddd",
                 "{{Marca de projeto|4}}"  # Later on, the page is improved
             )
+        ]),
+        Page("Page with concentric reverts", 1, [
+            Revision(
+                1, Timestamp(1), "aaa",
+                "{{Marca de projeto|1}}"
+            ),
+            Revision(
+                2, Timestamp(2), "bbb",
+                "{{Marca de projeto|2}}"
+            ),
+            Revision(
+                3, Timestamp(3), "ccc",
+                "{{Marca de projeto|3}}"
+            ),
+            Revision(
+                4, Timestamp(4), "aaa",
+                "{{Marca de projeto|1}}"  # Vandal messing up the template
+            ),
+            Revision(
+                5, Timestamp(5), "ccc",
+                "{{Marca de projeto|3}}"  # Rollback
+            ),
+            Revision(
+                6, Timestamp(6), "ddd",
+                "{{Marca de projeto|2}}<!-- re-evaluation -->"
+            )
         ])
     ]
     expectations = [
@@ -126,13 +152,16 @@ def test_extractor():
             ("marca de projeto", "1", Timestamp(1)),
             ("marca de projeto", "2", Timestamp(2)),
             ("marca de projeto", "4", Timestamp(7))
+        ],
+        [
+            ("marca de projeto", "1", Timestamp(1)),
+            ("marca de projeto", "2", Timestamp(2)),
+            ("marca de projeto", "3", Timestamp(3)),
+            ("marca de projeto", "2", Timestamp(6))
         ]
     ]
     for page, expected in zip(pages, expectations):
-        observations = ptwiki.extract(page)
-        project_labels = {(ob['project'], ob['wp10']): ob
-                          for ob in observations}
-
-        for proj, lab, timestamp in expected:
-            ob = project_labels[(proj, lab)]
-            assert ob['timestamp'] == timestamp
+        observations = list(ptwiki.extract(page))
+        lab_tuples = [(ob['project'], ob['wp10'], ob['timestamp'])
+                      for ob in observations]
+        assert lab_tuples == expected
