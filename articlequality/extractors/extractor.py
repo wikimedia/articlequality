@@ -27,7 +27,7 @@ class Extractor:
         doc : `str`
             Documentation describing the extraction strategy
         namespace : `iterable`(`int`)
-            A set of namespaces that will be considered when performin an
+            A set of namespaces that will be considered when performing an
             extraction
     """
     def __init__(self, name, doc, namespaces):
@@ -55,6 +55,7 @@ class Extractor:
                 sys.stderr.flush()
 
             labelings = {}
+            revisions = {}
             last_labels = set()
             detector = mwreverts.Detector()
 
@@ -62,6 +63,11 @@ class Extractor:
             for revision in page:
 
                 revert = detector.process(revision.sha1, revision.id)
+                revisions[revision.id] = {
+                    'was_reverted': False,
+                    'is_a_revert': revert is not None,
+                    'reverted': revert.reverteds if revert is not None else []
+                }
 
                 try:
                     revision_text = revision.text or ""
@@ -74,20 +80,16 @@ class Extractor:
 
                 if revert is not None:
                     # This revision is a revert.
-                    for rev_id in revert.reverteds:
-                        if rev_id in labelings:
-                            for lab in labelings[rev_id]:
-                                lab['reverted'] = True
-
-                    if revert.reverted_to in labelings:
-                        for lab in labelings[revert.reverted_to]:
-                            lab['reverted'] = False
-
+                    self.invert_reverted_status(
+                        revisions[revision.id]['reverted'],
+                        revisions, labelings)
                     if verbose:
                         sys.stderr.write("r")
                         sys.stderr.flush()
                 else:
                     # This revision is not a revert.  Get the new labels
+                    # FIXME: what if last_labels contains labels from one of
+                    # reverted edits?
                     new_labels = project_labels - last_labels
 
                     # Log some verbose stuff
@@ -111,6 +113,8 @@ class Extractor:
                         ]
 
                 # Update state so we make an appropriate comparison next time
+                # FIXME: this should always point to labels from a
+                # non reverted edit
                 last_labels = project_labels
 
             # Find first labelings and filter out reverted labelings
@@ -130,6 +134,17 @@ class Extractor:
             # All cleaned up.  Yield what we've got.
             for ob in first_observations.values():
                 yield ob
+
+    def invert_reverted_status(self, reverteds, revisions, labelings):
+        for rev_id in reverteds:
+            revisions[rev_id]['was_reverted'] = \
+                not revisions[rev_id]['was_reverted']
+            if rev_id in labelings:
+                for lab in labelings[rev_id]:
+                    lab['reverted'] = not lab['reverted']
+            if revisions[rev_id]['is_a_revert']:
+                self.invert_reverted_status(revisions[rev_id]['reverted'],
+                                            revisions, labelings)
 
     def extract_labels(self, text):
         raise NotImplementedError()
