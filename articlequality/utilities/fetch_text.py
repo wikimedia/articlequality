@@ -86,7 +86,8 @@ def fetch_text(session, labelings, verbose=False):
             if verbose:
                 sys.stderr.write("?")
                 sys.stderr.write(
-                    labeling['talk_page_id'] + " " + labeling['timestamp'])
+                    str(labeling['talk_page_id']) + " " +
+                    labeling['timestamp'])
                 sys.stderr.flush()
         else:
             if verbose:
