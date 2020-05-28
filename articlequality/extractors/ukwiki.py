@@ -1,6 +1,5 @@
 import logging
 import re
-import traceback
 
 from .extractor import TemplateExtractor
 
@@ -15,32 +14,36 @@ NORMALIZED_LABELS = {
         "IV": ["IV", "4", "Stub", "stub"]
 }
 
+LABEL_MAP = {observed_label: normalized_label
+             for normalized_label, observed_labels in
+             NORMALIZED_LABELS.items()
+             for observed_label in observed_labels}
+
+WP_PREFIX = re.compile(r"стаття про[еє]кту|вікіпро[еє]кт|про[еє]кт")
+
 
 def from_template(template):
 
-    if template.has_param('class') or template.has_param('рівень'):
-        template_name = normalize_template_name(template.name)
+    template_name = normalize_template_name(template.name)
+    if WP_PREFIX.match(template_name):
         project_name = normalize_project_name(template_name)
-        try:
-            label = get_quality(template)
-
-            if label in POSSIBLE_LABELS:
-                yield (project_name, label)
-            else:
-                logger.debug("Class {0} not in possible classes."
-                              .format(label))
-                pass  # not a quality assessment class
-
-        except ValueError as e:
-            logger.warning(traceback.format_exc())
-            pass  # no assessment class in template
+        label = get_quality_label(template)
+        if label is None:
+            logger.warning("Couldn't extract label from {0}".format(template))
+        else:
+            yield (project_name, label)
 
 
-def get_quality(template):
-    LABEL_MAP = {observed_label: normalized_label
-             for normalized_label, observed_labels in 
-             NORMALIZED_LABELS.items()
-             for observed_label in observed_labels}
+def get_quality_label(template):
+    if template.has_param("рівень") or template.has_param("class"):
+        if template.has_param("рівень"):
+            label = template.get_param("рівень")
+        else:
+            label = template.has_param("class")
+        return LABEL_MAP.get(label)
+    else:
+        return None
+
 
 def normalize_template_name(template_name):
     template_name = str(template_name).lower().replace("_", " ")
@@ -58,6 +61,6 @@ articlequality.extractors.ukwiki
 This extractor looks for instances of the template on
 article talk pages (namespace = 1) with the first unname parameter
 """,
-    namespaces={1}
+    namespaces={1},
     from_template=from_template
 )
