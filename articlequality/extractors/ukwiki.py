@@ -1,49 +1,57 @@
 import logging
 import re
-import traceback
 
 from .extractor import TemplateExtractor
 
 logger = logging.getLogger(__name__)
 
 NORMALIZED_LABELS = {
-        "ВС": ["ВС", "вс", "Вибрана стаття", "вибрана стаття"],
-        "ДС": ["ДС", "дс", "Добра стаття", "добра стаття"],
-        "I": ["I", "1"],
-        "II": ["II", "2"],
+        "IV": ["IV", "4", "Stub", "stub"],
         "III": ["III", "3"],
-        "IV": ["IV", "4", "Stub", "stub"]
+        "II": ["II", "2"],
+        "I": ["I", "1"],
+        "ВС": ["ВС", "вс", "Вибрана стаття", "вибрана стаття"],
+        "ДС": ["ДС", "дс", "Добра стаття", "добра стаття"]
 }
+
+LABEL_MAP = {observed_label: normalized_label
+             for normalized_label, observed_labels in
+             NORMALIZED_LABELS.items()
+             for observed_label in observed_labels}
+
+WP_PREFIX = re.compile(r"стаття про[еє]кту|вікіпро[еє]кт|про[еє]кт")
 
 
 def from_template(template):
 
-    if template.has_param('class') or template.has_param('рівень'):
-        template_name = normalize_template_name(template.name)
+    template_name = normalize_template_name(template.name)
+    if WP_PREFIX.match(template_name):
         project_name = normalize_project_name(template_name)
-        try:
-            label = get_quality(template)
-
-            if label in POSSIBLE_LABELS:
-                yield (project_name, label)
-            else:
-                logger.debug("Class {0} not in possible classes."
-                              .format(label))
-                pass  # not a quality assessment class
-
-        except ValueError as e:
-            logger.warning(traceback.format_exc())
-            pass  # no assessment class in template
+        label = get_quality_label(template)
+        if label is None:
+            logger.warning("Couldn't extract label from {0}".format(template))
+        else:
+            yield (project_name, label)
 
 
-def get_quality(template):
-    LABEL_MAP = {observed_label: normalized_label
-             for normalized_label, observed_labels in 
-             NORMALIZED_LABELS.items()
-             for observed_label in observed_labels}
+def get_quality_label(template):
+    if template.has_param("рівень") or template.has_param("class"):
+        if template.has_param("рівень"):
+            label = str(template.get("рівень").value.strip_code())
+            label = label.strip().lower()
+        else:
+            label = str(template.get("class").value.strip_code())
+            label = label.strip().lower()
+        return LABEL_MAP.get(label)
+    # If the label does not exist in LABEL_MAP then get() returns None
+    # hence the logger warning will be triggered
+    else:
+        return None
+
 
 def normalize_template_name(template_name):
     template_name = str(template_name).lower().replace("_", " ")
+    return template_name
 
 
 def normalize_project_name(template_name):
@@ -58,6 +66,6 @@ articlequality.extractors.ukwiki
 This extractor looks for instances of the template on
 article talk pages (namespace = 1) with the first unname parameter
 """,
-    namespaces={1}
+    namespaces={1},
     from_template=from_template
 )
