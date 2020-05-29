@@ -47,6 +47,7 @@ def get_quality_label(template):
 
 def normalize_template_name(template_name):
     template_name = str(template_name).lower().replace("_", " ")
+    return template_name
 
 
 def normalize_project_name(template_name):
