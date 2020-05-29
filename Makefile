@@ -847,8 +847,7 @@ trwiki_tuning_reports: \
 ####################### Ukrainian Wikipedia #################################
 datasets/ukwiki.labelings.20200501.json:
 	./utility extract_labelings \
-		/mnt/data/xmldatadumps/public/ukwiki/20200501/ukwiki-20200501-pages-meta-history?*.xml-*.bz2 \
-		--verbose > $@
+		/mnt/data/xmldatadumps/public/ukwiki/20200501/ukwiki-20200501-pages-meta-history?*.xml-*.bz2 > $@
 
 
 ############################# Wikidata ######################################
