@@ -37,10 +37,14 @@ def from_template(template):
 def get_quality_label(template):
     if template.has_param("рівень") or template.has_param("class"):
         if template.has_param("рівень"):
-            label = template.get_param("рівень")
+            label = str(template.get("рівень").value.strip_code())
+            label = label.strip().lower()
         else:
-            label = template.has_param("class")
+            label = str(template.get("class").value.strip_code())
+            label = label.strip().lower()
         return LABEL_MAP.get(label)
+    # If the label does not exist in LABEL_MAP then get() returns None
+    # hence the logger warning will be triggered
     else:
         return None
 
