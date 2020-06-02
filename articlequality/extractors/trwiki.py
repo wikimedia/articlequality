@@ -34,7 +34,7 @@ def from_template(template):
                              .format(label))
                 pass  # not a quality assessment class
 
-        except ValueError as e:
+        except ValueError:
             logger.warning(traceback.format_exc())
             pass  # no assessment class in template
 
