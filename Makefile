@@ -524,59 +524,65 @@ datasets/ptwiki.labelings.20200301.json:
 	  /mnt/data/xmldatadumps/public/ptwiki/20200301/ptwiki-20200301-pages-meta-history*.xml*.bz2 \
 	  --debug > $@
 
-
-datasets/ptwiki.balanced_labelings.9k_2020.json: \
+# Restrict the dataset to newer assessments. This avoids adding assessments
+# made by bots before 2014 (mainly for quality levels 1 and 2) and makes the
+# model better reflect the current standards. See T250809.
+datasets/ptwiki.labelings.20200301.since_2014.json: \
 		datasets/ptwiki.labelings.20200301.json
+	grep -P '"timestamp": "20(1[4-9]|20)' $< > $@
+
+datasets/ptwiki.balanced_labelings.4k_2020.json: \
+		datasets/ptwiki.labelings.20200301.since_2014.json
 	( \
 	  grep -P '"wp10": "1"' $< | \
-	  shuf -n 1500; \
+	  shuf -n 653; \
 	  grep -P '"wp10": "2"' $< | \
-	  shuf -n 1500; \
+	  shuf -n 653; \
 	  grep -P '"wp10": "3"' $< | \
-	  shuf -n 1500; \
+	  shuf -n 653; \
 	  grep -P '"wp10": "4"' $< | \
-	  shuf -n 1500; \
+	  shuf -n 653; \
 	  grep -P '"wp10": "5"' $< | \
-	  shuf -n 1500; \
+	  shuf -n 653; \
 	  grep -P '"wp10": "6"' $< | \
-	  shuf -n 1500 \
+	  shuf -n 653 \
 	) | \
 	shuf > $@
 
-datasets/ptwiki.labeled_revisions.with_text.9k_2020.json: \
-		datasets/ptwiki.balanced_labelings.9k_2020.json
+datasets/ptwiki.labeled_revisions.with_text.4k_2020.json: \
+		datasets/ptwiki.balanced_labelings.4k_2020.json
 	cat $< | \
 	./utility fetch_text \
 	  --api-host=https://pt.wikipedia.org \
 	  --verbose > $@
 
-datasets/ptwiki.labeled_revisions.w_cache.9k_2020.json: \
-		datasets/ptwiki.labeled_revisions.with_text.9k_2020.json
+datasets/ptwiki.labeled_revisions.w_cache.4k_2020.json: \
+		datasets/ptwiki.labeled_revisions.with_text.4k_2020.json
 	cat $< | \
 	./utility extract_from_text \
 	  articlequality.feature_lists.ptwiki.wp10 \
 	  --verbose > $@
 
 tuning_reports/ptwiki.wp10.md: \
-		datasets/ptwiki.labeled_revisions.w_cache.9k_2020.json
+		datasets/ptwiki.labeled_revisions.w_cache.4k_2020.json
 	cat $< | \
 	revscoring tune \
 	  config/classifiers.params.yaml \
 	  articlequality.feature_lists.ptwiki.wp10 \
 	  wp10 \
 	  accuracy.macro \
-	  --pop-rate '"1"=0.7121875681' \
-	  --pop-rate '"2"=0.187645479' \
-	  --pop-rate '"3"=0.05459120714' \
-	  --pop-rate '"4"=0.03279053449' \
-	  --pop-rate '"5"=0.005942558494' \
-	  --pop-rate '"6"=0.006842652859' \
+	  --pop-rate '"1"=0.5312984633' \
+	  --pop-rate '"2"=0.2358663471' \
+	  --pop-rate '"3"=0.0899478359' \
+	  --pop-rate '"4"=0.0486395037' \
+	  --pop-rate '"5"=0.0460312985' \
+	  --pop-rate '"6"=0.0482165515' \
 	  --center --scale \
 	  --cv-timeout=60 \
 	  --debug > $@
 
 models/ptwiki.wp10.gradient_boosting.model: \
-		datasets/ptwiki.labeled_revisions.w_cache.9k_2020.json
+		datasets/ptwiki.labeled_revisions.w_cache.4k_2020.json
 	cat $< | \
 	revscoring cv_train \
 	  revscoring.scoring.models.GradientBoosting \
@@ -586,13 +592,13 @@ models/ptwiki.wp10.gradient_boosting.model: \
 	  -p 'max_depth=7' \
 	  -p 'learning_rate=0.01' \
 	  -p 'max_features="log2"' \
-	  -p 'n_estimators=300' \
-	  --pop-rate '"1"=0.7121875681' \
-	  --pop-rate '"2"=0.187645479' \
-	  --pop-rate '"3"=0.05459120714' \
-	  --pop-rate '"4"=0.03279053449' \
-	  --pop-rate '"5"=0.005942558494' \
-	  --pop-rate '"6"=0.006842652859' \
+	  -p 'n_estimators=100' \
+	  --pop-rate '"1"=0.5312984633' \
+	  --pop-rate '"2"=0.2358663471' \
+	  --pop-rate '"3"=0.0899478359' \
+	  --pop-rate '"4"=0.0486395037' \
+	  --pop-rate '"5"=0.0460312985' \
+	  --pop-rate '"6"=0.0482165515' \
 	  --center --scale > $@
 
 	revscoring model_info $@ > model_info/ptwiki.wp10.md
