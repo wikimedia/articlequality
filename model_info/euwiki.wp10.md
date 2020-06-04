@@ -1,10 +1,10 @@
 Model Information:
 	 - type: RandomForest
 	 - version: 0.8.1
-	 - params: {'min_samples_leaf': 3, 'scale': True, 'n_estimators': 320, 'min_impurity_split': None, 'population_rates': None, 'random_state': None, 'verbose': 0, 'warm_start': False, 'max_leaf_nodes': None, 'min_weight_fraction_leaf': 0.0, 'label_weights': None, 'labels': ['Stub', 'Start', 'C', 'B', 'GA', 'FA'], 'n_jobs': None, 'max_features': 'log2', 'oob_score': False, 'center': True, 'class_weight': None, 'criterion': 'gini', 'multilabel': False, 'max_depth': None, 'bootstrap': True, 'min_samples_split': 2, 'min_impurity_decrease': 0.0}
+	 - params: {'n_jobs': None, 'labels': ['Stub', 'Start', 'C', 'B', 'GA', 'FA'], 'max_features': 'log2', 'population_rates': None, 'n_estimators': 320, 'max_samples': None, 'criterion': 'gini', 'oob_score': False, 'min_impurity_decrease': 0.0, 'max_depth': None, 'min_impurity_split': None, 'scale': True, 'max_leaf_nodes': None, 'min_samples_split': 2, 'min_weight_fraction_leaf': 0.0, 'class_weight': None, 'bootstrap': True, 'ccp_alpha': 0.0, 'warm_start': False, 'verbose': 0, 'multilabel': False, 'random_state': None, 'label_weights': None, 'center': True, 'min_samples_leaf': 3}
 	Environment:
-	 - revscoring_version: '2.6.2'
-	 - platform: 'Linux-4.9.0-11-amd64-x86_64-with-debian-9.11'
+	 - revscoring_version: '2.8.2'
+	 - platform: 'Linux-4.9.0-11-amd64-x86_64-with-debian-9.12'
 	 - machine: 'x86_64'
 	 - version: '#1 SMP Debian 4.9.189-3+deb9u1 (2019-09-20)'
 	 - system: 'Linux'
@@ -21,64 +21,64 @@ Model Information:
 	counts (n=454):
 		label      n         ~Stub    ~Start    ~C    ~B    ~GA    ~FA
 		-------  ---  ---  -------  --------  ----  ----  -----  -----
-		'Stub'    80  -->       49        18    13     0      0      0
-		'Start'   75  -->       16        32    24     3      0      0
-		'C'       86  -->        5         8    57    13      3      0
-		'B'       73  -->        0         0     9    43     19      2
-		'GA'      75  -->        0         0     1    17     40     17
-		'FA'      65  -->        0         0     0     2     12     51
+		'Stub'    80  -->       47        24     9     0      0      0
+		'Start'   75  -->       13        30    30     2      0      0
+		'C'       86  -->        4         7    60    13      2      0
+		'B'       73  -->        0         0    10    43     18      2
+		'GA'      75  -->        0         0     1    16     42     16
+		'FA'      65  -->        0         0     0     1     16     48
 	rates:
 		          'Stub'    'Start'    'C'    'B'    'GA'    'FA'
 		------  --------  ---------  -----  -----  ------  ------
 		sample     0.176      0.165  0.189  0.161   0.165   0.143
-	match_rate (micro=0.168, macro=0.167):
+	match_rate (micro=0.169, macro=0.167):
 		  Stub    Start      C      B     GA     FA
 		------  -------  -----  -----  -----  -----
-		 0.154    0.128  0.229  0.172  0.163  0.154
-	filter_rate (micro=0.832, macro=0.833):
+		 0.141    0.134  0.242  0.165  0.172  0.145
+	filter_rate (micro=0.831, macro=0.833):
 		  Stub    Start      C      B     GA     FA
 		------  -------  -----  -----  -----  -----
-		 0.846    0.872  0.771  0.828  0.837  0.846
-	recall (micro=0.599, macro=0.601):
-		  Stub    Start      C      B     GA     FA
-		------  -------  -----  -----  -----  -----
-		 0.612    0.427  0.663  0.589  0.533  0.785
-	!recall (micro=0.918, macro=0.92):
+		 0.859    0.866  0.758  0.835  0.828  0.855
+	recall (micro=0.595, macro=0.595):
 		  Stub    Start      C      B    GA     FA
 		------  -------  -----  -----  ----  -----
-		 0.944    0.931  0.872  0.908  0.91  0.951
-	precision (micro=0.601, macro=0.603):
+		 0.588      0.4  0.698  0.589  0.56  0.738
+	!recall (micro=0.917, macro=0.919):
 		  Stub    Start      C      B     GA     FA
 		------  -------  -----  -----  -----  -----
-		   0.7    0.552  0.548  0.551  0.541  0.729
-	!precision (micro=0.919, macro=0.92):
-		  Stub    Start      C     B     GA     FA
-		------  -------  -----  ----  -----  -----
-		 0.919    0.891  0.917  0.92  0.908  0.964
-	f1 (micro=0.597, macro=0.599):
-		  Stub    Start    C     B     GA     FA
-		------  -------  ---  ----  -----  -----
-		 0.653    0.481  0.6  0.57  0.537  0.756
-	!f1 (micro=0.918, macro=0.92):
+		 0.955    0.918  0.864  0.916  0.905  0.954
+	precision (micro=0.599, macro=0.602):
 		  Stub    Start      C      B     GA     FA
 		------  -------  -----  -----  -----  -----
-		 0.931    0.911  0.894  0.914  0.909  0.957
-	accuracy (micro=0.864, macro=0.866):
+		 0.734    0.492  0.545  0.573  0.538  0.727
+	!precision (micro=0.918, macro=0.919):
 		  Stub    Start      C      B     GA     FA
 		------  -------  -----  -----  -----  -----
-		 0.885    0.848  0.833  0.857  0.848  0.927
-	fpr (micro=0.082, macro=0.08):
-		  Stub    Start      C      B    GA     FA
-		------  -------  -----  -----  ----  -----
-		 0.056    0.069  0.128  0.092  0.09  0.049
+		 0.915    0.885  0.924  0.921  0.912  0.956
+	f1 (micro=0.593, macro=0.595):
+		  Stub    Start      C      B     GA     FA
+		------  -------  -----  -----  -----  -----
+		 0.653    0.441  0.612  0.581  0.549  0.733
+	!f1 (micro=0.917, macro=0.919):
+		  Stub    Start      C      B     GA     FA
+		------  -------  -----  -----  -----  -----
+		 0.935    0.902  0.893  0.918  0.909  0.955
+	accuracy (micro=0.863, macro=0.865):
+		  Stub    Start      C      B     GA     FA
+		------  -------  -----  -----  -----  -----
+		  0.89    0.833  0.833  0.863  0.848  0.923
+	fpr (micro=0.083, macro=0.081):
+		  Stub    Start      C      B     GA     FA
+		------  -------  -----  -----  -----  -----
+		 0.045    0.082  0.136  0.084  0.095  0.046
 	roc_auc (micro=0.894, macro=0.896):
-		  Stub    Start      C      B    GA     FA
-		------  -------  -----  -----  ----  -----
-		 0.943    0.869  0.864  0.881  0.86  0.959
-	pr_auc (micro=0.602, macro=0.601):
-		  Stub    Start      C     B     GA     FA
-		------  -------  -----  ----  -----  -----
-		 0.727    0.513  0.652  0.55  0.467  0.699
+		  Stub    Start      C      B     GA     FA
+		------  -------  -----  -----  -----  -----
+		 0.945    0.867  0.866  0.876  0.862  0.957
+	pr_auc (micro=0.597, macro=0.595):
+		  Stub    Start     C     B    GA     FA
+		------  -------  ----  ----  ----  -----
+		 0.735    0.486  0.66  0.54  0.46  0.692
 	
-	 - score_schema: {'title': 'Scikit learn-based classifier score with probability', 'type': 'object', 'properties': {'prediction': {'type': 'string', 'description': 'The most likely label predicted by the estimator'}, 'probability': {'type': 'object', 'description': 'A mapping of probabilities onto each of the potential output labels', 'properties': {'Start': {'type': 'number'}, 'C': {'type': 'number'}, 'B': {'type': 'number'}, 'GA': {'type': 'number'}, 'FA': {'type': 'number'}, 'Stub': {'type': 'number'}}}}}
+	 - score_schema: {'properties': {'probability': {'properties': {'Start': {'type': 'number'}, 'GA': {'type': 'number'}, 'C': {'type': 'number'}, 'B': {'type': 'number'}, 'Stub': {'type': 'number'}, 'FA': {'type': 'number'}}, 'description': 'A mapping of probabilities onto each of the potential output labels', 'type': 'object'}, 'prediction': {'description': 'The most likely label predicted by the estimator', 'type': 'string'}}, 'title': 'Scikit learn-based classifier score with probability', 'type': 'object'}
 
