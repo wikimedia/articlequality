@@ -150,7 +150,7 @@ def build_fetch_item_info(session, claims):
 
                     ob['claims'][pid] = value
                     annotated_observations.append(ob)
-                except Exception as e:
+                except Exception:
                     logger.error("Could not process {0}".format(ob))
                     logger.error(traceback.format_exc())
         return annotated_observations
