@@ -849,6 +849,82 @@ datasets/ukwiki.labelings.20200501.json:
 	./utility extract_labelings \
 		/mnt/data/xmldatadumps/public/ukwiki/20200501/ukwiki-20200501-pages-meta-history?*.xml-*.bz2 > $@
 
+datasets/ukwiki.labelings.900_balanced.json: \
+		datasets/ukwiki.labelings.20200501.json
+	( \
+	  grep -P '"wp10"': "I"' $< | \
+	  shuf -n 150; \
+	  grep -P '"wp10"': "II"' $< | \
+	  shuf -n 150; \
+	  grep -P '"wp10"': "III"' $< | \
+	  shuf -n 150; \
+	  grep -P '"wp10"': "IV"' $< | \
+	  shuf -n 150; \
+	  grep -P '"wp10"': "\\u0412\\u0421"' $< | \
+	  shuf -n 150; \
+	  grep -P '"wp10"': "\\u0414\\u0421"' $< | \
+	  shuf -n 150; \
+	) | \
+	shuf > $@
+
+datasets/ukwiki.labeling_revisions.w_text.900.json: \
+		datasets/ukwiki.labelings.900_balanced.json
+	cat $< | \
+	./utility fetch_text \
+	  --api-host=https://uk.wikipedia.org  --thread 4 \
+	  --verbose > $@
+
+datasets/ukwiki.labeling_revisions.w_cache.900_balanced.json: \
+		datasets/ukwiki.labeling_revisions.w_text.900_balanced.json
+	cat $< | \
+	./utility extract_from_text \
+	  articlequality.feature_lists.ukwiki.wp10 \
+	  --verbose > $@
+
+tuning_reports/ukwiki.wp10.md: \
+		datasets/ukwiki.labeling_revisions.w_cache.900_balanced.json
+	cat $< | \
+	revscoring tune \
+	  config/classifiers.params.yaml \
+	  articlequality.feature_lists.ukwiki.wp10 \
+	  wp10 \
+	  accuracy.macro \
+	  --pop-rate '"I"=' \
+	  --pop-rate '"II"=' \
+	  --pop-rate '"III"=' \
+	  --pop-rate '"IV"=' \
+	  --pop-rate '"ВС"=' \
+	  --pop-rate '"ДС"=' \
+	  --cv-timeout=60 \
+	  --debug > $@
+
+models/ukwiki.wp10.gradient_boosting.model: \
+		datasets/ukwiki.balanced.labeling_revisions.w_cache.900_balanced.json
+	cat $< | \
+	revscoring cv_train \
+	  revscoring.scoring.models.GradientBoosting \
+	  articlequality.feature_lists.ukwiki.wp10 \
+	  wp10 \
+	  --version $(wp10_major_minor).0 \
+	  -p 'n_estimators=500' \
+	  -p 'learning_rate=0.01' \
+	  -p 'max_features="log2"' \
+	  -p 'max_depth=7' \
+	  --pop-rate '"I"=' \
+	  --pop-rate '"II"=' \
+	  --pop-rate '"III"=' \
+	  --pop-rate '"IV"=' \
+	  --pop-rate '"ВС"=' \
+	  --pop-rate '"ДС"=' \
+	  --center --scale > $@
+
+	revscoring model_info $@ > model_info/ukwiki.wp10.md
+
+ukwiki_models: \
+	models/ukwiki.wp10.gradient_boosting.model
+
+ukwiki_tuning_reports: \
+	tuning_reports/ukwiki.wp10.md
 
 ############################# Wikidata ######################################
 
