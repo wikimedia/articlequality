@@ -8,6 +8,7 @@ models: \
 	frwiki_models \
 	frwikisource_models \
 	glwiki_models \
+	ptwiki_models \
 	ruwiki_models \
 	svwiki_models \
 	trwiki_models \
@@ -20,6 +21,7 @@ tuning_reports: \
 	frwiki_tuning_reports \
 	frwikisource_tuning_reports \
 	glwiki_tuning_reports \
+	ptwiki_tuning_reports \
 	ruwiki_tuning_reports \
 	svwiki_tuning_reports \
 	trwiki_tuning_reports \
