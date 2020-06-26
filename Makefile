@@ -867,7 +867,7 @@ datasets/ukwiki.labelings.900_balanced.json: \
 	) | \
 	shuf > $@
 
-datasets/ukwiki.labeling_revisions.w_text.900.json: \
+datasets/ukwiki.labeling_revisions.w_text.900_balanced.json: \
 		datasets/ukwiki.labelings.900_balanced.json
 	cat $< | \
 	./utility fetch_text \
@@ -899,7 +899,7 @@ tuning_reports/ukwiki.wp10.md: \
 	  --debug > $@
 
 models/ukwiki.wp10.gradient_boosting.model: \
-		datasets/ukwiki.balanced.labeling_revisions.w_cache.900_balanced.json
+		datasets/ukwiki.labeling_revisions.w_cache.900_balanced.json
 	cat $< | \
 	revscoring cv_train \
 	  revscoring.scoring.models.GradientBoosting \
