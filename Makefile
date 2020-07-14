@@ -852,17 +852,17 @@ datasets/ukwiki.labelings.20200501.json:
 datasets/ukwiki.labelings.900_balanced.json: \
 		datasets/ukwiki.labelings.20200501.json
 	( \
-	  grep -P '"wp10"': "I"' $< | \
+	  grep -P '"wp10": "I"' $< | \
 	  shuf -n 150; \
-	  grep -P '"wp10"': "II"' $< | \
+	  grep -P '"wp10": "II"' $< | \
 	  shuf -n 150; \
-	  grep -P '"wp10"': "III"' $< | \
+	  grep -P '"wp10": "III"' $< | \
 	  shuf -n 150; \
-	  grep -P '"wp10"': "IV"' $< | \
+	  grep -P '"wp10": "IV"' $< | \
 	  shuf -n 150; \
-	  grep -P '"wp10"': "\\u0412\\u0421"' $< | \
+	  grep -P '"wp10": "\\u0412\\u0421"' $< | \
 	  shuf -n 150; \
-	  grep -P '"wp10"': "\\u0414\\u0421"' $< | \
+	  grep -P '"wp10": "\\u0414\\u0421"' $< | \
 	  shuf -n 150; \
 	) | \
 	shuf > $@
@@ -871,7 +871,7 @@ datasets/ukwiki.labeling_revisions.w_text.900_balanced.json: \
 		datasets/ukwiki.labelings.900_balanced.json
 	cat $< | \
 	./utility fetch_text \
-	  --api-host=https://uk.wikipedia.org  --thread 4 \
+	  --api-host=https://uk.wikipedia.org \
 	  --verbose > $@
 
 datasets/ukwiki.labeling_revisions.w_cache.900_balanced.json: \
@@ -889,12 +889,12 @@ tuning_reports/ukwiki.wp10.md: \
 	  articlequality.feature_lists.ukwiki.wp10 \
 	  wp10 \
 	  accuracy.macro \
-	  --pop-rate '"I"=' \
-	  --pop-rate '"II"=' \
-	  --pop-rate '"III"=' \
-	  --pop-rate '"IV"=' \
-	  --pop-rate '"ВС"=' \
-	  --pop-rate '"ДС"=' \
+	  --pop-rate '"I"=0.01798703875' \
+	  --pop-rate '"II"=0.09789710355' \
+	  --pop-rate '"III"=0.60973416214' \
+	  --pop-rate '"IV"=0.26574086557' \
+	  --pop-rate '"ВС"=0.00412565727' \
+	  --pop-rate '"ДС"=0.00984225428' \
 	  --cv-timeout=60 \
 	  --debug > $@
 
@@ -910,12 +910,12 @@ models/ukwiki.wp10.gradient_boosting.model: \
 	  -p 'learning_rate=0.01' \
 	  -p 'max_features="log2"' \
 	  -p 'max_depth=7' \
-	  --pop-rate '"I"=' \
-	  --pop-rate '"II"=' \
-	  --pop-rate '"III"=' \
-	  --pop-rate '"IV"=' \
-	  --pop-rate '"ВС"=' \
-	  --pop-rate '"ДС"=' \
+	  --pop-rate '"I"=0.01798703875' \
+	  --pop-rate '"II"=0.09789710355' \
+	  --pop-rate '"III"=0.60973416214' \
+	  --pop-rate '"IV"=0.26574086557' \
+	  --pop-rate '"ВС"=0.00412565727' \
+	  --pop-rate '"ДС"=0.00984225428' \
 	  --center --scale > $@
 
 	revscoring model_info $@ > model_info/ukwiki.wp10.md
