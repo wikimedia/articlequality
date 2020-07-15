@@ -9,12 +9,10 @@ from revscoring.features import wikitext
 from revscoring import Feature
 from revscoring.features.meta import aggregators
 from revscoring.features.modifiers import log, max, sub
-from revscoring.languages import ukrainian
 
 from . import wikipedia
 
 # Templates
-#infobox_templates = wikipedia.infobox_templates()
 CN_TEMPLATES = [
     r"Citation[_ ]needed",
     r"Cn",
@@ -64,17 +62,18 @@ category_links = wikitext.revision.wikilink_titles_matching(
     "|".join(CATEGORY_LINKS), name="ukwiki.revision.category_links")
 
 IMAGE_LINKS = [
-    r"File", 
-    r"Файл", 
-    r"Image", 
-    r"Зображення", 
+    r"File",
+    r"Файл",
+    r"Image",
+    r"Зображення",
     r"Изображение"
 ]
 image_links = wikitext.revision.wikilink_titles_matching(
     "|".join(IMAGE_LINKS), name="ukwiki.revision.image_links")
 
 image_templates = wikitext.revision.template_names_matching(
-    r"((Wide|Tall|scalable) image)|Panorama|Panorama 2", name="ukwiki.revision.image_template")
+    r"((Wide|Tall|scalable) image)|Panorama|Panorama 2",
+    name="ukwiki.revision.image_template")
 
 
 def get_images(strs):
@@ -83,7 +82,8 @@ def get_images(strs):
     to get matching image patterns and returns a count of the matches.
     """
     matches = re.findall(
-        r"Зображення[1-9]{1,2}|Изображение:|Зображення:|Файл:|File:|Image:|photo[1-9][a-z]",
+        r"Зображення[1-9]{1,2}|Изображение:|" +
+        r"Зображення:|Файл:|File:|Image:|photo[1-9][a-z]",
         "".join(strs), re.I)
     return len(matches)
 
@@ -105,22 +105,8 @@ images_in_tags = Feature("ukwiki.revision.images_in_tags",
                          depends_on=[image_tags_str],
                          returns=int)
 
-"""
-def get_infobox_images(strs):
-    matches = re.findall(
-         r"\.(jpg|jpeg|png|gif|svg|tiff|pdf|ogg|djvu)", "".join(strs), re.I)
-    return len(matches)
-
-
-infobox_templates_str = wikipedia.infobox_templates()
-
-infobox_images = Feature("ukwiki.infobox_images",
-                         get_infobox_images,
-                         depends_on=[infobox_templates_str],
-                         returns=int)
-"""
 all_images = image_links + image_templates +\
-    images_in_templates + images_in_tags #+ infobox_images
+    images_in_templates + images_in_tags
 
 # References
 paragraphs = mappers.map(
