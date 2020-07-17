@@ -6,12 +6,12 @@ from .extractor import TemplateExtractor
 logger = logging.getLogger(__name__)
 
 NORMALIZED_LABELS = {
-        "ВС": ["ВС", "вс", "Вибрана стаття", "вибрана стаття"],
-        "ДС": ["ДС", "дс", "Добра стаття", "добра стаття"],
-        "I": ["I", "1"],
-        "II": ["II", "2"],
+        "IV": ["IV", "4", "Stub", "stub"],
         "III": ["III", "3"],
-        "IV": ["IV", "4", "Stub", "stub"]
+        "II": ["II", "2"],
+        "I": ["I", "1"],
+        "ВС": ["ВС", "вс", "Вибрана стаття", "вибрана стаття"],
+        "ДС": ["ДС", "дс", "Добра стаття", "добра стаття"]
 }
 
 LABEL_MAP = {observed_label: normalized_label
