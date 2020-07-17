@@ -1,7 +1,7 @@
 Model Information:
 	 - type: GradientBoosting
 	 - version: 0.8.0
-	 - params: {'presort': 'deprecated', 'max_leaf_nodes': None, 'multilabel': False, 'validation_fraction': 0.1, 'ccp_alpha': 0.0, 'min_impurity_decrease': 0.0, 'center': True, 'min_samples_leaf': 1, 'random_state': None, 'warm_start': False, 'init': None, 'loss': 'deviance', 'verbose': 0, 'scale': True, 'n_iter_no_change': None, 'tol': 0.0001, 'max_features': 'log2', 'max_depth': 7, 'subsample': 1.0, 'min_weight_fraction_leaf': 0.0, 'n_estimators': 500, 'population_rates': None, 'learning_rate': 0.01, 'criterion': 'friedman_mse', 'label_weights': None, 'min_impurity_split': None, 'labels': ['I', 'II', 'III', 'IV', 'ВС', 'ДС'], 'min_samples_split': 2}
+	 - params: {'min_samples_split': 2, 'validation_fraction': 0.1, 'max_leaf_nodes': None, 'warm_start': False, 'population_rates': None, 'subsample': 1.0, 'verbose': 0, 'n_estimators': 500, 'multilabel': False, 'init': None, 'labels': ['IV', 'III', 'II', 'I', 'ВС', 'ДС'], 'min_weight_fraction_leaf': 0.0, 'max_depth': 7, 'max_features': 'log2', 'criterion': 'friedman_mse', 'min_impurity_split': None, 'learning_rate': 0.01, 'min_samples_leaf': 1, 'ccp_alpha': 0.0, 'scale': True, 'center': True, 'loss': 'deviance', 'tol': 0.0001, 'n_iter_no_change': None, 'presort': 'deprecated', 'label_weights': None, 'min_impurity_decrease': 0.0, 'random_state': None}
 	Environment:
 	 - revscoring_version: '2.8.2'
 	 - platform: 'Linux-4.9.0-8-amd64-x86_64-with-debian-9.4'
@@ -19,67 +19,67 @@ Model Information:
 	
 	Statistics:
 	counts (n=899):
-		label      n         ~I    ~II    ~III    ~IV    ~ВС    ~ДС
-		-------  ---  ---  ----  -----  ------  -----  -----  -----
-		'I'      150  -->    57     34      13      6     18     22
-		'II'     149  -->    30     63      23     21      5      7
-		'III'    150  -->     9     41      51     44      2      3
-		'IV'     150  -->     6     19      42     83      0      0
-		'ВС'     150  -->    13     12       2      0     86     37
-		'ДС'     150  -->    39     11       3      0     39     58
+		label      n         ~IV    ~III    ~II    ~I    ~ВС    ~ДС
+		-------  ---  ---  -----  ------  -----  ----  -----  -----
+		'IV'     150  -->     82      46     16     6      0      0
+		'III'    150  -->     43      52     39    12      1      3
+		'II'     149  -->     21      21     64    31      5      7
+		'I'      150  -->      5      14     32    60     14     25
+		'ВС'     150  -->      0       4     11    14     84     37
+		'ДС'     150  -->      0       2     12    37     38     61
 	rates:
-		              'I'    'II'    'III'    'IV'    'ВС'    'ДС'
-		----------  -----  ------  -------  ------  ------  ------
-		sample      0.167   0.166    0.167   0.167   0.167   0.167
-		population  0.018   0.098    0.61    0.266   0.004   0.01
-	match_rate (micro=0.231, macro=0.161):
-		    I     II    III     IV     ВС     ДС
+		              'IV'    'III'    'II'    'I'    'ВС'    'ДС'
+		----------  ------  -------  ------  -----  ------  ------
+		sample       0.167    0.167   0.166  0.167   0.167   0.167
+		population   0.266    0.61    0.098  0.018   0.004   0.01
+	match_rate (micro=0.233, macro=0.16):
+		   IV    III     II      I     ВС     ДС
 		-----  -----  -----  -----  -----  -----
-		0.134  0.182  0.251  0.217  0.087  0.095
-	filter_rate (micro=0.769, macro=0.839):
-		    I     II    III     IV     ВС     ДС
+		0.213  0.257  0.174  0.138  0.079  0.099
+	filter_rate (micro=0.767, macro=0.84):
+		   IV    III     II      I     ВС     ДС
 		-----  -----  -----  -----  -----  -----
-		0.866  0.818  0.749  0.783  0.913  0.905
-	recall (micro=0.407, macro=0.443):
-		   I     II    III     IV     ВС     ДС
-		----  -----  -----  -----  -----  -----
-		0.38  0.423   0.34  0.553  0.573  0.387
-	!recall (micro=0.889, macro=0.889):
-		   I     II    III     IV     ВС     ДС
-		----  -----  -----  -----  -----  -----
-		0.87  0.844  0.889  0.905  0.915  0.908
-	precision (micro=0.705, macro=0.309):
-		    I     II    III     IV     ВС    ДС
+		0.787  0.743  0.826  0.862  0.921  0.901
+	recall (micro=0.41, macro=0.448):
+		   IV    III    II    I    ВС     ДС
+		-----  -----  ----  ---  ----  -----
+		0.547  0.347  0.43  0.4  0.56  0.407
+	!recall (micro=0.887, macro=0.89):
+		   IV    III     II      I     ВС     ДС
+		-----  -----  -----  -----  -----  -----
+		0.908  0.884  0.853  0.866  0.923  0.904
+	precision (micro=0.705, macro=0.311):
+		   IV    III     II      I     ВС    ДС
 		-----  -----  -----  -----  -----  ----
-		0.051  0.227  0.827  0.679  0.027  0.04
-	!precision (micro=0.627, macro=0.87):
-		    I     II    III     IV     ВС     ДС
+		0.682  0.823  0.241  0.052  0.029  0.04
+	!precision (micro=0.628, macro=0.87):
+		   IV    III     II      I     ВС     ДС
 		-----  -----  -----  -----  -----  -----
-		0.987  0.931  0.463  0.848  0.998  0.993
-	f1 (micro=0.485, macro=0.267):
-		   I     II    III    IV     ВС     ДС
-		----  -----  -----  ----  -----  -----
-		0.09  0.296  0.482  0.61  0.052  0.073
-	!f1 (micro=0.717, macro=0.866):
-		    I     II    III     IV     ВС     ДС
+		0.847  0.464  0.932  0.987  0.998  0.994
+	f1 (micro=0.489, macro=0.271):
+		   IV    III     II      I     ВС     ДС
 		-----  -----  -----  -----  -----  -----
-		0.925  0.885  0.609  0.876  0.954  0.949
-	accuracy (micro=0.657, macro=0.808):
-		    I     II    III     IV     ВС     ДС
+		0.607  0.488  0.309  0.092  0.055  0.073
+	!f1 (micro=0.717, macro=0.867):
+		   IV    III     II      I     ВС     ДС
 		-----  -----  -----  -----  -----  -----
-		0.862  0.803  0.554  0.812  0.913  0.903
-	fpr (micro=0.111, macro=0.111):
-		   I     II    III     IV     ВС     ДС
-		----  -----  -----  -----  -----  -----
-		0.13  0.156  0.111  0.095  0.085  0.092
-	roc_auc (micro=0.805, macro=0.812):
-		    I     II    III     IV     ВС     ДС
+		0.876  0.609  0.891  0.923  0.959  0.947
+	accuracy (micro=0.659, macro=0.81):
+		   IV    III     II      I     ВС     ДС
 		-----  -----  -----  -----  -----  -----
-		0.748  0.731  0.786  0.875  0.891  0.841
-	pr_auc (micro=0.691, macro=0.317):
-		   I     II    III     IV     ВС     ДС
-		----  -----  -----  -----  -----  -----
-		0.06  0.217  0.791  0.712  0.071  0.048
+		0.812  0.556  0.812  0.858  0.921  0.899
+	fpr (micro=0.113, macro=0.11):
+		   IV    III     II      I     ВС     ДС
+		-----  -----  -----  -----  -----  -----
+		0.092  0.116  0.147  0.134  0.077  0.096
+	roc_auc (micro=0.805, macro=0.813):
+		   IV    III     II      I     ВС     ДС
+		-----  -----  -----  -----  -----  -----
+		0.875  0.786  0.733  0.748  0.894  0.839
+	pr_auc (micro=0.691, macro=0.313):
+		   IV    III     II     I     ВС     ДС
+		-----  -----  -----  ----  -----  -----
+		0.713  0.791  0.219  0.06  0.049  0.049
 	
-	 - score_schema: {'type': 'object', 'properties': {'probability': {'description': 'A mapping of probabilities onto each of the potential output labels', 'type': 'object', 'properties': {'IV': {'type': 'number'}, 'I': {'type': 'number'}, 'III': {'type': 'number'}, 'II': {'type': 'number'}, 'ВС': {'type': 'number'}, 'ДС': {'type': 'number'}}}, 'prediction': {'description': 'The most likely label predicted by the estimator', 'type': 'string'}}, 'title': 'Scikit learn-based classifier score with probability'}
+	 - score_schema: {'title': 'Scikit learn-based classifier score with probability', 'type': 'object', 'properties': {'probability': {'description': 'A mapping of probabilities onto each of the potential output labels', 'type': 'object', 'properties': {'I': {'type': 'number'}, 'IV': {'type': 'number'}, 'II': {'type': 'number'}, 'III': {'type': 'number'}, 'ДС': {'type': 'number'}, 'ВС': {'type': 'number'}}}, 'prediction': {'description': 'The most likely label predicted by the estimator', 'type': 'string'}}}
 
