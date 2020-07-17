@@ -893,8 +893,8 @@ tuning_reports/ukwiki.wp10.md: \
 	  --pop-rate '"III"=0.60973416214' \
 	  --pop-rate '"II"=0.09789710355' \
 	  --pop-rate '"I"=0.01798703875' \
-	  --pop-rate '"ВС"=0.00412565727' \
 	  --pop-rate '"ДС"=0.00984225428' \
+	  --pop-rate '"ВС"=0.00412565727' \
 	  --cv-timeout=60 \
 	  --debug > $@
 
@@ -914,8 +914,8 @@ models/ukwiki.wp10.gradient_boosting.model: \
 	  --pop-rate '"III"=0.60973416214' \
 	  --pop-rate '"II"=0.09789710355' \
 	  --pop-rate '"I"=0.01798703875' \
-	  --pop-rate '"ВС"=0.00412565727' \
 	  --pop-rate '"ДС"=0.00984225428' \
+	  --pop-rate '"ВС"=0.00412565727' \
 	  --center --scale > $@
 
 	revscoring model_info $@ > model_info/ukwiki.wp10.md
