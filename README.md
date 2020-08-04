@@ -27,6 +27,19 @@ documentation at https://articlequality.readthedocs.io .
                      'ga': 0.21617801281707663,
                      'start': 0.13906813268582238}}
 
+## Install
+
+### Requirements
+
+* Python 3.5, 3.6 or 3.7
+* All the system requirements of [revscoring](https://github.com/wikimedia/revscoring)
+
+### Installation steps
+
+1. clone this repository
+2. install the package itself and its dependencies `python setup.py install`
+3. You can verify that your installation worked by running `make enwiki_models` to build the English Wikipedia article quality model or `make wikidatawiki_models` to build the item quality model for Wikidata
+
 ## Authors
 * Aaron Halfaker -- https://github.com/halfak
 * Morten Warncke-Wang -- https://github.com/nettrom
