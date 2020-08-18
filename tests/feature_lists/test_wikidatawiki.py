@@ -3,7 +3,7 @@ from revscoring.datasources import \
 from revscoring.features import wikibase as wikibase_
 from revscoring.dependencies import solve
 
-from .. import wikidatawiki
+from articlequality.feature_lists import wikidatawiki
 
 present_properties = wikibase_.revision.datasources.properties
 suggested_properties = \

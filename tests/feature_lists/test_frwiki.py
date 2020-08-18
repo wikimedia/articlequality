@@ -1,7 +1,7 @@
 from revscoring.datasources.revision_oriented import revision
 from revscoring.dependencies import solve
 
-from .. import frwiki
+from articlequality.feature_lists import frwiki
 
 revision_text = revision.text
 

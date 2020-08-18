@@ -2,7 +2,7 @@ from collections import namedtuple
 
 from mwtypes import Timestamp
 
-from .. import ruwiki
+from articlequality.extractors import ruwiki
 
 
 def test_extractor():

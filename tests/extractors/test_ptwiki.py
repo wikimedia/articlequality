@@ -2,7 +2,7 @@ from collections import namedtuple
 
 from mwtypes import Timestamp
 
-from .. import ptwiki
+from articlequality.extractors import ptwiki
 
 
 def test_extractor():
