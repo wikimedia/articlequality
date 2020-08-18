@@ -27,7 +27,7 @@ install:
 
 script:
   - flake8 . --exclude=.svn,CVS,.bzr,.hg,.git,__pycache__,.tox,.eggs,*.egg,docs,examples
-  - coverage run --source articlequality -m pytest articlequality -m "not nottravis"
+  - coverage run --source articlequality -m pytest . -m "not nottravis"
   - sphinx-build -anW -b html docs dist/docs
   - sphinx-build -b linkcheck docs dist/docs
 
