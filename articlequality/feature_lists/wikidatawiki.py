@@ -52,8 +52,7 @@ references = Datasource(
 def _process_wikimedia_references(references):
     return [reference
             for reference in references
-            if (reference.datatype == 'wikibase-entityid' and
-                reference.property == properties.IMPORTED_FROM_WIKIMEDIA)]
+            if (reference.property == properties.IMPORTED_FROM_WIKIMEDIA)]
 
 
 wikimedia_references = Datasource(
