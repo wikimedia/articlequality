@@ -7,7 +7,7 @@ from revscoring.features import modifiers
 from revscoring.features.meta import aggregators
 from revscoring.features.modifiers import not_
 
-from . import wikibase, wikimedia
+from . import wikibase
 
 name = "wikidatawiki"
 
@@ -25,6 +25,7 @@ class properties:
     INSTANCE_OF = 'P31'
     DATE_OF_BIRTH = 'P569'
     DATE_OF_DEATH = 'P570'
+    IMPORTED_FROM_WIKIMEDIA = 'P143'
 
 
 class items:
@@ -51,8 +52,7 @@ references = Datasource(
 def _process_wikimedia_references(references):
     return [reference
             for reference in references
-            if (reference.datatype == 'wikibase-entityid' and
-                reference.datavalue.id in wikimedia.PROJECT_QIDS)]
+            if (reference.property == properties.IMPORTED_FROM_WIKIMEDIA)]
 
 
 wikimedia_references = Datasource(
