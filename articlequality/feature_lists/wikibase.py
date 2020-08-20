@@ -9,6 +9,5 @@ item = [
     log(wikibase.revision.qualifiers + 1),
     log(wikibase.revision.badges + 1),
     log(wikibase.revision.labels + 1),
-    log(wikibase.revision.sitelinks + 1),
     log(wikibase.revision.descriptions + 1)
 ]
