@@ -7,6 +7,7 @@ from revscoring.datasources import \
     revision_oriented as revision_oriented_datasources
 from revscoring.dependencies import solve
 from revscoring.features import wikibase as wikibase_
+from revscoring.features.meta import aggregators
 
 from articlequality.feature_lists import wikidatawiki
 
@@ -46,8 +47,13 @@ def test_human_related_features(q7251):
 
 
 def test_references_features(q7251):
-    assert solve(wikidatawiki.references_count, cache={entity: q7251}) == 123
+    assert solve(wikidatawiki.references_count, cache={entity: q7251}) == 97
     assert solve(wikidatawiki.wikimedia_references_count,
-                 cache={entity: q7251}) == 33
+                 cache={entity: q7251}) == 23
     assert solve(wikidatawiki.external_references_count,
-                 cache={entity: q7251}) == 90
+                 cache={entity: q7251}) == 74
+
+
+def test_external_identifiers(q7251):
+    assert solve(aggregators.len(wikidatawiki.external_identifiers),
+                 cache={entity: q7251}) == 79
