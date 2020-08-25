@@ -38,7 +38,7 @@ class items:
 def _process_references(entity):
     return [reference
             for pid, statements in entity.properties.items()
-            if pid not in property_datatypes.EXTERNAL_IDENTIFIERS
+            if pid in property_datatypes.NONEXTERNAL_IDENTIFIERS
             for statement in statements
             for pid, references in statement.references.items()
             for reference in references]
@@ -53,7 +53,7 @@ references = Datasource(
 def _process_external_identifiers(entity):
     return [statement
             for pid, statements in entity.properties.items()
-            if pid in property_datatypes.EXTERNAL_IDENTIFIERS
+            if pid not in property_datatypes.NONEXTERNAL_IDENTIFIERS
             for statement in statements]
 
 
