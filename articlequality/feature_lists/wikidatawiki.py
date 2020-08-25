@@ -7,7 +7,7 @@ from revscoring.features import modifiers
 from revscoring.features.meta import aggregators
 from revscoring.features.modifiers import not_
 
-from . import wikibase
+from . import wikibase, property_datatypes
 
 name = "wikidatawiki"
 
@@ -38,6 +38,7 @@ class items:
 def _process_references(entity):
     return [reference
             for pid, statements in entity.properties.items()
+            if pid not in property_datatypes.EXTERNAL_IDENTIFIERS
             for statement in statements
             for pid, references in statement.references.items()
             for reference in references]
@@ -46,6 +47,19 @@ def _process_references(entity):
 references = Datasource(
     name + ".revision.references",
     _process_references,
+    depends_on=[wikibase_.revision.datasources.entity])
+
+
+def _process_external_identifiers(entity):
+    return [statement
+            for pid, statements in entity.properties.items()
+            if pid in property_datatypes.EXTERNAL_IDENTIFIERS
+            for statement in statements]
+
+
+external_identifiers = Datasource(
+    name + ".revision.external_identifiers",
+    _process_external_identifiers,
     depends_on=[wikibase_.revision.datasources.entity])
 
 
@@ -169,7 +183,8 @@ local_wiki = [
     external_references_count / modifiers.max(references_count, 1),
     unique_references_count,
     unique_references_count / modifiers.max(references_count, 1),
-    item_completeness
+    item_completeness,
+    aggregators.len(external_identifiers)
 ]
 
 item_quality = wikibase.item + local_wiki
