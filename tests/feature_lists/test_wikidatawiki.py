@@ -105,3 +105,16 @@ def test_references_ratio_features(q7251):
                  cache={entity: q7251}) == 0.2875
     assert solve(wikidatawiki.externally_referenced_claims_ratio,
                  cache={entity: q7251}) == 0.425
+
+
+def test_has_image(q7251, crab_nebula):
+    assert solve(wikidatawiki.has_image,
+                 cache={entity: q7251}) is True
+    assert solve(wikidatawiki.has_image,
+                 cache={entity: crab_nebula}) is False
+
+def test_has_commons_media(q7251, crab_nebula):
+    assert solve(wikidatawiki.has_commons_media,
+                 cache={entity: q7251}) is True
+    assert solve(wikidatawiki.has_commons_media,
+                 cache={entity: crab_nebula}) is False

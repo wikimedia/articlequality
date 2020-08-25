@@ -3,14 +3,16 @@
 # To add/delete new properties from the `wikidatawiki.py` feature list we need
 # to manually update this file.
 
-# Currently the file contains a list of `NON_EXTERNAL_IDENTIFIERS` that we
-# want to extract as features. `NON_EXTERNAL_IDENTIFIERS` is used instead of
-# `EXTERNAL_IDENTIFIERS` because external identifiers comprise about 5000+ of
-# the total 8000+ currently on the database.
+# Currently the file contains a list of `NON_EXTERNAL_IDENTIFIERS` and
+# `COMMONS_MEDIA` that we want to extract as features.
+# `NON_EXTERNAL_IDENTIFIERS` is used instead of `EXTERNAL_IDENTIFIERS`
+# because external identifiers comprise about 5000+ of the total 8000+
+# properties currently on the database.
 # Using NON_EXTERNAL_IDENTIFIERS (~2500) reduces the processing time.
 
-# This list was obtained by making this query:
-# https://quarry.wmflabs.org/query/47645
+# This list was obtained by making these queries:
+# `NON_EXTERNAL_IDENTIFIERS`: https://quarry.wmflabs.org/query/47645
+# `COMMONS_MEDIA`: https://quarry.wmflabs.org/query/47836
 # and then doing a search and replace to format it as a python list.
 
 NONEXTERNAL_IDENTIFIERS = [
@@ -2577,3 +2579,69 @@ NONEXTERNAL_IDENTIFIERS = [
     'P7220',
     'P7221',
      'P8471']
+
+COMMONS_MEDIA = [
+    'P10',
+    'P14',
+    'P15',
+    'P18',
+    'P41',
+    'P51',
+    'P94',
+    'P109',
+    'P117',
+    'P154',
+    'P158',
+    'P181',
+    'P207',
+    'P242',
+    'P367',
+    'P368',
+    'P443',
+    'P491',
+    'P692',
+    'P948',
+    'P989',
+    'P990',
+    'P996',
+    'P1442',
+    'P1543',
+    'P1621',
+    'P1766',
+    'P1801',
+    'P1846',
+    'P1943',
+    'P1944',
+    'P2343',
+    'P2425',
+    'P2713',
+    'P2716',
+    'P2910',
+    'P2919',
+    'P3030',
+    'P3311',
+    'P3383',
+    'P3451',
+    'P4004',
+    'P4291',
+    'P4640',
+    'P4896',
+    'P5252',
+    'P5555',
+    'P5775',
+    'P5962',
+    'P6655',
+    'P6685',
+    'P6802',
+    'P7009',
+    'P7407',
+    'P7415',
+    'P7417',
+    'P7418',
+    'P7420',
+    'P7457',
+    'P8195',
+    'P8224',
+    'P8505',
+    'P8512',
+    'P8517']

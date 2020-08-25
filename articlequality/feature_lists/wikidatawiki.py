@@ -23,6 +23,7 @@ class properties:
     """
     Mapping of english descriptions to property identifiers
     """
+    IMAGE = 'P18'
     INSTANCE_OF = 'P31'
     DATE_OF_BIRTH = 'P569'
     DATE_OF_DEATH = 'P570'
@@ -70,6 +71,19 @@ def _process_external_identifiers(entity):
 external_identifiers = Datasource(
     name + ".revision.external_identifiers",
     _process_external_identifiers,
+    depends_on=[wikibase_.revision.datasources.entity])
+
+
+def _process_commons_media(entity):
+    for pid in entity.properties.keys():
+        if pid in property_datatypes.COMMONS_MEDIA:
+            return True
+    return False
+
+
+has_commons_media = Datasource(
+    name + ".revision.has_commons_media",
+    _process_commons_media,
     depends_on=[wikibase_.revision.datasources.entity])
 
 
@@ -227,6 +241,7 @@ has_birthday = wikibase_.revision.has_property(
 dead = wikibase_.revision.has_property(
     properties.DATE_OF_DEATH, name=name + '.revision.dead')
 is_blp = has_birthday.and_(not_(dead))
+
 is_scholarlyarticle = wikibase_.revision.has_property_value(
     properties.INSTANCE_OF,
     items.SCHOLARLY_ARTICLE,
@@ -237,6 +252,8 @@ is_astronomical_object = Feature(
     _process_is_astronomical_object,
     returns=bool,
     depends_on=[wikibase_.revision.datasources.entity])
+has_image = wikibase_.revision.has_property(
+    properties.IMAGE, name=name + '.revision.has_image')
 
 referenced_claims_ratio = Feature(
     name + '.revision.page.referenced_claims_ratio',
@@ -261,6 +278,8 @@ local_wiki = [
     is_astronomical_object,
     is_human,
     is_blp,
+    has_image,
+    has_commons_media,
     aggregators.len(complete_translations),
     aggregators.len(important_label_translations),
     aggregators.len(important_description_translations),
