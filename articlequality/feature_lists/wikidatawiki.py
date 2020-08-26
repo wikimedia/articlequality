@@ -33,6 +33,7 @@ class items:
     Mapping of english descriptions to item idenifiers
     """
     HUMAN = 'Q5'
+    SCHOLARLY_ARTICLE = 'Q13442814'
 
 
 def _process_references(entity):
@@ -167,9 +168,15 @@ has_birthday = wikibase_.revision.has_property(
 dead = wikibase_.revision.has_property(
     properties.DATE_OF_DEATH, name=name + '.revision.dead')
 is_blp = has_birthday.and_(not_(dead))
+is_scholarlyarticle = wikibase_.revision.has_property_value(
+    properties.INSTANCE_OF,
+    items.SCHOLARLY_ARTICLE,
+    name=name + '.revision.is_scholarlyarticle'
+)
 
 
 local_wiki = [
+    is_scholarlyarticle,
     is_human,
     is_blp,
     aggregators.len(complete_translations),
