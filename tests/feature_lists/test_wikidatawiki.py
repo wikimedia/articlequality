@@ -93,3 +93,12 @@ def test_is_astronomical_object(q7251):
                  cache={entity: crab_nebula}) is True
     assert solve(wikidatawiki.is_astronomical_object,
                  cache={entity: q7251}) is False
+
+
+def test_references_ratio_features(q7251):
+    assert solve(wikidatawiki.referenced_claims_ratio,
+                 cache={entity: q7251}) == 0.6
+    assert solve(wikidatawiki.wikimedia_referenced_ratio,
+                 cache={entity: q7251}) == 0.2875
+    assert solve(wikidatawiki.externally_referenced_claims_ratio,
+                 cache={entity: q7251}) == 0.425
