@@ -7,7 +7,8 @@ from revscoring.features import modifiers
 from revscoring.features.meta import aggregators
 from revscoring.features.modifiers import not_
 
-from . import wikibase, property_datatypes
+from . import wikibase
+from .wikidatawiki_data import property_datatypes, items_lists
 
 name = "wikidatawiki"
 
@@ -139,6 +140,14 @@ unique_references_count = aggregators.len(unique_references)
 "`int` : A count of unique sources in the revision"
 
 
+def _process_is_astronomical_object(entity):
+    statements = entity.properties.get(properties.INSTANCE_OF, [])
+    for s in statements:
+        if str(s.claim.datavalue) in items_lists.ASTRONOMICAL_OBJECTS:
+            return True
+    return False
+
+
 def _process_item_completeness(current_properties, properties_suggested):
     current_properties = set(current_properties.keys())
 
@@ -173,7 +182,11 @@ is_scholarlyarticle = wikibase_.revision.has_property_value(
     items.SCHOLARLY_ARTICLE,
     name=name + '.revision.is_scholarlyarticle'
 )
-
+is_astronomical_object = Feature(
+    name + '.revision.page.is_astronomical_object',
+    _process_is_astronomical_object,
+    returns=bool,
+    depends_on=[wikibase_.revision.datasources.entity])
 
 local_wiki = [
     is_scholarlyarticle,
