@@ -1,3 +1,5 @@
+# The list is generated using https://w.wiki/aaD
+# Picking the top 50 ones only because it covers 97% of cases
 ASTRONOMICAL_OBJECTS = [
     'Q523', 'Q318', 'Q1931185', 'Q1457376', 'Q2247863', 'Q3863', 'Q83373',
     'Q2154519', 'Q726242', 'Q1153690', 'Q204107', 'Q71963409', 'Q67206691',
