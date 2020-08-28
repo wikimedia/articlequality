@@ -6,7 +6,10 @@
 # Currently the file contains a list of `NON_EXTERNAL_IDENTIFIERS` that we want to extract 
 # as features. `NON_EXTERNAL_IDENTIFIERS` is used instead of `EXTERNAL_IDENTIFIERS` because 
 # external identifiers comprise about 5000+ of the total 8000+ currently on the database. 
-#Using NON_EXTERNAL_IDENTIFIERS (~2500) reduces the processing time. 
+# Using NON_EXTERNAL_IDENTIFIERS (~2500) reduces the processing time. 
+
+# This list was obtained by making this query: https://quarry.wmflabs.org/query/47645
+# and then doing a search and replace to format it as a python list.
 
 NONEXTERNAL_IDENTIFIERS = [
     'P10',
