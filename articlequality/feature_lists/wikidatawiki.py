@@ -190,6 +190,7 @@ is_astronomical_object = Feature(
 
 local_wiki = [
     is_scholarlyarticle,
+    is_astronomical_object,
     is_human,
     is_blp,
     aggregators.len(complete_translations),
