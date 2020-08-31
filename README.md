@@ -40,6 +40,12 @@ documentation at https://articlequality.readthedocs.io .
 2. install the package itself and its dependencies `python setup.py install`
 3. You can verify that your installation worked by running `make enwiki_models` to build the English Wikipedia article quality model or `make wikidatawiki_models` to build the item quality model for Wikidata
 
+### Retraining the models
+
+To retrain a model, run `make -B MODEL` i.e `make -B models/wikidatawiki.item_quality.gradient_boosting.model`.
+
+If a model file exists already in the models folder you might get an already up-to-date log.
+
 ### Running tests
 
 Example:
