@@ -53,11 +53,12 @@ def test_references_features(q7251):
     assert solve(wikidatawiki.external_references_count,
                  cache={entity: q7251}) == 74
 
+def test_statements_count(q7251):
+    assert solve(wikidatawiki.statements_count, cache={entity: q7251}) == 80
 
 def test_external_identifiers(q7251):
     assert solve(aggregators.len(wikidatawiki.external_identifiers),
                  cache={entity: q7251}) == 79
-
 
 def test_is_astronomical_object(q7251):
     crab_nebula = {
