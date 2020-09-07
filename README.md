@@ -44,7 +44,7 @@ documentation at https://articlequality.readthedocs.io .
 
 To retrain a model, run `make -B MODEL` e.g. `make -B wikidatawiki_models`. This will redownload the labels, re-extract the features from the revisions, and then retrain and rescore the model.
 
-If a model file exists already in the models folder you might get an already up-to-date log.
+To skip re-downloading the training labels and re-extracting the features, it is enough `touch` the files in the `datasets/` directory and run the `make` command without the `-B` flag.
 
 ### Running tests
 
