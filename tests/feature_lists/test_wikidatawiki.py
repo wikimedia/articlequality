@@ -25,6 +25,38 @@ def q7251():
     return mwbase.Entity.from_json(json.loads(text))
 
 
+@pytest.fixture
+def crab_nebula():
+    crab_nebula = {
+        'title': 'Q207436',
+        'id': 'Q207436',
+        'claims': {
+            'P31': [
+                {
+                    'mainsnak': {
+                        'snaktype': 'value',
+                        'property': 'P31',
+                        'datavalue': {
+                            'value': {
+                                'entity-type': 'item',
+                                'numeric-id': 1931185,
+                                'id': 'Q1931185'
+                            },
+                            'type': 'wikibase-entityid'
+                        },
+                        'datatype': 'wikibase-item'
+                    },
+                    'type': 'statement',
+                    'id': 'Q10934$46D9E951-DD5A-4832-A2D2-DB0CE0425E0E',
+                    'rank': 'normal'
+                }
+            ]
+        }
+    }
+
+    return mwbase.Entity.from_json(crab_nebula)
+
+
 def test_item_completeness_empty():
     cache = {present_properties: {}, suggested_properties: {}}
 
@@ -60,37 +92,31 @@ def test_external_identifiers(q7251):
     assert solve(aggregators.len(wikidatawiki.external_identifiers),
                  cache={entity: q7251}) == 79
 
-def test_is_astronomical_object(q7251):
-    crab_nebula = {
-        'title': 'Q207436',
-        'id': 'Q207436',
-        'claims': {
-            'P31': [
-                {
-                    'mainsnak': {
-                        'snaktype': 'value',
-                        'property': 'P31',
-                        'datavalue': {
-                            'value': {
-                                'entity-type': 'item',
-                                'numeric-id': 1931185,
-                                'id': 'Q1931185'
-                            },
-                            'type': 'wikibase-entityid'
-                        },
-                        'datatype': 'wikibase-item'
-                    },
-                    'type': 'statement',
-                    'id': 'Q10934$46D9E951-DD5A-4832-A2D2-DB0CE0425E0E',
-                    'rank': 'normal'
-                }
-            ]
-        }
-    }
 
-    crab_nebula = mwbase.Entity.from_json(crab_nebula)
-
+def test_is_astronomical_object(q7251, crab_nebula):
     assert solve(wikidatawiki.is_astronomical_object,
                  cache={entity: crab_nebula}) is True
     assert solve(wikidatawiki.is_astronomical_object,
                  cache={entity: q7251}) is False
+
+
+def test_references_ratio_features(q7251):
+    assert solve(wikidatawiki.referenced_claims_ratio,
+                 cache={entity: q7251}) == 0.6
+    assert solve(wikidatawiki.wikimedia_referenced_ratio,
+                 cache={entity: q7251}) == 0.2875
+    assert solve(wikidatawiki.externally_referenced_claims_ratio,
+                 cache={entity: q7251}) == 0.425
+
+
+def test_has_image(q7251, crab_nebula):
+    assert solve(wikidatawiki.has_image,
+                 cache={entity: q7251}) is True
+    assert solve(wikidatawiki.has_image,
+                 cache={entity: crab_nebula}) is False
+
+def test_has_commons_media(q7251, crab_nebula):
+    assert solve(wikidatawiki.has_commons_media,
+                 cache={entity: q7251}) is True
+    assert solve(wikidatawiki.has_commons_media,
+                 cache={entity: crab_nebula}) is False

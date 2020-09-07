@@ -23,6 +23,7 @@ class properties:
     """
     Mapping of english descriptions to property identifiers
     """
+    IMAGE = 'P18'
     INSTANCE_OF = 'P31'
     DATE_OF_BIRTH = 'P569'
     DATE_OF_DEATH = 'P570'
@@ -37,11 +38,19 @@ class items:
     SCHOLARLY_ARTICLE = 'Q13442814'
 
 
+def _filter_nonexternal_identifier_statements(entity):
+    return [
+        statement
+        for pid, statements in entity.properties.items()
+        if pid in property_datatypes.NONEXTERNAL_IDENTIFIERS
+        for statement in statements]
+
+
 def _process_references(entity):
+    nonexternal_identifier_statements = \
+        _filter_nonexternal_identifier_statements(entity)
     return [reference
-            for pid, statements in entity.properties.items()
-            if pid in property_datatypes.NONEXTERNAL_IDENTIFIERS
-            for statement in statements
+            for statement in nonexternal_identifier_statements
             for pid, references in statement.references.items()
             for reference in references]
 
@@ -62,6 +71,19 @@ def _process_external_identifiers(entity):
 external_identifiers = Datasource(
     name + ".revision.external_identifiers",
     _process_external_identifiers,
+    depends_on=[wikibase_.revision.datasources.entity])
+
+
+def _process_commons_media(entity):
+    for pid in entity.properties.keys():
+        if pid in property_datatypes.COMMONS_MEDIA:
+            return True
+    return False
+
+
+has_commons_media = Datasource(
+    name + ".revision.has_commons_media",
+    _process_commons_media,
     depends_on=[wikibase_.revision.datasources.entity])
 
 
@@ -161,6 +183,48 @@ def _process_is_astronomical_object(entity):
     return False
 
 
+def _process_referenced_claims_ratio(entity):
+    statements = _filter_nonexternal_identifier_statements(entity)
+
+    referenced_statements = [
+        statement
+        for statement in statements
+        if statement.references]
+    return len(referenced_statements) / max([len(statements), 1])
+
+
+def _process_wikimedia_referenced_ratio(entity):
+    statements = _filter_nonexternal_identifier_statements(entity)
+
+    wikimedia_referenced_statements = 0
+    for statement in statements:
+        wikimedia_referenced = False
+        for ref_pid in statement.references:
+            if ref_pid == properties.IMPORTED_FROM_WIKIMEDIA:
+               wikimedia_referenced = True
+               break
+        if wikimedia_referenced:
+            wikimedia_referenced_statements += 1
+
+    return wikimedia_referenced_statements / max([len(statements), 1])
+
+
+def _process_externally_referenced_claims_ratio(entity):
+    statements = _filter_nonexternal_identifier_statements(entity)
+
+    externally_referenced_statements = 0
+    for statement in statements:
+        externally_referenced = False
+        for ref_pid in statement.references:
+            if ref_pid != properties.IMPORTED_FROM_WIKIMEDIA:
+                externally_referenced = True
+                break
+        if externally_referenced:
+            externally_referenced_statements += 1
+
+    return externally_referenced_statements / max([len(statements), 1])
+
+
 def _process_item_completeness(current_properties, properties_suggested):
     current_properties = set(current_properties.keys())
 
@@ -190,6 +254,7 @@ has_birthday = wikibase_.revision.has_property(
 dead = wikibase_.revision.has_property(
     properties.DATE_OF_DEATH, name=name + '.revision.dead')
 is_blp = has_birthday.and_(not_(dead))
+
 is_scholarlyarticle = wikibase_.revision.has_property_value(
     properties.INSTANCE_OF,
     items.SCHOLARLY_ARTICLE,
@@ -200,21 +265,46 @@ is_astronomical_object = Feature(
     _process_is_astronomical_object,
     returns=bool,
     depends_on=[wikibase_.revision.datasources.entity])
+has_image = wikibase_.revision.has_property(
+    properties.IMAGE, name=name + '.revision.has_image')
+
+referenced_claims_ratio = Feature(
+    name + '.revision.page.referenced_claims_ratio',
+    _process_referenced_claims_ratio,
+    returns=float,
+    depends_on=[wikibase_.revision.datasources.entity])
+
+wikimedia_referenced_ratio = Feature(
+    name + '.revision.page.wikimedia_referenced_ratio',
+    _process_wikimedia_referenced_ratio,
+    returns=float,
+    depends_on=[wikibase_.revision.datasources.entity])
+
+externally_referenced_claims_ratio = Feature(
+    name + '.revision.page.externally_referenced_claims_ratio',
+    _process_externally_referenced_claims_ratio,
+    returns=float,
+    depends_on=[wikibase_.revision.datasources.entity])
 
 local_wiki = [
     is_scholarlyarticle,
     is_astronomical_object,
     is_human,
     is_blp,
+    has_image,
+    has_commons_media,
     aggregators.len(complete_translations),
     aggregators.len(important_label_translations),
     aggregators.len(important_description_translations),
     aggregators.len(important_complete_translations),
     references_count,
+    referenced_claims_ratio,
     wikimedia_references_count,
     wikimedia_references_count / modifiers.max(references_count, 1),
+    wikimedia_referenced_ratio,
     external_references_count,
     external_references_count / modifiers.max(references_count, 1),
+    externally_referenced_claims_ratio,
     unique_references_count,
     unique_references_count / modifiers.max(references_count, 1),
     item_completeness,
