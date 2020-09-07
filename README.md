@@ -42,7 +42,7 @@ documentation at https://articlequality.readthedocs.io .
 
 ### Retraining the models
 
-To retrain a model, run `make -B MODEL` i.e `make -B models/wikidatawiki.item_quality.gradient_boosting.model`.
+To retrain a model, run `make -B MODEL` e.g. `make -B wikidatawiki_models`. This will redownload the labels, re-extract the features from the revisions, and then retrain and rescore the model.
 
 If a model file exists already in the models folder you might get an already up-to-date log.
 
