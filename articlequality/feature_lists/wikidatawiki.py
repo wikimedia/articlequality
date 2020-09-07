@@ -81,9 +81,10 @@ def _process_commons_media(entity):
     return False
 
 
-has_commons_media = Datasource(
+has_commons_media = Feature(
     name + ".revision.has_commons_media",
     _process_commons_media,
+    returns=bool,
     depends_on=[wikibase_.revision.datasources.entity])
 
 
