@@ -113,6 +113,7 @@ def test_has_image(q7251, crab_nebula):
     assert solve(wikidatawiki.has_image,
                  cache={entity: crab_nebula}) is False
 
+
 def test_has_commons_media(q7251, crab_nebula):
     assert solve(wikidatawiki.has_commons_media,
                  cache={entity: q7251}) is True
