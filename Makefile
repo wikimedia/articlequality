@@ -29,7 +29,7 @@ tuning_reports: \
 
 wp10_major_minor = 0.8
 page_level_major_minor = 0.3
-item_quality_major_minor = 0.4
+item_quality_major_minor = 0.5
 
 ########################## English Wikipedia ###################################
 datasets/enwiki.labelings.20150602.json:
@@ -960,6 +960,10 @@ datasets/wikidatawiki.labelings.5k.json:
 	./utility fetch_labels \
 		https://labels.wmflabs.org/campaigns/wikidatawiki/53/ > $@
 
+datasets/wikidatawiki.labelings.7k.2020.json:
+	./utility fetch_labels \
+		https://labels.wmflabs.org/campaigns/wikidatawiki/95/ > $@
+
 datasets/wikidatawiki.labeling_revisions.w_cache.5k.json: \
 		datasets/wikidatawiki.labelings.5k.json
 	cat $< | \
@@ -969,9 +973,19 @@ datasets/wikidatawiki.labeling_revisions.w_cache.5k.json: \
 	  --batch-size 10 \
 	  --verbose > $@
 
-tuning_reports/wikidatawiki.item_quality.md: \
-		datasets/wikidatawiki.labeling_revisions.w_cache.5k.json
+datasets/wikidatawiki.labeling_revisions.w_cache.7k.2020.json: \
+		datasets/wikidatawiki.labelings.7k.2020.json
 	cat $< | \
+	revscoring extract \
+	  articlequality.feature_lists.wikidatawiki.item_quality \
+	  --host https://www.wikidata.org \
+	  --batch-size 10 \
+	  --verbose > $@
+
+tuning_reports/wikidatawiki.item_quality.md: \
+		datasets/wikidatawiki.labeling_revisions.w_cache.5k.json \
+		datasets/wikidatawiki.labeling_revisions.w_cache.7k.2020.json
+	cat $^ | \
 	revscoring tune \
 	  config/classifiers.params.yaml \
 	  articlequality.feature_lists.wikidatawiki.item_quality \
@@ -982,8 +996,9 @@ tuning_reports/wikidatawiki.item_quality.md: \
 	  --debug > $@
 
 models/wikidatawiki.item_quality.gradient_boosting.model: \
-		datasets/wikidatawiki.labeling_revisions.w_cache.5k.json
-	cat $< | \
+		datasets/wikidatawiki.labeling_revisions.w_cache.5k.json \
+		datasets/wikidatawiki.labeling_revisions.w_cache.7k.2020.json
+	cat $^ | \
 	revscoring cv_train \
 	  revscoring.scoring.models.GradientBoosting \
 	  articlequality.feature_lists.wikidatawiki.item_quality \
