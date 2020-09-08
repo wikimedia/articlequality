@@ -39,7 +39,7 @@ def score(scorer_model, text, cache=None, context=None):
     Scores a chunck of Wikitext markup
 
     :Parameters:
-        scorer_model : :class:`revscoring.ScorerModel`
+        scorer_model : :class:`revscoring.Model`
             A scorer model to apply
         text : `str`
             A chunk of Wikitext markup to score
