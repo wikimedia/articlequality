@@ -85,8 +85,8 @@ def test_references_features(q7251):
     assert solve(wikidatawiki.external_references_count,
                  cache={entity: q7251}) == 74
 
-def test_non_external_statements_count(q7251):
-    assert solve(wikidatawiki.non_external_statements_count, cache={entity: q7251}) == 80
+def test_non_external_id_statements_count(q7251):
+    assert solve(wikidatawiki.non_external_id_statements_count, cache={entity: q7251}) == 80
 
 def test_external_identifiers(q7251):
     assert solve(aggregators.len(wikidatawiki.external_identifiers),
