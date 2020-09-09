@@ -40,7 +40,7 @@ import mwtypes
 import mwtypes.files
 import mwxml
 import mysqltsv
-from revscoring import ScorerModel
+from revscoring import Model
 from revscoring.datasources import revision_oriented
 from revscoring.dependencies import solve
 
@@ -86,7 +86,7 @@ def main(argv=None):
 
     paths = args['<dump-file>']
     with open(args['--model']) as f:
-        model = ScorerModel.load(f)
+        model = Model.load(f)
 
     sunset = mwtypes.Timestamp(args['--sunset'])
 
