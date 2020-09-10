@@ -18,66 +18,66 @@ Model Information:
 	 - release: '4.19.0-10-amd64'
 	
 	Statistics:
-	counts (n=8818):
+	counts (n=8985):
 		label       n         ~A    ~B    ~C    ~D    ~E
 		-------  ----  ---  ----  ----  ----  ----  ----
-		'A'       821  -->   708    67    45     1     0
-		'B'       766  -->    84   457   205    20     0
-		'C'      2257  -->    39   122  1978   114     4
-		'D'      1946  -->     0    11   104  1698   133
-		'E'      3028  -->     0     0     3    83  2942
+		'A'       894  -->   778    67    48     1     0
+		'B'       785  -->    93   454   209    29     0
+		'C'      2284  -->    38   134  1959   145     8
+		'D'      1991  -->     0     8   119  1710   154
+		'E'      3031  -->     0     0     4    76  2951
 	rates:
 		          'A'    'B'    'C'    'D'    'E'
 		------  -----  -----  -----  -----  -----
-		sample  0.093  0.087  0.256  0.221  0.343
-	match_rate (micro=0.251, macro=0.2):
+		sample  0.099  0.087  0.254  0.222  0.337
+	match_rate (micro=0.248, macro=0.2):
+		    A      B     C      D      E
+		-----  -----  ----  -----  -----
+		0.101  0.074  0.26  0.218  0.346
+	filter_rate (micro=0.752, macro=0.8):
+		    A      B     C      D      E
+		-----  -----  ----  -----  -----
+		0.899  0.926  0.74  0.782  0.654
+	recall (micro=0.874, macro=0.828):
+		   A      B      C      D      E
+		----  -----  -----  -----  -----
+		0.87  0.578  0.858  0.859  0.974
+	!recall (micro=0.965, macro=0.968):
 		    A      B      C      D      E
 		-----  -----  -----  -----  -----
-		0.094  0.075  0.265  0.217  0.349
-	filter_rate (micro=0.749, macro=0.8):
+		0.984  0.975  0.943  0.964  0.973
+	precision (micro=0.871, macro=0.84):
 		    A      B      C      D      E
 		-----  -----  -----  -----  -----
-		0.906  0.925  0.735  0.783  0.651
-	recall (micro=0.883, macro=0.836):
+		0.856  0.685  0.838  0.872  0.948
+	!precision (micro=0.969, macro=0.969):
+		    A     B      C     D      E
+		-----  ----  -----  ----  -----
+		0.986  0.96  0.951  0.96  0.986
+	f1 (micro=0.872, macro=0.833):
 		    A      B      C      D      E
 		-----  -----  -----  -----  -----
-		0.862  0.597  0.876  0.873  0.972
-	!recall (micro=0.967, macro=0.97):
-		    A      B      C      D      E
-		-----  -----  -----  -----  -----
-		0.985  0.975  0.946  0.968  0.976
-	precision (micro=0.88, macro=0.847):
-		    A      B      C      D      E
-		-----  -----  -----  -----  -----
-		0.852  0.696  0.847  0.886  0.956
-	!precision (micro=0.971, macro=0.971):
-		    A      B      C      D      E
-		-----  -----  -----  -----  -----
-		0.986  0.962  0.957  0.964  0.985
-	f1 (micro=0.881, macro=0.841):
-		    A      B      C      D      E
-		-----  -----  -----  -----  -----
-		0.857  0.642  0.861  0.879  0.963
-	!f1 (micro=0.969, macro=0.97):
-		    A      B      C      D      E
-		-----  -----  -----  -----  -----
-		0.985  0.969  0.951  0.966  0.981
-	accuracy (micro=0.954, macro=0.953):
-		    A      B      C      D      E
-		-----  -----  -----  -----  -----
-		0.973  0.942  0.928  0.947  0.975
-	fpr (micro=0.033, macro=0.03):
-		    A      B      C      D      E
-		-----  -----  -----  -----  -----
-		0.015  0.025  0.054  0.032  0.024
-	roc_auc (micro=0.976, macro=0.973):
-		    A      B      C      D      E
-		-----  -----  -----  -----  -----
-		0.981  0.955  0.969  0.973  0.989
-	pr_auc (micro=0.921, macro=0.887):
+		0.863  0.627  0.848  0.865  0.961
+	!f1 (micro=0.967, macro=0.968):
+		    A      B      C      D     E
+		-----  -----  -----  -----  ----
+		0.985  0.967  0.947  0.962  0.98
+	accuracy (micro=0.95, macro=0.95):
 		    A     B      C      D      E
 		-----  ----  -----  -----  -----
-		0.895  0.72  0.919  0.914  0.985
+		0.973  0.94  0.922  0.941  0.973
+	fpr (micro=0.035, macro=0.032):
+		    A      B      C      D      E
+		-----  -----  -----  -----  -----
+		0.016  0.025  0.057  0.036  0.027
+	roc_auc (micro=0.975, macro=0.972):
+		    A      B      C      D      E
+		-----  -----  -----  -----  -----
+		0.982  0.953  0.966  0.971  0.988
+	pr_auc (micro=0.918, macro=0.884):
+		    A      B     C      D      E
+		-----  -----  ----  -----  -----
+		0.905  0.707  0.91  0.912  0.985
 	
 	 - score_schema: {'title': 'Scikit learn-based classifier score with probability', 'type': 'object', 'properties': {'prediction': {'description': 'The most likely label predicted by the estimator', 'type': 'string'}, 'probability': {'description': 'A mapping of probabilities onto each of the potential output labels', 'type': 'object', 'properties': {'A': {'type': 'number'}, 'B': {'type': 'number'}, 'C': {'type': 'number'}, 'D': {'type': 'number'}, 'E': {'type': 'number'}}}}}
 
