@@ -1,6 +1,4 @@
 from revscoring import Feature
-from revscoring.datasources import \
-    revision_oriented as revision_oriented_datasources
 from revscoring.datasources.datasource import Datasource
 from revscoring.features import wikibase as wikibase_
 from revscoring.features import modifiers
@@ -227,27 +225,6 @@ def _process_externally_referenced_claims_ratio(entity):
     return externally_referenced_statements / max([len(statements), 1])
 
 
-def _process_item_completeness(current_properties, properties_suggested):
-    current_properties = set(current_properties.keys())
-
-    all_prob = 0.0
-    present_prob = 0.0
-    for statement in properties_suggested:
-        all_prob += float(statement['rating'])
-        if statement['id'] in current_properties:
-            present_prob += float(statement['rating'])
-
-    return present_prob / all_prob if all_prob else 0.0
-
-
-item_completeness = Feature(
-    name + '.revision.page.item_completeness',
-    _process_item_completeness,
-    returns=float,
-    depends_on=[
-        wikibase_.revision.datasources.properties,
-        revision_oriented_datasources.revision.page.suggested.properties])
-
 # Status
 is_human = wikibase_.revision.has_property_value(
     properties.INSTANCE_OF, items.HUMAN, name=name + '.revision.is_human')
@@ -326,7 +303,6 @@ local_wiki = \
         externally_referenced_claims_ratio,
         unique_references_count,
         unique_references_count / modifiers.max(references_count, 1),
-        item_completeness,
         aggregators.len(external_identifiers),
         non_external_id_statements_count
     ]

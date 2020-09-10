@@ -3,8 +3,6 @@ import os
 
 import mwbase
 import pytest
-from revscoring.datasources import \
-    revision_oriented as revision_oriented_datasources
 from revscoring.dependencies import solve
 from revscoring.features import wikibase as wikibase_
 from revscoring.features.meta import aggregators
@@ -12,9 +10,6 @@ from revscoring.features.meta import aggregators
 from articlequality.feature_lists import wikidatawiki
 from articlequality.feature_lists.wikibase import item
 
-present_properties = wikibase_.revision.datasources.properties
-suggested_properties = \
-    revision_oriented_datasources.revision.page.suggested.properties
 entity = wikibase_.revision.datasources.entity
 
 
@@ -62,22 +57,6 @@ def crab_nebula():
     }
 
     return mwbase.Entity.from_json(crab_nebula)
-
-
-def test_item_completeness_empty():
-    cache = {present_properties: {}, suggested_properties: {}}
-
-    assert solve(wikidatawiki.item_completeness, cache=cache) == 0.0
-
-
-def test_item_completeness():
-    present = {'P123': {}, 'P234': {}}
-    suggested = [{'id': 'P123', 'rating': 0.8}, {'id': 'P404', 'rating': 0.6}]
-
-    cache = {present_properties: present, suggested_properties: suggested}
-    expected = 0.8 / (0.8 + 0.6)
-
-    assert solve(wikidatawiki.item_completeness, cache=cache) == expected
 
 
 def test_human_related_features(q7251):
