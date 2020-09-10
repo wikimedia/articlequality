@@ -31,6 +31,12 @@ def crab_nebula():
     crab_nebula = {
         'title': 'Q207436',
         'id': 'Q207436',
+        'labels': {
+            'en': {
+                'value': 'Crab Nebula',
+                'language': 'en'
+            }
+        },
         'claims': {
             'P31': [
                 {
@@ -122,6 +128,30 @@ def test_has_commons_media(q7251, crab_nebula):
                  cache={entity: q7251}) is True
     assert solve(wikidatawiki.has_commons_media,
                  cache={entity: crab_nebula}) is False
+
+
+def test_important_languages(q7251, crab_nebula):
+    langs_count = len(wikidatawiki.IMPORTANT_LANG_CODES_LIST)
+    assert list(
+        solve(wikidatawiki.important_label_translation_features,
+              cache={entity: q7251})) == [True] * langs_count
+    assert list(
+        solve(wikidatawiki.important_description_translation_features,
+              cache={entity: q7251})) == [True] * langs_count
+    assert list(
+        solve(wikidatawiki.important_complete_translation_features,
+              cache={entity: q7251})) == [True] * langs_count
+
+    expected = [False, False, True, False, False, False, False, False]
+    assert list(
+        solve(wikidatawiki.important_label_translation_features,
+              cache={entity: crab_nebula})) == expected
+    assert list(
+        solve(wikidatawiki.important_description_translation_features,
+              cache={entity: crab_nebula})) == [False] * langs_count
+    assert list(
+        solve(wikidatawiki.important_complete_translation_features,
+              cache={entity: crab_nebula})) == [False] * langs_count
 
 
 def test_entity_parts(q7251):

@@ -4,7 +4,7 @@ from revscoring.datasources import \
 from revscoring.datasources.datasource import Datasource
 from revscoring.features import wikibase as wikibase_
 from revscoring.features import modifiers
-from revscoring.features.meta import aggregators
+from revscoring.features.meta import aggregators, bools
 from revscoring.features.modifiers import not_
 
 from . import wikibase
@@ -13,6 +13,7 @@ from .wikidatawiki_data import property_datatypes, items_lists
 name = "wikidatawiki"
 
 IMPORTANT_LANG_CODES = {'en', 'de', 'ar', 'zh', 'es', 'pt', 'ru', 'fr'}
+IMPORTANT_LANG_CODES_LIST = sorted(list(IMPORTANT_LANG_CODES))
 """
 Language codes for important languages which are described in
 https://www.wikidata.org/wiki/Wikidata:Item_quality#Translations
@@ -287,30 +288,47 @@ externally_referenced_claims_ratio = Feature(
     returns=float,
     depends_on=[wikibase_.revision.datasources.entity])
 
-local_wiki = [
-    is_scholarlyarticle,
-    is_astronomical_object,
-    is_human,
-    is_blp,
-    has_image,
-    has_commons_media,
-    aggregators.len(complete_translations),
-    aggregators.len(important_label_translations),
-    aggregators.len(important_description_translations),
-    aggregators.len(important_complete_translations),
-    references_count,
-    referenced_claims_ratio,
-    wikimedia_references_count,
-    wikimedia_references_count / modifiers.max(references_count, 1),
-    wikimedia_referenced_ratio,
-    external_references_count,
-    external_references_count / modifiers.max(references_count, 1),
-    externally_referenced_claims_ratio,
-    unique_references_count,
-    unique_references_count / modifiers.max(references_count, 1),
-    item_completeness,
-    aggregators.len(external_identifiers),
-    non_external_id_statements_count
+important_label_translation_features = [
+    bools.item_in_set(i, important_label_translations)
+    for i in IMPORTANT_LANG_CODES_LIST
 ]
+important_description_translation_features = [
+    bools.item_in_set(i, important_description_translations)
+    for i in IMPORTANT_LANG_CODES_LIST
+]
+important_complete_translation_features = [
+    bools.item_in_set(i, important_complete_translations)
+    for i in IMPORTANT_LANG_CODES_LIST
+]
+
+local_wiki = \
+    important_label_translation_features + \
+    important_description_translation_features + \
+    important_complete_translation_features + \
+    [
+        is_scholarlyarticle,
+        is_astronomical_object,
+        is_human,
+        is_blp,
+        has_image,
+        has_commons_media,
+        aggregators.len(complete_translations),
+        aggregators.len(important_label_translations),
+        aggregators.len(important_description_translations),
+        aggregators.len(important_complete_translations),
+        references_count,
+        referenced_claims_ratio,
+        wikimedia_references_count,
+        wikimedia_references_count / modifiers.max(references_count, 1),
+        wikimedia_referenced_ratio,
+        external_references_count,
+        external_references_count / modifiers.max(references_count, 1),
+        externally_referenced_claims_ratio,
+        unique_references_count,
+        unique_references_count / modifiers.max(references_count, 1),
+        item_completeness,
+        aggregators.len(external_identifiers),
+        non_external_id_statements_count
+    ]
 
 item_quality = wikibase.item + local_wiki
