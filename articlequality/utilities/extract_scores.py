@@ -12,6 +12,7 @@ Usage:
                                  [--processes=<num>]
                                  [--verbose]
                                  [--debug]
+                                 [--class-weight=<def>...]
 
 Options:
     -h --help             Prints out this documentation.
@@ -27,11 +28,15 @@ Options:
                           not be duplicated
     --processes=<num>     The number of parallel processes to start
                           [default: <cpu count>]
+    --class-weight=<def>  Replace the predefined class weights.
+                          Should be specified multiple times.
+                          Format: A=5
     --verbose             Prints dots and stuff to stderr
     --debug               Print debug logging
 """
 import logging
 import sys
+import json
 from itertools import chain
 from multiprocessing import cpu_count
 
@@ -83,6 +88,12 @@ def main(argv=None):
         level=logging.DEBUG if args['--debug'] else logging.INFO,
         format='%(asctime)s %(levelname)s:%(name)s -- %(message)s'
     )
+    if args['--class-weight'] is not None:
+        class_weights = dict(
+            map(_parse_class_weight_option, args['--class-weight'])
+        )
+        global CLASS_WEIGHTS
+        CLASS_WEIGHTS.update(class_weights)
 
     paths = args['<dump-file>']
     with open(args['--model']) as f:
@@ -257,3 +268,8 @@ def threshold_scores(model, sunset, skip_scores_before, thresholds):
                            error_score)
 
     return _threshold_scores
+
+
+def _parse_class_weight_option(class_weight_option_string):
+    (key, weight_string) = class_weight_option_string.split('=')
+    return (json.loads(key), int(weight_string))
