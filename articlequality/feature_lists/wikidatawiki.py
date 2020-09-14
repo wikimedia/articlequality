@@ -148,11 +148,13 @@ important_description_translations = Datasource(
     _process_important_description_translations,
     depends_on=[wikibase_.revision.datasources.descriptions])
 
+
 def _process_non_external_id_statements(entity):
     return [statement
             for pid, statements in entity.properties.items()
             if pid in property_datatypes.NONEXTERNAL_IDENTIFIERS
             for statement in statements]
+
 
 non_external_id_statements = Datasource(
     name + ".revision.non_external_id_statements",
@@ -173,7 +175,8 @@ unique_references_count = aggregators.len(unique_references)
 "`int` : A count of unique sources in the revision"
 
 non_external_id_statements_count = aggregators.len(non_external_id_statements)
-"`int` : A count of all statements that are not external identifiers in the revision"
+"`int` : A count of all statements that are not external identifiers"
+
 
 def _process_is_astronomical_object(entity):
     statements = entity.properties.get(properties.INSTANCE_OF, [])
@@ -201,8 +204,8 @@ def _process_wikimedia_referenced_ratio(entity):
         wikimedia_referenced = False
         for ref_pid in statement.references:
             if ref_pid == properties.IMPORTED_FROM_WIKIMEDIA:
-               wikimedia_referenced = True
-               break
+                wikimedia_referenced = True
+                break
         if wikimedia_referenced:
             wikimedia_referenced_statements += 1
 
