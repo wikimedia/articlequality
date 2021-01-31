@@ -520,6 +520,65 @@ frwikisource_models: \
 frwikisource_tuning_reports: \
 	tuning_reports/frwikisource.page_level.md
 
+########################## Dutch Wikipedia #####################################
+datasets/nlwiki.balanced_labelings.1650_2021.json:
+	wget https://raw.githubusercontent.com/wikimedia/nlwiki_articlequality/master/datasets/nlwiki-20201101.balanced_sample.json -qO- > $@
+
+datasets/nlwiki.labeled_revisions.w_cache.1650_2021.json: \
+		datasets/nlwiki.balanced_labelings.1650_2021.json
+	cat $< | \
+	revscoring extract \
+	  articlequality.feature_lists.nlwiki.wp10 \
+	  --host https://nl.wikipedia.org \
+	  --verbose > $@
+
+
+tuning_reports/nlwiki.wp10.md: \
+		datasets/nlwiki.labeled_revisions.w_cache.1650_2021.json
+	cat $< | \
+	revscoring tune \
+	  config/classifiers.params.yaml \
+	  articlequality.feature_lists.nlwiki.wp10 \
+	  wp10 \
+	  accuracy.macro \
+	  --pop-rate '"E"=0.20' \
+	  --pop-rate '"D"=0.20' \
+	  --pop-rate '"C"=0.20' \
+	  --pop-rate '"B"=0.20' \
+	  --pop-rate '"A"=0.20' \
+	  --center --scale \
+	  --cv-timeout=60 \
+	  --debug > $@
+
+models/nlwiki.wp10.gradient_boosting.model: \
+		datasets/nlwiki.labeled_revisions.w_cache.1650_2021.json
+	cat $< | \
+	revscoring cv_train \
+	  revscoring.scoring.models.GradientBoosting \
+	  articlequality.feature_lists.nlwiki.wp10 \
+	  wp10 \
+	  --version $(wp10_major_minor).0 \
+	  -p 'max_depth=3' \
+	  -p 'learning_rate=0.01' \
+	  -p 'max_features="log2"' \
+	  -p 'n_estimators=300' \
+	  --pop-rate '"E"=0.20' \
+	  --pop-rate '"D"=0.20' \
+	  --pop-rate '"C"=0.20' \
+	  --pop-rate '"B"=0.20' \
+	  --pop-rate '"A"=0.20' \
+	  --center --scale > $@
+
+	revscoring model_info $@ > model_info/nlwiki.wp10.md
+
+nlwiki_models: \
+	models/nlwiki.wp10.gradient_boosting.model
+
+nlwiki_tuning_reports: \
+	tuning_reports/nlwiki.wp10.md
+
+
+
 ########################## Portuguese Wikipedia ################################
 datasets/ptwiki.labelings.20200301.json:
 	./utility extract_labelings \
