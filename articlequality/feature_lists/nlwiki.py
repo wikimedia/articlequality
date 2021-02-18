@@ -19,7 +19,7 @@ cn_templates = wikitext.revision.template_names_matching(
 #To Do: infobox
 infobox_templates_str = wikitext.revision.datasources.templates_str_matching(
     r"{{Infobox",
-    name='enwiki.revision.infobox_templates_str')
+    name='nlwiki.revision.infobox_templates_str')
 
 
 
