@@ -1,6 +1,6 @@
 """
-Russian Wikipedia
-+++++++++++++++++
+Dutch Wikipedia
++++++++++++++++
 """
 
 from revscoring.features import wikitext
@@ -12,7 +12,7 @@ from revscoring.datasources.meta import mappers, filters
 from . import wikipedia
 
 cn_templates = wikitext.revision.template_names_matching(
-    r"Bron\??|Fact|Greenbron|Fiet|Refnodig|Referentie[ _]gewenst",
+    r"Bron\??|Fact|Geenbron|Feit|Refnodig|Referentie[ _]gewenst",
     name="nlwiki.revision.cn_templates")
 
 # Links
