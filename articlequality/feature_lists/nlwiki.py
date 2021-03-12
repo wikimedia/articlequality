@@ -1,7 +1,8 @@
 """
 Dutch Wikipedia
-+++++++++++++++
++++++++++++++++++
 """
+import re
 
 from revscoring.features import wikitext
 from revscoring.features.modifiers import max
@@ -12,8 +13,14 @@ from revscoring.datasources.meta import mappers, filters
 from . import wikipedia
 
 cn_templates = wikitext.revision.template_names_matching(
-    r"Bron\??|Fact|Geenbron|Feit|Refnodig|Referentie[ _]gewenst",
+    r"Bron\??|Fact|Wikify|reden|Twijfel|Geenbron|Wanneer?|Feit|Refnodig|Referentie[ _]gewenst",
     name="nlwiki.revision.cn_templates")
+
+
+infobox_templates = wikitext.revision.template_names_matching(
+    r"infobox", name="nlwiki.revision.infobox_templates")
+
+
 
 # Links
 category_links = wikitext.revision.wikilink_titles_matching(
