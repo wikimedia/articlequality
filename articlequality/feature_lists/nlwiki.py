@@ -2,25 +2,20 @@
 Dutch Wikipedia
 +++++++++++++++++
 """
-import re
 
 from revscoring.features import wikitext
 from revscoring.features.modifiers import max
 from revscoring.features.meta import aggregators
 from revscoring.languages import dutch
 from revscoring.datasources.meta import mappers, filters
-
 from . import wikipedia
 
 cn_templates = wikitext.revision.template_names_matching(
     r"Bron\??|Fact|Wikify|reden|Twijfel|Geenbron|Wanneer?|Feit|Refnodig|Referentie[ _]gewenst",
     name="nlwiki.revision.cn_templates")
 
-
 infobox_templates = wikitext.revision.template_names_matching(
     r"infobox", name="nlwiki.revision.infobox_templates")
-
-
 
 # Links
 category_links = wikitext.revision.wikilink_titles_matching(
@@ -42,7 +37,6 @@ paragraphs_without_refs_total_length = aggregators.sum(
     mappers.map(len, paragraphs_without_refs),
     name="enwiki.revision.paragraphs_without_refs_total_length"
 )
-
 
 local_wiki = [
     dutch.stemmed.revision.stem_chars,
