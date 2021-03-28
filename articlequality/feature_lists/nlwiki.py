@@ -11,7 +11,8 @@ from revscoring.datasources.meta import mappers, filters
 from . import wikipedia
 
 cn_templates = wikitext.revision.template_names_matching(
-    r"Bron\??|Fact|Wikify|reden|Twijfel|Geenbron|Wanneer?|Feit|Refnodig|Referentie[ _]gewenst",
+    r"Bron\??|Fact|Wikify|reden|Twijfel|Geenbron|Wanneer?|" +
+    r"Feit|Refnodig|Referentie[ _]gewenst",
     name="nlwiki.revision.cn_templates")
 
 infobox_templates = wikitext.revision.template_names_matching(
@@ -49,7 +50,8 @@ local_wiki = [
     dutch.dictionary.revision.dict_words,
     dutch.dictionary.revision.dict_words / max(wikitext.revision.words, 1),
     paragraphs_without_refs_total_length,
-    paragraphs_without_refs_total_length / max(wikitext.revision.content_chars, 1), 
+    paragraphs_without_refs_total_length /
+        max(wikitext.revision.content_chars, 1),
     cn_templates,
     cn_templates / max(wikitext.revision.content_chars, 1),
 ]
