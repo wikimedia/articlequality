@@ -16,7 +16,7 @@ cn_templates = wikitext.revision.template_names_matching(
     name="nlwiki.revision.cn_templates")
 
 infobox_templates = wikitext.revision.template_names_matching(
-    r"infobox", name="nlwiki.revision.infobox_templates")
+    r"Infobox", name="nlwiki.revision.infobox_templates")
 
 # Links
 category_links = wikitext.revision.wikilink_titles_matching(
