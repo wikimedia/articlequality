@@ -54,8 +54,8 @@ local_wiki = [
         max(wikitext.revision.content_chars, 1),
     cn_templates,
     cn_templates / max(wikitext.revision.content_chars, 1),
-    infoboxes,
-    infoboxes / max(wikitext.revision.content_chars, 1)
+    infobox_templates,
+    infobox_templates / max(wikitext.revision.content_chars, 1)
 ]
 
 wp10 = local_wiki + wikipedia.article
