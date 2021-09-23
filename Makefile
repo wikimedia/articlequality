@@ -27,7 +27,7 @@ tuning_reports: \
 	trwiki_tuning_reports \
 	wikidatawiki_tuning_reports
 
-wp10_major_minor = 0.8
+wp10_major_minor = 0.9
 page_level_major_minor = 0.3
 item_quality_major_minor = 0.5
 
@@ -524,8 +524,13 @@ frwikisource_tuning_reports: \
 datasets/nlwiki.balanced_labelings.1650_2021.json:
 	wget https://raw.githubusercontent.com/wikimedia/nlwiki_articlequality/master/datasets/nlwiki-20201101.balanced_sample.json -qO- > $@
 
-datasets/nlwiki.labeled_revisions.w_cache.1650_2021.json: \
-		datasets/nlwiki.balanced_labelings.1650_2021.json
+datasets/nlwiki.combined_labelings.1700_2021.json: \
+		datasets/nlwiki.balanced_labelings.1650_2021.json \
+		datasets/nlwiki.human_labels.manually_extracted.json
+	cat $^ > $@
+
+datasets/nlwiki.combined_labelings.1700_2021.w_cache.json: \
+		datasets/nlwiki.combined_labelings.1700_2021.json
 	cat $< | \
 	revscoring extract \
 	  articlequality.feature_lists.nlwiki.wp10 \
@@ -534,7 +539,7 @@ datasets/nlwiki.labeled_revisions.w_cache.1650_2021.json: \
 
 
 tuning_reports/nlwiki.wp10.md: \
-		datasets/nlwiki.labeled_revisions.w_cache.1650_2021.json
+		datasets/nlwiki.combined_labelings.1700_2021.w_cache.json
 	cat $< | \
 	revscoring tune \
 	  config/classifiers.params.yaml \
@@ -551,17 +556,17 @@ tuning_reports/nlwiki.wp10.md: \
 	  --debug > $@
 
 models/nlwiki.wp10.gradient_boosting.model: \
-		datasets/nlwiki.labeled_revisions.w_cache.1650_2021.json
+		datasets/nlwiki.combined_labelings.1700_2021.w_cache.json
 	cat $< | \
 	revscoring cv_train \
 	  revscoring.scoring.models.GradientBoosting \
 	  articlequality.feature_lists.nlwiki.wp10 \
 	  wp10 \
 	  --version $(wp10_major_minor).0 \
-	  -p 'max_depth=3' \
-	  -p 'learning_rate=0.01' \
+	  -p 'max_depth=5' \
+	  -p 'learning_rate=0.1' \
 	  -p 'max_features="log2"' \
-	  -p 'n_estimators=300' \
+	  -p 'n_estimators=700' \
 	  --pop-rate '"E"=0.20' \
 	  --pop-rate '"D"=0.20' \
 	  --pop-rate '"C"=0.20' \

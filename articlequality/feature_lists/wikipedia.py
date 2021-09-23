@@ -17,5 +17,8 @@ article = [
      modifiers.max(wikitext.revision.content_chars, 1)),
     wikitext.revision.headings_by_level(3),
     (wikitext.revision.headings_by_level(3) /
-     modifiers.max(wikitext.revision.content_chars, 1))
+     modifiers.max(wikitext.revision.content_chars, 1)),
+    wikitext.revision.list_items,
+    (wikitext.revision.list_items /
+     modifiers.max(wikitext.revision.content_chars, 1)),
 ]
