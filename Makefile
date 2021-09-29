@@ -529,6 +529,18 @@ datasets/nlwiki.combined_labelings.1700_2021.json: \
 		datasets/nlwiki.human_labels.manually_extracted.json
 	cat $^ > $@
 
+datasets/nlwiki.latest_scores.20210901.tsv:
+	./utility extract_scores /mnt/data/xmldatadumps/public/nlwiki/20210901/nlwiki-20210901-pages-articles?.xml-p*.bz2 \
+	 --class-weight='"A"=5' --class-weight='"B"=4'  --class-weight='"C"=3' --class-weight='"D"=2' --class-weight='"E"=1' \
+	 --sunset=20210901000000 --model=models/nlwiki.wp10.gradient_boosting.model > $@
+
+datasets/nlwiki.latest_scores.20210901.100_Cs.json: \
+		datasets/nlwiki.latest_scores.20210901.tsv
+	(head -n1 $< cat $< |
+	 grep -P "\tC\t" |
+	 grep -P -v "(\tLijst van)|(in het seizoen)" |
+	 shuf -n 100) | tsv2json int str int str str float > $@
+
 datasets/nlwiki.combined_labelings.1700_2021.w_cache.json: \
 		datasets/nlwiki.combined_labelings.1700_2021.json
 	cat $< | \
