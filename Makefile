@@ -524,14 +524,23 @@ frwikisource_tuning_reports: \
 datasets/nlwiki.balanced_labelings.1650_2021.json:
 	wget https://raw.githubusercontent.com/wikimedia/nlwiki_articlequality/master/datasets/nlwiki-20201101.balanced_sample.json -qO- > $@
 
-datasets/nlwiki.balanced_As_Bs_and_Es.from_balanced_labelings.1650_2021.json:
-	cat $< | grep -P '"wp10": "(A|B|E)" > $@
+datasets/nlwiki.balanced_As_Bs_and_Es.from_balanced_labelings.1650_2021.json: \
+		datasets/nlwiki.balanced_labelings.1650_2021.json
+	cat $< | grep -P '"wp10": "(A|B|E)"' > $@
+
+datasets/nlwiki.human_labels.20210901.100_Ds_Cs_and_Bs.json:
+	./utility fetch_labels https://labels.wmflabs.org/campaigns/nlwiki/97 \
+		--aggregation=median | \
+	sed -r 's/"item_quality"/"wp10"/' \
+	> $@
+
 
 datasets/nlwiki.combined_labelings.1700_2021.json: \
 		datasets/nlwiki.balanced_As_Bs_and_Es.from_balanced_labelings.1650_2021.json \
-		datasets/nlwiki.human_labeled.manually_extracted.2021-09-23.json \
-		datasets/nlwiki.human_labeled.manually_etxracted.2021-12-12.json
-	cat $^ > $@
+		datasets/nlwiki.human_labels.manually_extracted.2021-09-23.json \
+                datasets/nlwiki.human_labels.20210901.100_Ds_Cs_and_Bs.json \
+		datasets/nlwiki.human_labels.manually_extracted.2021-12-12.json
+	revscoring union_merge_observations $^ > $@
 
 datasets/nlwiki.latest_scores.20210901.tsv:
 	./utility extract_scores /mnt/data/xmldatadumps/public/nlwiki/20210901/nlwiki-20210901-pages-articles?.xml-p*.bz2 \
@@ -554,8 +563,17 @@ datasets/nlwiki.latest_scores.20210901.100_Ds_Cs_and_Bs.json: \
 	 grep -P -v "(\tLijst van)|(in het seizoen)" | \
 	 shuf -n 25) | tsv2json int str int str str float > $@
 
-datasets/nlwiki.combined_labelings.1700_2021.w_cache.json: \
+datasets/nlwiki.rebalanced_labelings.160_2021.w_cache.json: \
 		datasets/nlwiki.combined_labelings.1700_2021.json
+	(cat $< | grep '"wp10": "A"' | shuf -n 32;
+	 cat $< | grep '"wp10": "B"' | shuf -n 32;
+	 cat $< | grep '"wp10": "C"' | shuf -n 32;
+	 cat $< | grep '"wp10": "D"' | shuf -n 32;
+	 cat $< | grep '"wp10": "E"' | shuf -n 32) > $@
+
+
+datasets/nlwiki.rebalanced_labelings.160_2021.w_cache.json: \
+		datasets/nlwiki.rebalanced_labelings.160_2021.json
 	cat $< | \
 	revscoring extract \
 	  articlequality.feature_lists.nlwiki.wp10 \
@@ -564,7 +582,7 @@ datasets/nlwiki.combined_labelings.1700_2021.w_cache.json: \
 
 
 tuning_reports/nlwiki.wp10.md: \
-		datasets/nlwiki.combined_labelings.1700_2021.w_cache.json
+		datasets/nlwiki.rebalanced_labelings.160_2021.w_cache.json
 	cat $< | \
 	revscoring tune \
 	  config/classifiers.params.yaml \
@@ -581,7 +599,7 @@ tuning_reports/nlwiki.wp10.md: \
 	  --debug > $@
 
 models/nlwiki.wp10.gradient_boosting.model: \
-		datasets/nlwiki.combined_labelings.1700_2021.w_cache.json
+		datasets/nlwiki.rebalanced_labelings.160_2021.w_cache.json
 	cat $< | \
 	revscoring cv_train \
 	  revscoring.scoring.models.GradientBoosting \
