@@ -563,12 +563,12 @@ datasets/nlwiki.latest_scores.20210901.100_Ds_Cs_and_Bs.json: \
 	 grep -P -v "(\tLijst van)|(in het seizoen)" | \
 	 shuf -n 25) | tsv2json int str int str str float > $@
 
-datasets/nlwiki.rebalanced_labelings.160_2021.w_cache.json: \
+datasets/nlwiki.rebalanced_labelings.160_2021.json: \
 		datasets/nlwiki.combined_labelings.1700_2021.json
-	(cat $< | grep '"wp10": "A"' | shuf -n 32;
-	 cat $< | grep '"wp10": "B"' | shuf -n 32;
-	 cat $< | grep '"wp10": "C"' | shuf -n 32;
-	 cat $< | grep '"wp10": "D"' | shuf -n 32;
+	(cat $< | grep '"wp10": "A"' | shuf -n 32; \
+	 cat $< | grep '"wp10": "B"' | shuf -n 32; \
+	 cat $< | grep '"wp10": "C"' | shuf -n 32; \
+	 cat $< | grep '"wp10": "D"' | shuf -n 32; \
 	 cat $< | grep '"wp10": "E"' | shuf -n 32) > $@
 
 
@@ -607,9 +607,9 @@ models/nlwiki.wp10.gradient_boosting.model: \
 	  wp10 \
 	  --version $(wp10_major_minor).0 \
 	  -p 'max_depth=5' \
-	  -p 'learning_rate=0.1' \
+	  -p 'learning_rate=0.5' \
 	  -p 'max_features="log2"' \
-	  -p 'n_estimators=700' \
+	  -p 'n_estimators=300' \
 	  --pop-rate '"E"=0.20' \
 	  --pop-rate '"D"=0.20' \
 	  --pop-rate '"C"=0.20' \
