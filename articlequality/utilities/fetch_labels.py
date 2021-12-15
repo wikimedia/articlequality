@@ -5,6 +5,7 @@ Assumes the general schema of the article quality campaign.
 Usage:
     fetch_labels <campaign-url>
                  [--filter=<condition>...]
+                 [--aggregation=<type>]
                  [--output=<path>]
                  [--debug]
                  [--verbose]
@@ -13,6 +14,8 @@ Options:
     <campaign-url>        The base URL of a campaign from which to extract
                           labels.
     --filter=<condition>  A condition for inclusion of labels in the output.
+    --aggregation=<type>  Method for aggregating multiple labels (max, min,
+                          median, first, last) [default: first]
     --output=<path>       Path to an file to write output to
                           [default: <stdout>]
     --debug               Print debug logging
@@ -46,12 +49,13 @@ def main(argv=None):
     else:
         labels_f = open(args['--output'], "w")
 
+    agg_type = args['--aggregation']
     verbose = args['--verbose']
 
-    run(campaign_url, labels_f, filter, verbose)
+    run(campaign_url, labels_f, filter, agg_type, verbose)
 
 
-def run(campaign_url, labels_f, filter, verbose):
+def run(campaign_url, labels_f, filter, agg_type, verbose):
 
     campaign_doc = requests.get(campaign_url, params={'tasks': ""}).json()
 
@@ -62,7 +66,7 @@ def run(campaign_url, labels_f, filter, verbose):
                 sys.stderr.flush()
             continue
 
-        label_doc = aggregate_labels(task_doc['labels'])
+        label_doc = aggregate_labels(task_doc['labels'], agg_type)
         if label_doc is None:
             if verbose:
                 sys.stderr.write(".")
@@ -74,7 +78,7 @@ def run(campaign_url, labels_f, filter, verbose):
             labels_f.write("\n")
 
 
-def aggregate_labels(label_docs):
+def aggregate_labels(label_docs, agg_type):
 
     if len(label_docs) == 0:
         return None
@@ -87,10 +91,38 @@ def aggregate_labels(label_docs):
                 'timestamp': str(label_docs[0]['timestamp'])}
 
         if 'item_quality' in label_docs[0]['data']:
-            data['item_quality'] = label_docs[0]['data']['item_quality']
+            field = "item_quality"
         elif 'wp10' in label_docs[0]['data']:
-            data['wp10'] = label_docs[0]['data']['wp10']
-        return data
+            field = "wp10"
+        else:
+            raise RuntimeError("Couldn't find a valid field in {0}"
+                               .format(label_docs))
+
+        label_vals = [l['data'][field] for l in label_docs]
+        label = aggregate_label_vals(label_vals, agg_type)
+        if label is None:
+            return None
+        else:
+            data[field] = label
+            data['raw_labels'] = label_vals
+            return data
+
+
+def aggregate_label_vals(labels, agg_type):
+    if agg_type == "first":
+        return labels[0]
+    elif agg_type == "last":
+        return labels[-1]
+    else:
+        _labels = [l for l in labels if l is not None]
+        if len(_labels) == 0:
+            return None
+        elif agg_type == "min":
+            return min(_labels)
+        elif agg_type == "max":
+            return max(_labels)
+        elif agg_type == "median":
+            return sorted(_labels)[len(_labels)//2]
 
 
 OPERATORS = {"=": lambda field, value: field == value,
