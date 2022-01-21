@@ -15,18 +15,18 @@ from . import wikipedia
 
 # Templates
 infobox_templates = wikitext.revision.template_names_matching(
-    r"infobox", name="enwiki.revision.infobox_templates")
+    r"infobox$", name="enwiki.revision.infobox_templates")
 CN_TEMPLATES = [
     r"Citation[_ ]needed",
     r"Cn",
     r"Fact"
 ]
 cn_templates = wikitext.revision.template_names_matching(
-    "|".join(CN_TEMPLATES), name="enwiki.revision.cn_templates")
+    "$|".join(CN_TEMPLATES)+"$", name="enwiki.revision.cn_templates")
 who_templates = wikitext.revision.template_names_matching(
-    "Who", name="enwiki.revision.who_templates")
+    "Who$", name="enwiki.revision.who_templates")
 main_article_templates = wikitext.revision.template_names_matching(
-    "Main", name="enwiki.main_article_templates")
+    "Main$", name="enwiki.main_article_templates")
 CITE_TEMPLATES = [
     r"Cite",
     r"Harvard[_ ]citation[_ ]no[_ ]brackets", r"harvnb",
@@ -39,7 +39,7 @@ CITE_TEMPLATES = [
     r"Harvp"
 ]
 cite_templates = wikitext.revision.template_names_matching(
-    "|".join(CITE_TEMPLATES), name="enwiki.revision.cite_templates")
+    "$|".join(CITE_TEMPLATES)+"$", name="enwiki.revision.cite_templates")
 SFN_TEMPLATES = [
     r"Shortened footnote template", r"sfn",
     r"Sfnp",
@@ -47,7 +47,7 @@ SFN_TEMPLATES = [
     r"Sfnmp"
 ]
 shortened_footnote_templates = wikitext.revision.template_names_matching(
-    "|".join(SFN_TEMPLATES),
+    "$|".join(SFN_TEMPLATES)+"$",
     name="enwiki.revision.shortened_footnote_templates")
 all_ref_tags = shortened_footnote_templates + wikitext.revision.ref_tags
 all_cite_templates = cite_templates + shortened_footnote_templates
@@ -67,7 +67,7 @@ image_links = wikitext.revision.wikilink_titles_matching(
     r"File|Image\:", name="enwiki.revision.image_links")
 
 image_templates = wikitext.revision.template_names_matching(
-    r"((Wide|Tall|scalable) image)|Panorama|Panorama 2",
+    r"((Wide$|Tall$|scalable) image)$|Panorama$|Panorama 2$",
     name='enwiki.revision.image_template')
 
 
