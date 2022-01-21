@@ -10,7 +10,7 @@ from revscoring.languages import swedish
 from . import wikipedia
 
 cn_templates = wikitext.revision.template_names_matching(
-    r"Källa[ _]behövs|Kb",
+    r"Källa[ _]behövs$|Kb$",
     name="svwiki.revision.cn_templates")
 
 # Links
