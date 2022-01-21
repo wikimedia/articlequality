@@ -17,7 +17,7 @@ infobox_templates = wikitext.revision.template_names_matching(
     r"[\w\s_]*infotaula[ _]automatikoa$",
     name="euwiki.revision.infobox_templates")
 cn_templates = wikitext.revision.template_names_matching(
-    r"erref[ _]behar", name="euwiki.revision.cn_templates")
+    r"erref[ _]behar$", name="euwiki.revision.cn_templates")
 
 # Links
 # Excluding category_links based on https://phabricator.wikimedia.org/T240467
