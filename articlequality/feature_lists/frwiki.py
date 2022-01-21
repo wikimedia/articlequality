@@ -20,7 +20,7 @@ CITE_TEMPLATES = [
     r"Ouvrage"
 ]
 cite_templates = wikitext.revision.template_names_matching(
-    "|".join(CITE_TEMPLATES),
+    "$|".join(CITE_TEMPLATES)+"$",
     name="frwiki.revision.cite_templates")
 proportion_of_templated_references = \
     cite_templates / max(wikitext.revision.ref_tags, 1)
@@ -30,7 +30,7 @@ non_cite_templates = sub(
     name="frwiki.revision.non_cite_templates"
 )
 infobox_templates = wikitext.revision.template_names_matching(
-    r"^infobox",
+    r"^infobox$",
     name="frwiki.revision.infobox_templates")
 
 # Copied (2015-10-29) from:
