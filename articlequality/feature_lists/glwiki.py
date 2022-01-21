@@ -15,10 +15,12 @@ from . import wikipedia
 # Infoboxes:
 #   https://gl.wikipedia.org/wiki/Categor%C3%ADa:Caixas_de_informaci%C3%B3n
 # They don't have a common naming scheme.
+
+
 cn_templates = wikitext.revision.template_names_matching(
-    r"cómpre[ _]referencia|cando|quen|clarificar|" +
-    r"sen[ _]referencias|cómpre[ _]páxina|" +
-    r"verificar[ _]credibilidade", name="glwiki.revision.cn_templates")
+    r"cómpre[ _]referencia$|cando$|quen$|clarificar$|" +
+    r"sen[ _]referencias$|cómpre[ _]páxina$|" +
+    r"verificar[ _]credibilidade$", name="glwiki.revision.cn_templates")
 
 # Links
 category_links = wikitext.revision.wikilink_titles_matching(
