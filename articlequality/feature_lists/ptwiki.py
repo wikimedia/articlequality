@@ -15,7 +15,7 @@ from . import wikipedia
 
 # Templates
 infobox_templates = wikitext.revision.template_names_matching(
-    r"(Info|Infobox)", name="ptwiki.revision.infobox_templates")
+    r"(Info|Infobox)$", name="ptwiki.revision.infobox_templates")
 CN_TEMPLATES = [
     r"Carece[ _]de[ _]fontes",
     r"Carece[ _]de[ _]fontes2",
@@ -23,7 +23,7 @@ CN_TEMPLATES = [
     r"Carece[ _]de[ _]fontes/bloco2"
 ]
 cn_templates = wikitext.revision.template_names_matching(
-    "|".join(CN_TEMPLATES), name="ptwiki.revision.cn_templates")
+    "$|".join(CN_TEMPLATES)+"$", name="ptwiki.revision.cn_templates")
 MAIN_TEMPLATES = [
     r"Artigo[ _]principal",
     r"Ver[ _]artigo[ _]principal",
@@ -36,7 +36,7 @@ MAIN_TEMPLATES = [
     r"AP", r"Details", r"Ver[ _]artigo"
 ]
 main_article_templates = wikitext.revision.template_names_matching(
-    "|".join(MAIN_TEMPLATES), name="ptwiki.main_article_templates")
+    "$|".join(MAIN_TEMPLATES)+"$", name="ptwiki.main_article_templates")
 CITE_TEMPLATES = [
     r"Cite",
     r"Citar",
@@ -50,9 +50,9 @@ CITE_TEMPLATES = [
     r"Harvp"
 ]
 cite_templates = wikitext.revision.template_names_matching(
-    "|".join(CITE_TEMPLATES), name="ptwiki.revision.cite_templates")
+    "$|".join(CITE_TEMPLATES)+"$", name="ptwiki.revision.cite_templates")
 shortened_footnote_templates = wikitext.revision.template_names_matching(
-    r"sfn", name="ptwiki.revision.shortened_footnote_templates")
+    r"sfn$", name="ptwiki.revision.shortened_footnote_templates")
 all_ref_tags = shortened_footnote_templates + wikitext.revision.ref_tags
 all_cite_templates = cite_templates + shortened_footnote_templates
 proportion_of_templated_references = \
@@ -71,12 +71,19 @@ image_links = wikitext.revision.wikilink_titles_matching(
     r"(File|Ficheiro|Arquivo|Imagem?)\s*\:",
     name="ptwiki.revision.image_links")
 
+IMG_TEMPLATES = [
+    r"Scalable[ _]image",
+    r"Panorama",
+    r"Imagem[ _]vertical",
+    r"Panorama",
+    r"Panorama 2"
+]
+
 image_templates = wikitext.revision.template_names_matching(
-    r"(Scalable[ _]image|Panorama|Imagem[ _]vertical|Panorama|Panorama 2)",
-    name='ptwiki.revision.image_template')
+    "$|".join(IMG_TEMPLATES)+"$", name='ptwiki.revision.image_template')
 
 side_by_side_image_templates = wikitext.revision.template_names_matching(
-    r"Imagem[ _]dupla",
+    r"Imagem[ _]dupla$",
     name='ptwiki.revision.side_by_side_image_templates')
 
 
