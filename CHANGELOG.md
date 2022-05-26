@@ -3,6 +3,51 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.4.3] - 2022-05-26
+
+### Added
+- Adds nlwiki models with sample of probable D, C, and B-class articles for review
+- Allow setting custom classes and weights when extracting scores
+- Added `non-external-id` statement count as a signal
+- Add tests to ensure item parts are being counted correctly
+- Add check for image and commons media
+- Add retraining model documentation
+- Add `is_astronomical_object` feature for wikidatawiki
+- Add `is_scholarlyarticle` feature to wikidatawiki
+- Add test instructions
+- Add some basic installation instructions
+- Add new ukwiki model
+- Added `words_to_watch` to ptwiki `feature_lists`
+- Add `weighted_sum` utility
+
+### Changed
+- Rebuilds enwiki model with revscoring 2.11.1
+- Builds new model for nlwiki using new features and manual labels
+- Remove impactless property suggester feature
+- Builds new wikidata model
+- Remove number of sitelinks signal from wikibase item quality model
+- Reduce the size of wikidata model and simplify its logic
+- Move tests to outside of the production code
+- Rebuilds ptwiki models with revscoring-2.8.2
+- Rebuilds all models with revscoring-2.8.2
+- Increase revscoring version requirement
+- Update Makefile to remove revisions older than 2014
+- Rebuild enwiki model with new image counts
+- Rebuilds ptwiki models with more observations
+
+### Fixed
+- Fix `extract_scores` utility
+- Fix fatal error when creating the model info
+- Fix module names import type
+- Convert page id to string explicitly
+- Fix extraction when there are multiple reverts
+- Match articles to talk pages using the API
+- Detect labels in old ptwiki templates
+- Fix typo in `user_agent`
+- Fix misleading dataset filenames
+- Update `extract_labelings` doc
+- Fix doc for ptwiki extractor
+
 ## [0.4.2] - 2020-04-17
 
 ### Added
