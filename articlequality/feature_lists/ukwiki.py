@@ -19,13 +19,13 @@ CN_TEMPLATES = [
     r"Fact"
 ]
 cn_templates = wikitext.revision.template_names_matching(
-    "|".join(CN_TEMPLATES), name="ukwiki.revision.cn_templates")
+    "$|".join(CN_TEMPLATES)+"$", name="ukwiki.revision.cn_templates")
 MAIN_TEMPLATES = [
     r"Main",
     r"Докладніше"
 ]
 main_article_templates = wikitext.revision.template_names_matching(
-    "|".join(MAIN_TEMPLATES), name="ukwiki.revision.main_article_templates")
+    "$|".join(MAIN_TEMPLATES)+"$", name="ukwiki.revision.main_article_templates")
 CITE_TEMPLATES = [
     r"Cite",
     r"Harvard[_ ]citation[_ ]no[_ ]brackets", r"harvnb",
@@ -39,7 +39,7 @@ CITE_TEMPLATES = [
     r"Citation"
 ]
 cite_templates = wikitext.revision.template_names_matching(
-    "|".join(CITE_TEMPLATES), name="ukwiki.revision.cite_templates")
+    "$|".join(CITE_TEMPLATES)+"$", name="ukwiki.revision.cite_templates")
 shortened_footnote_templates = wikitext.revision.template_names_matching(
     "sfn", name="ukwiki.revision.shortened_footnote_templates")
 all_ref_tags = shortened_footnote_templates + wikitext.revision.ref_tags
@@ -72,7 +72,7 @@ image_links = wikitext.revision.wikilink_titles_matching(
     "|".join(IMAGE_LINKS), name="ukwiki.revision.image_links")
 
 image_templates = wikitext.revision.template_names_matching(
-    r"((Wide|Tall|scalable) image)|Panorama|Panorama 2",
+    r"((Wide$|Tall$|scalable) image)$|Panorama$|Panorama 2$",
     name="ukwiki.revision.image_template")
 
 

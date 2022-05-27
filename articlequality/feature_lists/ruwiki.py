@@ -10,7 +10,7 @@ from revscoring.languages import russian
 from . import wikipedia
 
 cn_templates = wikitext.revision.template_names_matching(
-    r"Нет[ _]АИ",
+    r"Нет[ _]АИ$",
     name="ruwiki.revision.cn_templates")
 
 # Links

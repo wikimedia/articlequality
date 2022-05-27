@@ -13,7 +13,7 @@ from . import wikipedia
 
 # Templates
 infobox_templates = wikitext.revision.template_names_matching(
-    r"infobox|جعبه", name="fawiki.revision.infobox_templates")
+    r"infobox$|جعبه$", name="fawiki.revision.infobox_templates")
 CN_TEMPLATES = [
     r"Citation[_ ]needed",
     r"Cn",
@@ -21,13 +21,13 @@ CN_TEMPLATES = [
     r"مدرک"
 ]
 cn_templates = wikitext.revision.template_names_matching(
-    "|".join(CN_TEMPLATES), name="fawiki.revision.cn_templates")
+    "$|".join(CN_TEMPLATES)+"$", name="fawiki.revision.cn_templates")
 who_templates = wikitext.revision.template_names_matching(
     "Who|چه کسی|چه‌کسی", name="fawiki.revision.who_templates")
 main_article_templates = wikitext.revision.template_names_matching(
     "Main|اصلی", name="fawiki.main_article_templates")
 cite_templates = wikitext.revision.template_names_matching(
-    r"cite|یادکرد", name="fawiki.revision.cite_templates")
+    r"cite$|یادکرد$", name="fawiki.revision.cite_templates")
 proportion_of_templated_references = \
     cite_templates / max(wikitext.revision.ref_tags, 1)
 non_templated_references = max(wikitext.revision.ref_tags - cite_templates, 0)

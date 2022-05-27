@@ -20,7 +20,7 @@ CITE_TEMPLATES = [
     r"Ouvrage"
 ]
 cite_templates = wikitext.revision.template_names_matching(
-    "|".join(CITE_TEMPLATES),
+    "$|".join(CITE_TEMPLATES)+"$",
     name="frwiki.revision.cite_templates")
 proportion_of_templated_references = \
     cite_templates / max(wikitext.revision.ref_tags, 1)
@@ -30,7 +30,7 @@ non_cite_templates = sub(
     name="frwiki.revision.non_cite_templates"
 )
 infobox_templates = wikitext.revision.template_names_matching(
-    r"^infobox",
+    r"^infobox$",
     name="frwiki.revision.infobox_templates")
 
 # Copied (2015-10-29) from:
@@ -39,37 +39,37 @@ LVL1_CN_TEMPLATES = [r"Référence[ _]souhaitée", r"Citation[ _]nécessaire",
                      r"Référence[ _]à[ _]confirmer",
                      r"Référence[ _]nécessaire", r"Inédit"]
 lvl1_cn_templates = wikitext.revision.template_names_matching(
-    "|".join(LVL1_CN_TEMPLATES),
+    "$|".join(LVL1_CN_TEMPLATES)+"$",
     name="frwiki.revision.lvl1_cn_templates")
 
 LVL2_CN_TEMPLATES = [r"Référence[ _]insuffisante", r"Référence[ _]incomplète",
                      r"Détournement[ _]de[ _]sources",
                      r"Section[ _]à[ _]sourcer"]
 lvl2_cn_templates = wikitext.revision.template_names_matching(
-    "|".join(LVL2_CN_TEMPLATES),
+    "$|".join(LVL2_CN_TEMPLATES)+"$",
     name="frwiki.revision.lvl2_cn_templates")
 
 LVL3_CN_TEMPLATES = [r"Sources[ _]à[ _]lier", r"Sources[ _]obsolètes",
                      r"Référence[ _]obsolète", r"À[ _]sourcer",
                      r"Sources[ _]secondaires", r"BPV[ _]à[ _]sourcer"]
 lvl3_cn_templates = wikitext.revision.template_names_matching(
-    "|".join(LVL3_CN_TEMPLATES),
+    "$|".join(LVL3_CN_TEMPLATES)+"$",
     name="frwiki.revision.lvl3_cn_templates")
 
 LVL4_CN_TEMPLATES = [r"À[ _]prouver", r"Faut[ _]sourcer"]
 lvl4_cn_templates = wikitext.revision.template_names_matching(
-    "|".join(LVL4_CN_TEMPLATES),
+    "$|".join(LVL4_CN_TEMPLATES)+"$",
     name="frwiki.revision.lvl4_cn_templates")
 
 LVL5_CN_TEMPLATES = [r"À[ _]vérifier", r"Vérifiabilité"]
 lvl5_cn_templates = wikitext.revision.template_names_matching(
-    "|".join(LVL5_CN_TEMPLATES),
+    "$|".join(LVL5_CN_TEMPLATES)+"$",
     name="frwiki.revision.lvl5_cn_templates")
 main_article_templates = wikitext.revision.template_names_matching(
-    r"Article[ _](principal|détaillé)",
+    r"Article[ _](principal$|détaillé)$",
     name="frwiki.main_article_templates")
 date_templates = wikitext.revision.template_names_matching(
-    r"date",
+    r"date$",
     name="frwiki.revision.date_templates")
 
 # Links
