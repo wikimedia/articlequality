@@ -5,7 +5,7 @@ Persian Wikipedia
 
 from revscoring.features import wikitext
 from revscoring.features.meta import aggregators
-from revscoring.features.modifiers import max, sub, log
+from revscoring.features.modifiers import log, max, sub
 from revscoring.features.wikitext.datasources import Revision
 from revscoring.datasources.meta import mappers, filters
 
@@ -26,13 +26,35 @@ who_templates = wikitext.revision.template_names_matching(
     "Who|چه کسی|چه‌کسی", name="fawiki.revision.who_templates")
 main_article_templates = wikitext.revision.template_names_matching(
     "Main|اصلی", name="fawiki.main_article_templates")
+CITE_TEMPLATES = [
+    r"Cite",
+    r"Harvard[_ ]citation[_ ]no[_ ]brackets", r"harvnb",
+    r"Harvard citation", r"harv",
+    r"Harvard citation text", r"harvtxt",
+    r"Harvcoltxt",
+    r"Harvcol",
+    r"Harvcolnb",
+    r"Harvard citations", r"harvs",
+    r"Harvp",
+    r"یادکرد"
+]
 cite_templates = wikitext.revision.template_names_matching(
-    r"cite|یادکرد", name="fawiki.revision.cite_templates")
+    "|".join(CITE_TEMPLATES), name="fawiki.revision.cite_templates")
+SFN_TEMPLATES = [
+    r"Shortened footnote template", r"sfn",
+    r"Sfnp",
+    r"Sfnm"
+]
+shortened_footnote_templates = wikitext.revision.template_names_matching(
+    "|".join(SFN_TEMPLATES),
+    name="fawiki.revision.shortened_footnote_templates")
+all_ref_tags = shortened_footnote_templates + wikitext.revision.ref_tags
+all_cite_templates = cite_templates + shortened_footnote_templates
 proportion_of_templated_references = \
-    cite_templates / max(wikitext.revision.ref_tags, 1)
-non_templated_references = max(wikitext.revision.ref_tags - cite_templates, 0)
+    all_cite_templates / max(all_ref_tags, 1)
+non_templated_references = max(all_ref_tags - all_cite_templates, 0)
 non_cite_templates = sub(
-    wikitext.revision.templates, cite_templates,
+    wikitext.revision.templates, all_cite_templates,
     name="fawiki.revision.non_cite_templates"
 )
 
@@ -70,8 +92,10 @@ local_wiki = [
     image_links / max(wikitext.revision.content_chars, 1),
     category_links,
     category_links / max(wikitext.revision.content_chars, 1),
-    cite_templates,
-    cite_templates / max(wikitext.revision.content_chars, 1),
+    all_ref_tags,
+    all_ref_tags / max(wikitext.revision.content_chars, 1),
+    all_cite_templates,
+    all_cite_templates / max(wikitext.revision.content_chars, 1),
     proportion_of_templated_references,
     non_templated_references,
     non_templated_references / max(wikitext.revision.content_chars, 1),

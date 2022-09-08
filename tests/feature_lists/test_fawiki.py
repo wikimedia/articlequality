@@ -9,12 +9,13 @@ revision_text = revision.text
 def test_cite_templates():
     text = """
     This is some text with a citation.<ref>{{cite lol|title=Made up}}</ref>
-    This is some more text. {{foo}} {{{cite}}}
+    This is some more text. {{foo}} {{{cite}}}  {{sfn}}  {{Harvard citation}}
 
     I am a new paragraph.<ref>{{cite book|title=The stuff}}</ref>
     {{Cite hat|ascii=_n_}}{{یادکرد گربه|ascii=_n_}}
     """
-    assert solve(fawiki.cite_templates, cache={revision_text: text}) == 4
+    assert solve(fawiki.all_ref_tags, cache={revision_text: text}) == 4
+    assert solve(fawiki.all_cite_templates, cache={revision_text: text}) == 6
 
 
 def test_infobox_templates():
