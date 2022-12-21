@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+
+## [0.4.4]
+
+### Added
+* Add Github Action that build & pushes to PYPI index
+
 ## [0.4.3] - 2022-05-26
 
 ### Added
